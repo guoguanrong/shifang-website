@@ -1,0 +1,104 @@
+/* 账户及政策子页面延续公共内页背景和 1440px 内容宽度。 */
+.account-details-page .offering-main,
+.information-page .offering-main { padding-bottom: 0; }
+.account-details-page .offering-heading { margin-top: 60px; margin-bottom: 24px; }
+.account-details-page .offering-heading h1, .information-page .offering-heading h1 { line-height: 1; }
+.information-page .offering-heading > p:first-child { line-height: 1; }
+.certificate-panel { padding: 30px 30px 60px; border-radius: 20px; background: #fff; }
+.certificate-panel h2 { margin-bottom: 12px; color: #000; font-size: 28px; }
+.certificate-panel > p { font-size: 16px; line-height: 24px; }
+.certificate-panel .certificate-example-note { margin-top: 8px; color: #85735f; font-size: 13px; }
+.certificate-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 30px 20px; margin-top: 22px; }
+.certificate-grid figure { min-width: 0; }
+.certificate-grid img { width: 100%; height: auto; aspect-ratio: 680 / 980; border-radius: 20px; }
+.certificate-grid figcaption { margin-top: 20px; text-align: center; }
+.certificate-grid a { display: inline-block; padding: 4px 8px; color: #2b59a2; font-size: 16px; line-height: 24px; letter-spacing: 1.6px; text-decoration: underline; text-underline-offset: 3px; }
+.certificate-link-index { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.settings-panel { position: relative; isolation: isolate; padding: 70px 100px 60px; }
+.settings-panel::before, .settings-panel::after { position: absolute; z-index: -1; inset: 0; content: ''; pointer-events: none; background: url('@/assets/account-details/settings-frame.svg') center / 100% 100% no-repeat; }
+.settings-panel::after { inset: 6px; background-image: url('@/assets/account-details/settings-border.svg'); }
+.settings-heading { position: relative; margin: 0 0 32px; text-align: center; font-size: 32px; letter-spacing: 12px; line-height: 1.5; }
+.settings-heading::before { position: absolute; z-index: -1; top: -40px; left: 50%; width: 100px; height: 75px; border-radius: 50% 50% 0 0; background: radial-gradient(ellipse at top, #e27056, #edb8a877 55%, transparent 72%); content: ''; transform: translateX(-50%); }
+.settings-field { margin-bottom: 22px; }
+.settings-field > label, .settings-label { display: block; margin-bottom: 14px; color: #000; font-size: 16px; line-height: 24px; }
+.settings-field input { display: block; width: 100%; min-height: 60px; padding: 16px 24px; border: 1px solid #d9d9d9; border-radius: 999px; background: #fff; color: #333; font: inherit; }
+.settings-field:first-child input, .settings-field input:hover { border-color: #c7955f; }
+.settings-field input::placeholder { color: #a9a9a9; }
+.account-field-error { margin-top: 8px; color: #b52e1b; font-size: 14px; line-height: 1.6; }
+.settings-field input[aria-invalid='true'] { border-color: #b52e1b; }
+.account-details-page :is(h1, h2, h3, p, label), .information-page :is(h1, h2, h3, p) { overflow-wrap: anywhere; }
+.settings-verification { display: flex; align-items: center; gap: 12px; min-height: 126px; padding: 24px 30px; border-radius: 20px; background: linear-gradient(#f3f0e9, #fff); }
+.settings-verification > img { flex-shrink: 0; }
+.settings-verification > div { flex: 1; min-width: 0; }
+.settings-verification h3 { margin: 0 0 8px; font-size: 18px; }
+.settings-verification p { color: #c7955f; font-size: 16px; line-height: 1.6; }
+.settings-verification .ceremonial-button { flex-shrink: 0; width: 200px; min-height: 60px; font-size: 24px; }
+.settings-form .settings-save { display: flex; width: min(520px, 100%); min-height: 56px; margin: 30px auto 0; font-size: 24px; }
+.settings-form .ceremonial-button::after { transform: translateY(-50%); }
+.settings-notice, .settings-login { margin-top: 20px; color: #89663f; font-size: 14px; line-height: 1.7; text-align: center; }
+.settings-login button { padding: 4px; border: 0; background: none; color: #a7351d; text-decoration: underline; cursor: pointer; }
+.information-page .offering-heading { margin-top: 80px; }
+.information-page .offering-heading > p:last-child { max-width: 1060px; margin: auto; line-height: 1.5; }
+.information-page .offering-container { padding-bottom: 60px; }
+.contact-page .offering-heading { margin-bottom: 26px; }
+.contact-introduction { margin: 0 auto 30px; font-size: 16px; line-height: 28px; text-align: center; }
+.contact-cards { display: grid; gap: 30px; }
+.contact-card { position: relative; display: flex; align-items: center; justify-content: center; min-height: 182px; padding: 28px; overflow: hidden; border-radius: 20px; background: #fff; text-align: center; }
+.contact-card > img { position: absolute; left: calc(50% - 276px); width: 147px; height: 147px; object-fit: contain; }
+.contact-card > img.email { width: 175px; height: 175px; left: calc(50% - 290px); transform: rotate(30deg); }
+.contact-card > img.location { width: 131px; height: 131px; transform: rotate(30deg); }
+.contact-card > div { position: relative; min-width: 0; }
+.contact-card h2 { margin: 0 0 20px; font-size: 32px; }
+.contact-card :is(a, p) { color: #c7955f; font-size: 18px; line-height: 1.5; overflow-wrap: anywhere; }
+.contact-card a:hover { text-decoration: underline; text-underline-offset: 5px; }
+.policy-document { padding: 36px 30px 48px; border-radius: 20px; background: #fff; font-size: 16px; line-height: 28px; }
+.policy-document section + section { margin-top: 10px; }
+.policy-document h2 { display: table; min-width: 180px; margin: 0 0 8px; padding: 2px 26px 2px 10px; border-radius: 20px 0 0 20px; background: linear-gradient(90deg, #c9a47e, #c9a47e00); font-size: 16px; line-height: 26px; }
+.policy-document p { padding-inline: 10px; overflow-wrap: anywhere; }
+.policy-document a:hover { color: #a77540; text-decoration: underline; }
+html[data-locale-layout='international'] .settings-heading { font-family: var(--font-ui-international); letter-spacing: 0; }
+html[data-locale-layout='international'] .account-details-page .ceremonial-button { height: auto; padding-block: 12px; font-family: var(--font-ui-international); font-size: 18px; line-height: 1.5; letter-spacing: 0; }
+html[data-locale-layout='international'] .information-page .contact-card { gap: 28px; }
+html[data-locale-layout='international'] .information-page .contact-card > img { position: static; flex-shrink: 0; width: 130px; height: 130px; }
+html[data-locale-layout='international'] .information-page .contact-card > div { flex: 0 1 440px; }
+html[data-locale-layout='international'] .policy-document h2 { max-width: 100%; font-weight: 500; }
+.policy-page-legal .offering-heading { margin-bottom: 60px; }
+@media (max-width: 900px) {
+  .settings-panel { padding: 60px 40px 40px; }
+  .settings-verification { flex-wrap: wrap; padding: 20px; }
+  .settings-verification .ceremonial-button { width: auto; min-height: 48px; font-size: 18px; }
+}
+@media (max-width: 600px) {
+  .certificate-panel { padding: 22px 16px 28px; }
+  .certificate-panel h2 { font-size: 24px; }
+  .certificate-grid { grid-template-columns: 1fr; gap: 26px; }
+  .certificate-grid img { border-radius: 12px; }
+  .certificate-grid figcaption { margin-top: 10px; }
+  .settings-panel { padding: 50px 22px 30px; }
+  .settings-panel::before { border-radius: 20px; background: #fff; }
+  .settings-panel::after { border: 1px solid #f2d2af; border-radius: 16px; background: none; }
+  .settings-heading { margin-bottom: 26px; font-size: 26px; letter-spacing: 7px; }
+  .settings-field { margin-bottom: 22px; }
+  .settings-field input { min-height: 52px; padding: 14px 18px; }
+  .settings-verification { gap: 14px; padding: 18px 12px; }
+  .settings-verification > div { flex-basis: calc(100% - 64px); }
+  .settings-verification p { font-size: 14px; }
+  .settings-verification .ceremonial-button { margin-inline: auto; }
+  .settings-form .settings-save { min-height: 52px; margin-top: 28px; font-size: 20px; }
+  .information-page .offering-heading { margin-top: 40px; }
+  .information-page .offering-heading > p:last-child { font-size: 15px; line-height: 1.7; }
+  .information-page .offering-container { padding-bottom: 32px; }
+  .contact-introduction { font-size: 15px; }
+  .contact-cards { gap: 20px; }
+  .contact-card { min-height: 170px; padding: 26px 16px; }
+  .contact-card > img, .contact-card > img.email, .contact-card > img.location { width: 110px; height: 110px; left: 6px; opacity: .5; }
+  .contact-card h2 { font-size: 26px; margin-bottom: 16px; }
+  .contact-card :is(a, p) { font-size: 16px; }
+  html[data-locale-layout='international'] .information-page .contact-card { flex-direction: column; gap: 16px; }
+  html[data-locale-layout='international'] .information-page .contact-card > img { width: 76px; height: 76px; opacity: 1; }
+  html[data-locale-layout='international'] .information-page .contact-card > div { flex: auto; max-width: 100%; }
+  .policy-document { padding: 24px 16px 30px; font-size: 15px; line-height: 1.9; }
+  .policy-document h2 { margin-bottom: 10px; }
+  .policy-document section + section { margin-top: 20px; }
+  .policy-page-legal .offering-heading { margin-bottom: 30px; }
+}

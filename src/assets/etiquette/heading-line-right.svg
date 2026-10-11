@@ -1,0 +1,13 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="177" height="9.5" viewBox="0 0 177 9.5" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Group 137">
+<rect id="Rectangle 9" y="4.75" width="6.71751" height="6.71751" transform="rotate(-45 0 4.75)" fill="#C29F79"/>
+<circle id="Ellipse 1" cx="20.5" cy="4.5" r="2.5" fill="#C29F79"/>
+<rect id="Rectangle 63" x="7" y="4" width="170" height="1" fill="url(#paint0_linear_0_8)"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_0_8" x1="7" y1="4.5" x2="177" y2="4.5" gradientUnits="userSpaceOnUse">
+<stop stop-color="#C29F79"/>
+<stop offset="1" stop-color="#C29F79" stop-opacity="0"/>
+</linearGradient>
+</defs>
+</svg>

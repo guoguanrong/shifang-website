@@ -1,0 +1,47 @@
+/* 祈福服务弹窗（护身符 / 节气 / 取消确认）样式。 */
+.blessing-service-dialog { width: min(680px, calc(100% - 32px)); max-height: calc(100dvh - 40px); padding: 0; margin: auto; border: 0; border-radius: 20px; overflow-y: auto; color: #c29f79; font-family: var(--font-calligraphy); background: linear-gradient(180deg, #ffffff66 9.609%, #ffffffcc 16.739%, #fff); backdrop-filter: blur(2px); box-shadow: 0 10px 10px #0004; }
+.blessing-service-dialog::backdrop { background: #0009; }
+.service-dialog-content { position: relative; isolation: isolate; min-height: 410px; padding: 24px 60px 24px; overflow: hidden; }
+.is-talisman .service-dialog-content { min-height: 460px; }
+/* 两侧祥云装饰；is-talisman 时图案略高。 */
+.service-dialog-content::before, .service-dialog-content::after { content: ''; position: absolute; z-index: -1; pointer-events: none; width: 714px; height: 169px; opacity: .2; background: url('@/assets/blessing-details/service-dialog-cloud.webp') center/714px 169px no-repeat; }
+.service-dialog-content::before { left: 270px; bottom: -25px; }
+.service-dialog-content::after { left: -308px; top: -56px; transform: rotate(180deg); }
+.is-talisman .service-dialog-content::before, .is-talisman .service-dialog-content::after { height: 189px; background-size: 714px 189px; }
+.service-dialog-close { position: absolute; top: 30px; right: 30px; z-index: 2; display: grid; place-items: center; width: 48px; height: 48px; padding: 14px; border: 0; border-radius: 50%; cursor: pointer; background: url('@/assets/blessing-details/service-dialog-close-bg.svg') center/48px 48px; }
+.service-dialog-close img { width: 20px; height: 20px; }
+.service-dialog-heading { position: relative; display: grid; place-items: center; height: 117px; text-align: center; }
+.service-dialog-heading img { position: absolute; z-index: -1; width: 138.436px; height: 138.436px; top: 0; left: 50%; transform: translateX(-50%); }
+.service-dialog-heading h2 { margin: 0; color: #333; font-size: 32px; line-height: 1.3; font-weight: 400; letter-spacing: 12px; padding-left: 12px; }
+.service-dialog-copy { max-width: 441px; min-height: 72px; margin: 0 auto; text-align: center; font-size: 16px; line-height: 24px; letter-spacing: 1.6px; overflow-wrap: anywhere; }
+.service-dialog-copy p { margin: 0; }
+.is-cancel .service-dialog-copy { color: #333; }
+.service-dialog-blessing { margin: 33px 0 0; text-align: center; font-size: 16px; line-height: 24px; letter-spacing: 1.6px; }
+.service-dialog-download { display: block; margin: 24px auto 0; padding: 0; border: 0; background: none; color: #2b59a2; text-decoration: underline; font: 16px/24px var(--font-calligraphy); cursor: pointer; }
+.service-dialog-download-notice { margin: 12px 0; color: #696969; text-align: center; font-size: 14px; line-height: 1.5; }
+/* 底部按钮区；取消确认场景下按钮更窄。 */
+.service-dialog-actions { display: flex; justify-content: center; gap: 30px; margin-top: 20px; }
+.is-talisman .service-dialog-actions { margin-top: 17px; }
+.service-dialog-actions .ceremonial-button { width: min(100%, 320px); min-height: 60px; height: auto; padding: 14px 22px; font-size: 24px; line-height: 1.3; background-image: url('@/assets/blessing-details/service-dialog-texture.png'); }
+.service-dialog-actions .ceremonial-button::after { inset-inline: 0; height: 5.568px; border: 0; background: url('@/assets/blessing-details/service-dialog-ornament.svg') center/100% 5.568px no-repeat; transform: translateY(-50%); }
+.is-cancel .service-dialog-actions .ceremonial-button { width: 200px; }
+.is-cancel .service-dialog-actions .ceremonial-button::after { background-image: url('@/assets/blessing-details/service-dialog-ornament-short.svg'); }
+.service-dialog-reconsider { position: relative; width: 200px; min-height: 60px; border: 1px solid #edcdaa; border-radius: 100px; background: #fff; color: #333; font: 24px/1.3 var(--font-calligraphy); padding: 14px 22px; cursor: pointer; }
+.service-dialog-reconsider::before { content: ''; position: absolute; inset: 3px; border: .5px solid #edcdaa; border-radius: inherit; pointer-events: none; }
+.service-dialog-preview { margin: 20px auto 0; max-width: 480px; color: #696969; text-align: center; font: 12px/1.5 var(--font-calligraphy); }
+.blessing-service-dialog button:focus-visible { outline: 2px solid #1d4e6e; outline-offset: 3px; }
+html[data-locale-layout='international'] .service-dialog-heading h2 { letter-spacing: 0; padding-left: 0; }
+@media (max-width: 600px) {
+  .blessing-service-dialog { width: min(440px, calc(100% - 40px)); max-height: calc(100dvh - 40px); border-radius: 16px; }
+  .service-dialog-content, .is-talisman .service-dialog-content { min-height: 0; padding: 18px 20px 20px; }
+  .service-dialog-close { top: 12px; right: 12px; width: 36px; height: 36px; padding: 8px; background-size: 36px 36px; }
+  .service-dialog-heading { height: 100px; margin-top: 12px; }
+  .service-dialog-heading h2 { font-size: 23px; letter-spacing: 3px; padding-left: 3px; }
+  .service-dialog-heading img { width: 100px; height: 100px; }
+  .service-dialog-copy { min-height: 0; font-size: 15px; line-height: 23px; letter-spacing: .5px; }
+  .service-dialog-blessing { margin-top: 22px; font-size: 15px; line-height: 23px; }
+  .service-dialog-download { margin-top: 18px; font-size: 15px; }
+  .service-dialog-preview { margin-top: 16px; }
+  .service-dialog-actions { flex-wrap: wrap; gap: 12px; }
+  .service-dialog-actions .ceremonial-button, .is-cancel .service-dialog-actions .ceremonial-button, .service-dialog-reconsider { width: 100%; min-width: 0; min-height: 50px; padding: 11px 18px; font-size: 18px; }
+}

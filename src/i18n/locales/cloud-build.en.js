@@ -1,0 +1,40 @@
+export default {
+  backToTop: 'Back to top',
+  hero: {
+    eyebrow: 'Cloud Construction',
+    title: 'Build Together Online',
+    subtitle: 'Every donation has a clear destination',
+    quote: '“The Great Dao is formless, yet gives birth to heaven and earth; impartial, it moves the sun and moon.”',
+    quoteSource: '— Scripture of Clarity and Stillness · Daoist Canon',
+  },
+  transparency: {
+    title: 'Transparent Use of Funds',
+    promise: 'Our solemn commitment:',
+    items: ['Fund allocation is open for review at any time', 'Every donation is fully traceable'],
+    action: 'View fund details',
+    chartTitle: 'Use of funds',
+    chartItems: [
+      { label: 'Building restoration', value: '42%' },
+      { label: 'Cultural programs', value: '42%' },
+      { label: 'Labor', value: '42%' },
+      { label: 'Ritual activities', value: '42%' },
+      { label: 'Equipment', value: '42%' },
+      { label: 'Project equipment', value: '42%' },
+      { label: 'Administration', value: '42%' },
+    ],
+  },
+  cameras: {
+    eyebrow: 'Cloud Camera',
+    title: 'Live Construction View',
+    subtitle: 'Follow the restoration in real time · HD camera locations',
+    items: [
+      { title: 'Doumu Hall · Main Entrance' },
+      { title: 'Doumu Hall · Interior' },
+      { title: 'Sanqing Hall · Statue Area' },
+      { title: 'Mural Gallery · East Wall' },
+      { title: 'Courtyard · Release Pond' },
+      { title: 'Materials Storage Area' },
+    ],
+    note: 'HD monitoring · Live 24/7 · Less than 5 seconds delay',
+  },
+}

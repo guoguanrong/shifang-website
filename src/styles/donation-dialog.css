@@ -1,0 +1,60 @@
+/* Figma 4065:2 / 4065:3 share the existing 680px confirmation-dialog layout. */
+.offering-dialog.donation-dialog .offering-dialog-content { overflow: hidden; }
+.offering-dialog.donation-dialog .offering-dialog-content::before {
+  background-image: url('@/assets/donation/dialog-cloud.webp');
+  background-size: 714px 325px;
+  background-position: 270px 513px;
+  background-repeat: no-repeat;
+}
+.offering-dialog.donation-dialog .offering-dialog-content::after {
+  position: absolute;
+  z-index: -1;
+  top: -140px;
+  left: -307px;
+  width: 714px;
+  height: 422px;
+  content: '';
+  pointer-events: none;
+  opacity: .2;
+  background: url('@/assets/donation/dialog-cloud.webp') center/714px 422px no-repeat;
+  transform: rotate(180deg);
+}
+.offering-dialog.donation-dialog .dialog-close { background-image: url('@/assets/donation/close-background.svg'); }
+.offering-dialog.donation-dialog .order-summary > div { min-height: 46px; padding-bottom: 26px; }
+.offering-dialog.donation-dialog .order-summary dd { overflow-wrap: anywhere; }
+.offering-dialog.donation-dialog .devotee-summary { min-height: 178px; padding-top: 26px; }
+.offering-dialog.donation-dialog .payment-caption { margin-top: 18px; }
+.offering-dialog.donation-dialog .ceremonial-button { height: auto; background-image: url('@/assets/donation/dialog-texture.png'); }
+.offering-dialog.donation-dialog .ceremonial-button::after {
+  inset-inline: 0;
+  height: 5.568px;
+  border: 0;
+  background: url('@/assets/donation/button-ornament.svg') center/100% 5.568px no-repeat;
+  transform: translateY(-50%);
+}
+.offering-dialog.donation-dialog .donation-validation { color: #c29f79; text-align: center; font-size: 16px; line-height: 24px; letter-spacing: 1.6px; }
+.offering-dialog.donation-dialog .donation-validation p { margin: 0; }
+.offering-dialog.donation-dialog .donation-validation p + p { margin-top: 56px; }
+.offering-dialog.donation-dialog .donation-validation .ceremonial-button { width: min(100%, 320px); min-height: 60px; padding: 12px 24px; margin-top: 20px; font-size: 24px; line-height: 1.4; }
+.offering-dialog.donation-dialog.donation-dialog-message .offering-dialog-content { min-height: 386px; padding-bottom: 60px; }
+.offering-dialog.donation-dialog.donation-dialog-message .dialog-heading { margin-bottom: 0; }
+.offering-dialog.donation-dialog.donation-dialog-message .offering-dialog-content::before { background-size: 714px 169px, 714px 169px; background-position: 270px bottom, -307px -64px; }
+.offering-dialog.donation-dialog.is-completed .offering-dialog-content { min-height: 410px; }
+@media (max-width: 760px) {
+  .offering-dialog.donation-dialog .order-summary > div { padding-bottom: 16px; }
+  .offering-dialog.donation-dialog .order-summary dt { flex-shrink: 0; }
+  .offering-dialog.donation-dialog .devotee-summary { min-height: 0; }
+  .offering-dialog.donation-dialog .dialog-heading h2 { overflow-wrap: anywhere; }
+  .offering-dialog.donation-dialog .dialog-actions { grid-template-columns: 1fr; }
+  .offering-dialog.donation-dialog.donation-dialog-message .offering-dialog-content { min-height: 0; padding-bottom: 32px; }
+}
+
+@media (max-width: 600px) {
+  .offering-dialog.donation-dialog .order-summary > div { min-height: 36px; padding-bottom: 16px; }
+  .offering-dialog.donation-dialog .devotee-summary { padding-top: 18px; }
+  .offering-dialog.donation-dialog .donation-validation { font-size: 15px; line-height: 23px; }
+  .offering-dialog.donation-dialog .donation-validation p + p { margin-top: 32px; }
+  .offering-dialog.donation-dialog .donation-validation .ceremonial-button { min-height: 50px; padding: 11px 18px; font-size: 18px; }
+  .offering-dialog.donation-dialog.donation-dialog-message .offering-dialog-content,
+  .offering-dialog.donation-dialog.is-completed .offering-dialog-content { min-height: 0; padding-bottom: 24px; }
+}

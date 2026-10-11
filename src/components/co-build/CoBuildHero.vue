@@ -1,0 +1,751 @@
+<template>
+  <section class="co-build-hero">
+    <!-- 全站内页统一顶部背景，募捐卡片的独立切图不变。 -->
+    <PageHeroBackground />
+
+    <header class="hero-heading">
+      <p>{{ t('coBuild.hero.eyebrow') }}</p>
+      <h1>{{ t('coBuild.hero.title') }}</h1>
+      <span>{{ t('coBuild.hero.subtitle') }}</span>
+    </header>
+
+    <blockquote class="hero-quote">
+      <img :src="quoteScroll" alt="" aria-hidden="true" />
+      <p>{{ t('coBuild.hero.quote') }}</p>
+      <cite>{{ t('coBuild.hero.quoteSource') }}</cite>
+    </blockquote>
+
+    <CoBuildSectionHeading class="fundraising-heading" :title="t('coBuild.project.heading')"
+      :subtitle="t('coBuild.project.eyebrow')" />
+
+    <article id="donation-project" class="project-card">
+      <img class="project-frame project-frame-outer" :src="projectFrameOuter" alt="" aria-hidden="true" />
+      <img class="project-frame project-frame-inner" :src="projectFrameInner" alt="" aria-hidden="true" />
+      <div class="project-card-inner">
+        <figure class="project-photo">
+          <img class="project-photo-frame" :src="projectImageFrame" alt="" aria-hidden="true" />
+          <!-- <img class="project-photo-image" :src="projectTemple" :alt="t('coBuild.project.title')" /> -->
+        </figure>
+
+        <div class="project-copy">
+          <h2>{{ t('coBuild.project.title') }}</h2>
+          <strong class="project-total">{{ t('coBuild.project.total') }}</strong>
+          <p class="project-description">{{ t('coBuild.project.description') }}</p>
+
+          <div class="progress-track" role="progressbar" :aria-label="t('coBuild.project.progressLabel')"
+            aria-valuemin="0" aria-valuemax="100" aria-valuenow="68">
+            <span />
+          </div>
+          <div class="progress-copy">
+            <span>{{ t('coBuild.project.raisedLabel') }} <b>{{ t('coBuild.project.raised') }}</b></span>
+            <span>68%</span>
+          </div>
+
+          <dl class="project-stats">
+            <div v-for="stat in projectStats" :key="stat.label">
+              <dt>{{ stat.label }}</dt>
+              <dd>{{ stat.value }}</dd>
+            </div>
+          </dl>
+
+          <button class="ornate-button" type="button" @click="router.push({ name: 'donation' })">
+            <span>{{ t('coBuild.cta') }}</span>
+          </button>
+        </div>
+      </div>
+    </article>
+
+    <div class="assurance-grid">
+      <article v-for="(item, index) in assurances" :key="item.title" class="assurance-card">
+        <img class="assurance-frame" :src="assuranceFrames[index]" alt="" aria-hidden="true" />
+        <img class="assurance-icon" :src="assuranceIcons[index]" alt="" aria-hidden="true" />
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.desc }}</p>
+      </article>
+    </div>
+  </section>
+</template>
+
+<script setup>
+import PageHeroBackground from '@/components/common/PageHeroBackground.vue'
+import { computed } from 'vue'
+import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+import CoBuildSectionHeading from './CoBuildSectionHeading.vue'
+import quoteScroll from '@/assets/co-build/quote-scroll.webp'
+// import projectTemple from '@/assets/co-build/project-temple.webp'
+import projectFrameOuter from '@/assets/co-build/project-frame-outer.svg'
+import projectFrameInner from '@/assets/co-build/project-frame-inner.svg'
+import projectImageFrame from '@/assets/co-build/project-image-frame.svg'
+import assuranceFrame1 from '@/assets/co-build/assurance-frame-1.svg'
+import assuranceFrame2 from '@/assets/co-build/assurance-frame-2.svg'
+import assuranceFrame3 from '@/assets/co-build/assurance-frame-3.svg'
+import assuranceIcon1 from '@/assets/co-build/assurance-icon-1.svg'
+import assuranceIcon2 from '@/assets/co-build/assurance-icon-2.svg'
+import assuranceIcon3 from '@/assets/co-build/assurance-icon-3.svg'
+
+const { t, tm } = useI18n()
+const router = useRouter()
+const assurances = computed(() => tm('coBuild.assurances'))
+const projectStats = computed(() => tm('coBuild.project.stats'))
+const assuranceFrames = [assuranceFrame1, assuranceFrame2, assuranceFrame3]
+const assuranceIcons = [assuranceIcon1, assuranceIcon2, assuranceIcon3]
+
+</script>
+
+<style scoped>
+.co-build-hero {
+  isolation: isolate;
+  position: relative;
+  height: 1454px;
+  overflow: hidden;
+  background: #f3f0e9;
+}
+
+.hero-heading {
+  position: absolute;
+  z-index: 1;
+  top: 115px;
+  left: 50%;
+  width: min(680px, calc(100% - 40px));
+  text-align: center;
+  transform: translateX(-50%);
+}
+
+.hero-heading p {
+  margin: 0;
+  color: #d0a06d;
+  font-family: var(--font-dyming-a);
+  font-size: 24px;
+  line-height: 28px;
+}
+
+.hero-heading h1 {
+  margin: 6px 0 0;
+  color: #1d4e6e;
+  font-family: var(--font-calligraphy);
+  font-size: 42px;
+  font-weight: 400;
+  line-height: 48px;
+  letter-spacing: 2px;
+}
+
+.hero-heading span {
+  display: block;
+  margin-top: 7px;
+  color: #333;
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.hero-quote {
+  position: absolute;
+  z-index: 1;
+  top: 243px;
+  left: 50%;
+  width: 707px;
+  height: 162px;
+  margin: 0;
+  color: #8e6e49;
+  transform: translateX(-50%);
+}
+
+.hero-quote>img {
+  position: absolute;
+  inset: 0;
+  width: 707px;
+  height: 162px;
+}
+
+.hero-quote p {
+  position: absolute;
+  top: 44px;
+  left: 0;
+  width: 100%;
+  margin: 0;
+  font-family: var(--font-calligraphy);
+  font-size: 32px;
+  line-height: 38px;
+  letter-spacing: 1px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.hero-quote cite {
+  position: absolute;
+  right: 100px;
+  bottom: 31px;
+  font-family: var(--font-dyming-a);
+  font-size: 16px;
+  font-style: normal;
+  line-height: 20px;
+}
+
+.fundraising-heading {
+  position: absolute;
+  z-index: 1;
+  top: 465px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.fundraising-heading :deep(h2) {
+  letter-spacing: 19px;
+}
+
+.fundraising-heading :deep(.subtitle) {
+  margin-top: 0;
+  color: #cc3513;
+  font-size: 14px;
+  letter-spacing: 0;
+}
+
+.project-card {
+  position: absolute;
+  z-index: 1;
+  top: 604px;
+  left: 50%;
+  width: 1440px;
+  height: 520px;
+  transform: translateX(-50%);
+}
+
+.project-frame {
+  position: absolute;
+  pointer-events: none;
+}
+
+.project-frame-outer {
+  inset: 0;
+  width: 1440px;
+  height: 520px;
+}
+
+.project-frame-inner {
+  top: 10px;
+  left: 10px;
+  width: 1420px;
+  height: 500px;
+}
+
+.project-card-inner {
+  position: absolute;
+  top: 40px;
+  left: 40px;
+  display: grid;
+  grid-template-columns: 704px 617px;
+  gap: 39px;
+}
+
+.project-photo {
+  position: relative;
+  width: 704px;
+  height: 440px;
+  margin: 0;
+  overflow: hidden;
+}
+
+.project-photo-frame {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  width: 704px;
+  height: 440px;
+  pointer-events: none;
+}
+
+.project-photo-image {
+  position: absolute;
+  z-index: 1;
+  top: 6px;
+  left: 6px;
+  width: 692px;
+  height: 429px;
+  border: 1px solid #f2d2af;
+  object-fit: cover;
+  object-position: center 36%;
+  transition: transform .45s ease;
+}
+
+.project-card:hover .project-photo-image {
+  transform: scale(1.02);
+}
+
+.project-copy {
+  padding-top: 0;
+  color: #333;
+}
+
+.project-copy h2 {
+  margin: 0;
+  font-family: var(--font-calligraphy);
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 39px;
+}
+
+.project-total {
+  display: block;
+  margin: 5px 0 0;
+  color: #cc3513;
+  font-family: Arial, sans-serif;
+  font-size: 48px;
+  line-height: 58px;
+}
+
+.project-description {
+  margin: 12px 0 0;
+  font-size: 16px;
+  line-height: 20px;
+  letter-spacing: 1.6px;
+}
+
+.progress-track {
+  height: 14px;
+  margin-top: 35px;
+  overflow: hidden;
+  background: #ffe9d2;
+  border-radius: 100px;
+}
+
+.progress-track span {
+  display: block;
+  width: 68%;
+  height: 100%;
+  background: #cc3513;
+  border-radius: inherit;
+}
+
+.progress-copy {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5px;
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.progress-copy b {
+  font-family: Arial, sans-serif;
+  font-weight: 500;
+}
+
+.project-stats {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  height: 100px;
+  margin: 32px 0 0;
+  padding: 20px 6px 10px;
+  background: url('@/assets/co-build/project-stats-panel.svg') center / 100% 100% no-repeat;
+}
+
+.project-stats div {
+  min-width: 0;
+  text-align: center;
+}
+
+.project-stats div+div {
+  border-left: 1px solid #f0e6dc;
+}
+
+.project-stats dt {
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 1.4px;
+}
+
+.project-stats dd {
+  margin: 10px 0 0;
+  color: #cc3513;
+  font-family: Arial, sans-serif;
+  font-size: 18px;
+  line-height: 22px;
+}
+
+.ornate-button {
+  position: relative;
+  display: grid;
+  width: 100%;
+  height: 56px;
+  margin-top: 32px;
+  place-items: center;
+  overflow: hidden;
+  color: #fff;
+  font-family: var(--font-calligraphy);
+  font-size: 24px;
+  letter-spacing: 1px;
+  background: linear-gradient(90deg, #cc3513, #981c04);
+  border: 2px solid #c29f79;
+  border-radius: 100px;
+  box-shadow: inset 0 0 0 3px #cc3513, inset 0 0 0 4px #c29f79;
+  cursor: pointer;
+  transition: filter .2s ease, transform .2s ease;
+}
+
+.ornate-button::before {
+  position: absolute;
+  inset: 4px;
+  content: '';
+  background: url('@/assets/co-build/button-texture.png') center / cover;
+  border-radius: inherit;
+  mix-blend-mode: luminosity;
+  opacity: .3;
+}
+
+.ornate-button span {
+  position: relative;
+  z-index: 1;
+}
+
+.ornate-button:hover {
+  filter: brightness(1.08);
+  transform: translateY(-2px);
+}
+
+.assurance-grid {
+  position: absolute;
+  z-index: 1;
+  top: 1164px;
+  left: 50%;
+  display: grid;
+  grid-template-columns: repeat(3, 466.67px);
+  gap: 20px;
+  width: 1440px;
+  transform: translateX(-50%);
+}
+
+.assurance-card {
+  position: relative;
+  height: 210px;
+  padding-top: 114px;
+  color: #333;
+  text-align: center;
+}
+
+.assurance-frame {
+  position: absolute;
+  inset: 0;
+  width: 466.67px;
+  height: 210px;
+  pointer-events: none;
+}
+
+.assurance-icon {
+  position: absolute;
+  top: 27px;
+  left: 50%;
+  width: 78px;
+  height: 78px;
+  object-fit: contain;
+  transform: translateX(-50%);
+  transition: transform .25s ease;
+}
+
+.assurance-card:nth-child(2) .assurance-icon,
+.assurance-card:nth-child(3) .assurance-icon {
+  top: 36px;
+  width: 59px;
+  height: 59px;
+}
+
+.assurance-card:hover .assurance-icon {
+  transform: translateX(-50%) translateY(-4px);
+}
+
+.assurance-card h3 {
+  position: relative;
+  margin: 0;
+  font-family: var(--font-calligraphy);
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 39px;
+}
+
+.assurance-card p {
+  position: relative;
+  margin: 7px 20px 0;
+  font-size: 16px;
+  line-height: 20px;
+  letter-spacing: 1.6px;
+}
+
+:global(html[data-locale-layout='international'] .co-build-hero .hero-heading h1),
+:global(html[data-locale-layout='international'] .co-build-hero .project-copy h2),
+:global(html[data-locale-layout='international'] .co-build-hero .assurance-card h3),
+:global(html[data-locale-layout='international'] .co-build-hero .ornate-button) {
+  font-family: Georgia, serif;
+  letter-spacing: 0;
+}
+
+:global(html[data-locale-layout='international'] .fundraising-heading h2) {
+  letter-spacing: 1px;
+}
+
+:global(html[data-locale-layout='international'] .co-build-hero .hero-quote p) {
+  font-family: Georgia, serif;
+  font-size: 24px;
+  white-space: normal;
+}
+
+:global(html[data-locale-layout='international'] .co-build-hero .hero-quote cite) {
+  font-family: Georgia, serif;
+}
+
+:global(html[data-locale-layout='international'] .co-build-hero .assurance-card h3) {
+  font-size: 26px;
+}
+
+:global(html[data-locale-layout='international'] .co-build-hero .assurance-card p) {
+  font-size: 14px;
+  letter-spacing: 0;
+}
+
+@media (max-width: 1439px) {
+  .co-build-hero {
+    display: flex;
+    height: auto;
+    min-height: 0;
+    flex-direction: column;
+    align-items: center;
+    padding: 78px 24px 68px;
+  }
+
+  .hero-heading,
+  .hero-quote,
+  .fundraising-heading,
+  .project-card,
+  .assurance-grid {
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+  }
+
+  .hero-quote {
+    margin-top: 22px;
+  }
+
+  .fundraising-heading {
+    margin-top: 56px;
+  }
+
+  .project-card {
+    width: min(100%, 1000px);
+    height: auto;
+    min-height: 490px;
+    margin-top: 2px;
+    padding: 34px;
+    background: #fff;
+    border: 1px solid #f2d2af;
+    border-radius: 22px;
+    box-shadow: 0 4px 0 #d7b591;
+  }
+
+  .project-frame {
+    display: none;
+  }
+
+  .project-card-inner {
+    position: relative;
+    top: auto;
+    left: auto;
+    grid-template-columns: minmax(0, 1.1fr) minmax(390px, .9fr);
+    gap: 30px;
+  }
+
+  .project-photo {
+    width: 100%;
+    height: 420px;
+  }
+
+  .project-photo-frame {
+    width: 100%;
+    height: 100%;
+  }
+
+  .project-photo-image {
+    width: calc(100% - 12px);
+    height: calc(100% - 12px);
+  }
+
+  .project-copy {
+    padding-top: 2px;
+  }
+
+  .project-copy h2 {
+    font-size: 29px;
+  }
+
+  .project-total {
+    font-size: 42px;
+  }
+
+  .ornate-button {
+    margin-top: 22px;
+  }
+
+  .assurance-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: min(100%, 1000px);
+    margin-top: 40px;
+  }
+
+  .assurance-card {
+    height: 190px;
+    padding-top: 104px;
+    background: #fff;
+    border: 1px solid #f2d2af;
+    border-radius: 18px;
+  }
+
+  .assurance-frame {
+    display: none;
+  }
+
+  .assurance-card h3 {
+    font-size: 27px;
+  }
+}
+
+@media (max-width: 900px) {
+  .project-card {
+    width: min(100%, 680px);
+  }
+
+  .project-card-inner {
+    grid-template-columns: 1fr;
+  }
+
+  .project-photo {
+    height: min(58vw, 430px);
+  }
+
+  .assurance-grid {
+    grid-template-columns: 1fr;
+    width: min(100%, 680px);
+  }
+}
+
+@media (max-width: 600px) {
+  .co-build-hero {
+    padding: 52px 16px 52px;
+  }
+
+  .hero-heading p {
+    font-size: 18px;
+  }
+
+  .hero-heading h1 {
+    font-size: 32px;
+    line-height: 39px;
+  }
+
+  .hero-heading span {
+    font-size: 14px;
+  }
+
+  .hero-quote {
+    width: calc(100vw - 24px);
+    height: 126px;
+    margin-top: 22px;
+  }
+
+  .hero-quote>img {
+    width: 100%;
+    height: 126px;
+    object-fit: fill;
+  }
+
+  .hero-quote p {
+    top: 31px;
+    padding-inline: 29px;
+    font-size: 20px;
+    line-height: 26px;
+    white-space: normal;
+  }
+
+  .hero-quote cite {
+    right: 34px;
+    bottom: 21px;
+    font-size: 12px;
+  }
+
+  .fundraising-heading {
+    margin-top: 34px;
+  }
+
+  .project-card {
+    margin-top: 8px;
+    padding: 16px;
+    border-radius: 16px;
+  }
+
+  .project-card-inner {
+    gap: 20px;
+  }
+
+  .project-photo {
+    height: min(92vw, 390px);
+  }
+
+  .project-copy h2 {
+    font-size: 26px;
+  }
+
+  .project-total {
+    font-size: 36px;
+    line-height: 46px;
+  }
+
+  .project-description {
+    font-size: 14px;
+    letter-spacing: .6px;
+  }
+
+  .progress-track {
+    margin-top: 22px;
+  }
+
+  .progress-copy {
+    font-size: 13px;
+  }
+
+  .project-stats {
+    height: auto;
+    min-height: 92px;
+    margin-top: 22px;
+    padding-inline: 0;
+  }
+
+  .project-stats dt {
+    font-size: 12px;
+    letter-spacing: 0;
+  }
+
+  .project-stats dd {
+    font-size: 14px;
+  }
+
+  .ornate-button {
+    height: 50px;
+    font-size: 20px;
+  }
+
+  .assurance-grid {
+    margin-top: 28px;
+  }
+
+  .assurance-card {
+    height: 180px;
+  }
+
+  .assurance-card h3 {
+    font-size: 25px;
+  }
+
+  .assurance-card p {
+    font-size: 14px;
+    letter-spacing: .4px;
+  }
+}
+</style>

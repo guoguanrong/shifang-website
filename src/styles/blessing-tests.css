@@ -1,0 +1,163 @@
+/* 祈福测算（五行人格 / 抽签 / 本命星次 / 运势评测）页面共用样式。 */
+.blessing-test-page .offering-heading { margin-bottom: 16px; }
+.blessing-test-page .ornate-heading { height: 112px; }
+.blessing-test-page .ornate-heading img { width: 138.436px; height: 138.436px; }
+.blessing-test-page .ornate-heading h2 { letter-spacing: 3.2px; }
+.blessing-test-page p { font-size: 16px; line-height: 1.5; }
+.test-intro { min-height: 240px; padding: 30px 50px 44px; text-align: center; }
+.test-intro::before { background-image: url('@/assets/blessing-tests/intro-panel.svg'); }
+.test-intro::after { background-image: url('@/assets/blessing-tests/intro-outline.svg'); }
+.test-intro-copy p { margin: 0; }
+.test-selection { margin-top: 80px; }
+.element-grid, .lot-category-grid, .animal-grid, .protection-grid, .birthday-grid { display: grid; gap: 24px; }
+.element-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 35px; }
+/* 卡片底图与描边由 --card-art / --card-outline 两个自定义属性驱动，各页面自行赋值。 */
+.test-art-card { position: relative; isolation: isolate; min-width: 0; text-align: center; background: none; border: 0; color: inherit; font: inherit; }
+.test-art-card::before, .test-art-card::after { position: absolute; z-index: -1; inset: 0; content: ''; background: var(--card-art) center/100% 100% no-repeat; pointer-events: none; }
+.test-art-card::after { inset: 5px 6px; background-image: var(--card-outline); }
+.test-art-card h3 { margin: 20px 0 16px; font-size: 28px; line-height: 1.3; }
+.test-art-card p { margin: 0; white-space: pre-line; letter-spacing: 1.6px; line-height: 20px; }
+.element-card { --card-art: url('@/assets/blessing-tests/element-card.svg'); --card-outline: url('@/assets/blessing-tests/element-outline.svg'); min-height: 300px; padding: 70px 16px 28px; }
+.element-icon { display: flex; align-items: center; justify-content: center; height: 58px; }
+.element-icon img, .lot-category-icon img, .animal-icon img, .protection-icon img { flex-shrink: 0; object-fit: contain; }
+/* 悬停过渡：卡片位移 / 投影、图标缩放、标题配色分别声明，方便单独裁剪。 */
+.element-card { transition: transform .28s ease, filter .28s ease; }
+.element-card .element-icon img { transition: transform .28s ease; }
+.element-card h3 { margin-top: 31px; transition: color .28s ease; }
+/* 通用面板：底图与描边同样由伪元素叠加。 */
+.test-panel { margin-top: 40px; padding: 30px 60px; text-align: center; }
+.test-panel::before { background-image: url('@/assets/blessing-tests/test-panel.svg'); }
+.test-panel::after { background-image: url('@/assets/blessing-tests/test-outline.svg'); }
+.personality-quiz { min-height: 400px; padding-top: 40px; }
+.quiz-body { display: flex; flex-direction: column; align-items: center; justify-content: space-between; min-height: 218px; padding-top: 30px; gap: 22px; }
+.quiz-body p { margin: 0; white-space: pre-line; }
+.quiz-body h3 { margin: 0; font-size: 24px; }
+.quiz-options { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; width: 100%; }
+.test-choice { min-height: 60px; padding: 14px 18px; border: 1px solid #c29f79; border-radius: 40px; color: #333; background: linear-gradient(#fff, #f3f0e9); font: inherit; cursor: pointer; }
+.blessing-test-page .ceremonial-button { width: min(100%, 300px); height: auto; min-height: 56px; padding: 12px 26px; font-size: 24px; line-height: 1.3; background-color: #b42b0e; }
+.blessing-test-page button:disabled { cursor: not-allowed; opacity: .6; }
+.blessing-test-page .ceremonial-button::after { inset-inline: 0; height: 5.568px; border: 0; background: url('@/assets/donation/button-ornament.svg') center/100% 5.568px no-repeat; transform: translateY(-50%); }
+/* 状态/提示条：用于提示演示状态或日历不可用等兜底信息。 */
+.test-status { max-width: 760px; margin: 24px auto 0; padding: 16px 24px; border: 1px solid #dec5a8; border-radius: 14px; background: #fff8ed; color: #805335; text-align: center; }
+.lot-category-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 26px; }
+.lot-category { --card-art: url('@/assets/blessing-tests/lot-card.svg'); --card-outline: url('@/assets/blessing-tests/lot-outline.svg'); min-height: 285px; padding: 39px 18px 35px; cursor: pointer; }
+.lot-category-icon { display: flex; align-items: center; justify-content: center; height: 100px; }
+.lot-draw { margin-top: 80px; text-align: center; }
+.lot-draw > p { margin: -12px 0 26px; }
+.lot-tabs { display: flex; justify-content: center; flex-wrap: wrap; gap: 20px; }
+.lot-tabs button { min-width: 93px; min-height: 36px; padding: 8px 18px; border: 0; background: url('@/assets/blessing-tests/tab.svg') center/100% 100% no-repeat; font: inherit; color: #734b29; cursor: pointer; }
+.lot-tabs button[aria-pressed='true'] { color: #fff; background-image: url('@/assets/blessing-tests/tab-active.svg'); }
+.lot-draw .lot-instruction { margin: 30px 0 0; color: #c7955f; }
+.lot-draw .test-status { margin: 24px auto 0; }
+.lot-guide { margin-top: 60px; min-height: 246px; padding-inline: 50px; }
+.lot-guide::before { background-image: url('@/assets/blessing-tests/lot-guide.svg'); }
+.lot-guide::after { background-image: url('@/assets/blessing-tests/lot-guide-outline.svg'); }
+.lot-guide p { margin: 0; }
+.animal-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 20px 24px; }
+.animal-card { --card-art: url('@/assets/blessing-tests/animal-card.svg'); --card-outline: url('@/assets/blessing-tests/animal-outline.svg'); min-height: 220px; padding: 40px 12px 30px; cursor: pointer; }
+.animal-icon { display: flex; align-items: flex-end; justify-content: center; height: 80px; }
+.animal-card h3 { margin: 22px 0 0; }
+.protection-panel { min-height: 500px; padding: 30px 100px 58px; }
+.protection-panel::before { background-image: url('@/assets/blessing-tests/protection-panel.svg'); }
+.protection-panel::after { background-image: url('@/assets/blessing-tests/protection-outline.svg'); }
+.protection-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.protection-card { --card-art: url('@/assets/blessing-tests/protection-card.svg'); --card-outline: url('@/assets/blessing-tests/protection-card-outline.svg'); min-height: 300px; padding: 35px 18px 30px; }
+.protection-icon { display: flex; align-items: center; justify-content: center; height: 104px; }
+.zodiac-test-page .test-intro { min-height: 367px; }
+.zodiac-test-page .test-intro::before { background-image: url('@/assets/blessing-tests/zodiac-intro.svg'); }
+.zodiac-test-page .test-intro::after { background-image: url('@/assets/blessing-tests/zodiac-intro-outline.svg'); }
+.zodiac-test-page .test-intro-copy { text-align: left; }
+.zodiac-test-page .test-intro-copy p { text-indent: 2em; }
+.zodiac-panel { margin-top: 40px; padding: 30px 70px 22px; }
+.zodiac-panel::before { background-image: url('@/assets/blessing-tests/zodiac-panel.svg'); }
+.zodiac-panel::after { background-image: url('@/assets/blessing-tests/zodiac-outline.svg'); }
+.birthday-form { padding: 26px 30px 30px; border-radius: 20px; background: #f3f0e9; }
+.birthday-form > p:first-child { margin: 0 0 30px; }
+.birthday-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.birth-wheel { --card-art: url('@/assets/blessing-tests/date-card.svg'); --card-outline: url('@/assets/blessing-tests/date-outline.svg'); padding: 28px 35px 36px; min-height: 300px; }
+.birth-wheel label { display: block; margin-bottom: 22px; font-size: 28px; }
+/* 生辰滚轮：用多行原生 select 模拟滚轮，选中项高亮。 */
+.birth-wheel select { width: 100%; height: 182px; padding: 0; border: 0; border-inline: 1px solid #f1e3d3; border-radius: 0; background: transparent; color: #c7955f; font: 24px/1.5 var(--font-calligraphy); text-align: center; scrollbar-width: thin; scrollbar-color: #dfc6a8 transparent; cursor: pointer; }
+.birth-wheel option { padding: 13px 4px; min-height: 60px; color: #b47a43; }
+.birth-wheel option:checked { color: #333; background: linear-gradient(90deg, transparent, #f4f1ea, transparent); }
+.birthday-form .birthday-summary { margin: 30px 0 26px; font-size: 28px; color: #b47a43; }
+.birthday-form .birthday-note { margin: 28px 0 0; font-size: 16px; }
+.test-art-card[aria-pressed='true'] { filter: drop-shadow(0 4px 5px #c29f7966); }
+.blessing-test-page button:focus-visible, .birth-wheel select:focus-visible { outline: 2px solid #1d4e6e; outline-offset: 4px; }
+@media (hover: hover) and (pointer: fine) {
+  button.test-art-card:hover { filter: drop-shadow(0 6px 6px #c29f7966); }
+  .test-choice:hover { background: #fae8d2; }
+  /* 五行卡片是纯展示的 article（不可点），悬停只做轻微上浮 + 加深投影，
+     图标微微放大、标题转为暖金色，与可点卡片（button.test-art-card）保持一致的观感。 */
+  .element-card:hover { filter: drop-shadow(0 8px 8px #c29f7980); transform: translateY(-6px); }
+  .element-card:hover .element-icon img { transform: scale(1.08); }
+  .element-card:hover h3 { color: #b47a43; }
+}
+/* 系统开启「减少动态效果」时去掉位移与缩放，只保留配色与投影变化。 */
+@media (prefers-reduced-motion: reduce) {
+  .element-card,
+  .element-card .element-icon img { transition: none; }
+  .element-card:hover { transform: none; }
+  .element-card:hover .element-icon img { transform: none; }
+}
+/* 英文版：换成界面字体并放宽行高、收紧字距。 */
+html[data-locale-layout='international'] .blessing-test-page .offering-main,
+html[data-locale-layout='international'] .blessing-test-page .ornate-heading h2,
+html[data-locale-layout='international'] .blessing-test-page .ceremonial-button,
+html[data-locale-layout='international'] .birth-wheel select { font-family: var(--font-ui-international); }
+html[data-locale-layout='international'] .blessing-test-page .test-art-card p { line-height: 1.5; letter-spacing: 0; }
+html[data-locale-layout='international'] .blessing-test-page .ornate-heading h2 { letter-spacing: 0; }
+html[data-locale-layout='international'] .blessing-test-page .test-art-card h3 { font-size: 25px; }
+/* 中等屏幕：减少网格列数并收窄内边距。 */
+@media (max-width: 1200px) {
+  .element-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+  .lot-category-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .animal-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .protection-panel { padding-inline: 30px; }
+  .quiz-options { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .zodiac-panel { padding-inline: 30px; }
+  .birthday-form { padding-inline: 18px; }
+  .birth-wheel { padding-inline: 18px; }
+}
+/* 平板：整体降为两列，并压缩卡片尺寸。 */
+@media (max-width: 760px) {
+  .blessing-test-page .offering-heading { margin-bottom: 32px; }
+  .test-intro { padding: 22px 24px 32px; }
+  .test-selection, .lot-draw { margin-top: 40px; }
+  .element-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  .element-card { min-height: 265px; padding: 40px 12px 28px; }
+  .element-card:last-child { grid-column: 1 / -1; width: calc((100% - 16px) / 2); justify-self: center; }
+  .test-art-card h3 { font-size: 24px; }
+  .test-art-card p { letter-spacing: 0; }
+  .test-panel { padding: 22px 24px 30px; }
+  .quiz-options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .lot-category-grid { gap: 16px; }
+  .lot-category { min-height: 270px; padding-inline: 12px; }
+  .animal-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  .animal-card { min-height: 175px; padding: 28px 8px 22px; }
+  .animal-icon { transform: scale(.8); transform-origin: bottom center; }
+  .animal-card h3 { margin-top: 12px; font-size: 23px; }
+  .protection-grid { grid-template-columns: 1fr; }
+  .protection-card { width: min(100%, 400px); margin: auto; }
+  .birthday-form { padding: 22px 12px; }
+  .birthday-grid { gap: 8px; }
+  .birth-wheel { min-height: 220px; padding: 24px 8px 16px; }
+  .birth-wheel label { font-size: 20px; margin-bottom: 14px; }
+  .birth-wheel select { height: 144px; font-size: 17px; }
+  .birth-wheel option { min-height: 48px; padding: 12px 0; }
+  .birthday-form .birthday-summary { font-size: 21px; }
+  .zodiac-panel { padding-inline: 16px; }
+}
+/* 手机：多数网格改为单列。 */
+@media (max-width: 600px) {
+  .blessing-test-page .ornate-heading { min-height: 108px; height: auto; padding: 35px 0 20px; }
+  .blessing-test-page .ornate-heading img { width: 108px; height: 108px; }
+  .blessing-test-page .ornate-heading h2 { font-size: 24px; letter-spacing: 1px; }
+  .lot-category-grid, .quiz-options { grid-template-columns: 1fr; }
+  .lot-category { width: min(100%, 340px); margin: auto; }
+  .animal-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .birthday-grid { grid-template-columns: 1fr; gap: 16px; }
+  .birth-wheel { max-width: 340px; width: 100%; margin: auto; }
+  .birth-wheel select { max-width: 230px; font-size: 22px; }
+  .blessing-test-page .ceremonial-button { font-size: 20px; }
+}

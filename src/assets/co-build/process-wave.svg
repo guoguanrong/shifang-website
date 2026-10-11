@@ -1,0 +1,12 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="1444.18" height="58" viewBox="0 0 1444.18 58" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path id="Vector" d="M1.09126 29C26.5704 12.4109 63.2814 2 104.091 2C144.901 2 181.612 12.4109 207.091 29C232.57 45.5891 269.281 56 310.091 56C350.901 56 387.612 45.5891 413.091 29C438.57 12.4109 475.281 2 516.091 2C556.901 2 593.612 12.4109 619.091 29C644.57 45.5891 681.281 56 722.091 56C762.901 56 799.612 45.5891 825.091 29C850.57 12.4109 887.281 2 928.091 2C968.901 2 1005.61 12.4109 1031.09 29C1056.57 45.5891 1093.28 56 1134.09 56C1174.9 56 1211.61 45.5891 1237.09 29C1262.57 12.4109 1299.28 2 1340.09 2C1380.9 2 1417.61 12.4109 1443.09 29" stroke="url(#paint0_linear_0_4)" stroke-opacity="0.7" stroke-width="4"/>
+<defs>
+<linearGradient id="paint0_linear_0_4" x1="1.09126" y1="29" x2="1443.09" y2="29" gradientUnits="userSpaceOnUse">
+<stop stop-color="#CAAB89" stop-opacity="0"/>
+<stop offset="0.283654" stop-color="#CAAB89"/>
+<stop offset="0.519231" stop-color="#CAAB89" stop-opacity="0.05"/>
+<stop offset="0.716346" stop-color="#CAAB89"/>
+<stop offset="1" stop-color="#CAAB89" stop-opacity="0"/>
+</linearGradient>
+</defs>
+</svg>

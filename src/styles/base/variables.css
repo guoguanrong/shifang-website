@@ -1,0 +1,38 @@
+:root {
+  /* 品牌色 */
+  --color-primary: #8c6d30;
+  --color-primary-light: #bfa065;
+  --color-primary-dark: #5e4a20;
+
+  /* 背景色 */
+  --color-bg-cream: #f5f0e8;
+  --color-bg-paper: #f9f6f0;
+  --color-bg-navy: #1a2d4a;
+  --color-bg-red: #8b1e1e;
+
+  /* 文字色 */
+  --color-text: #2c241b;
+  --color-text-secondary: #6b5d4d;
+  --color-text-muted: #8c7b66;
+  --color-text-light: #f5f0e8;
+
+  /* 边框与阴影 */
+  --color-border: rgba(44, 36, 27, 0.1);
+  --shadow-sm: 0 2px 8px rgba(44, 36, 27, 0.06);
+  --shadow-md: 0 8px 24px rgba(44, 36, 27, 0.1);
+  --shadow-lg: 0 16px 48px rgba(44, 36, 27, 0.14);
+
+  /* 间距 */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 48px;
+  --space-2xl: 80px;
+
+  /* 圆角 */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+}

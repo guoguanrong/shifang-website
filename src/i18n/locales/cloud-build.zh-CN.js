@@ -1,0 +1,40 @@
+export default {
+  backToTop: '返回顶部',
+  hero: {
+    eyebrow: 'Cloud Construction',
+    title: '云端共筑',
+    subtitle: '每一笔善款，皆有归处',
+    quote: '「大道无形，生育天地；大道无情，运行日月」',
+    quoteSource: '—— 《清静经》· 道藏洞神部',
+  },
+  transparency: {
+    title: '资金流向 公开透明',
+    promise: '我们郑重承诺：',
+    items: ['资金流向公开，可随时查阅', '每一笔捐赠皆可追溯'],
+    action: '查看资金明细',
+    chartTitle: '资金用途',
+    chartItems: [
+      { label: '建筑修缮', value: '42%' },
+      { label: '文化项目', value: '42%' },
+      { label: '人工费用', value: '42%' },
+      { label: '法事活动', value: '42%' },
+      { label: '工程设备', value: '42%' },
+      { label: '工程设备', value: '42%' },
+      { label: '行政管理', value: '42%' },
+    ],
+  },
+  cameras: {
+    eyebrow: 'Cloud Camera',
+    title: '云监工',
+    subtitle: '实时查看修缮工程进度 · 高清监控点位',
+    items: [
+      { title: '斗姆元君大殿 · 正门' },
+      { title: '斗姆元君大殿 · 殿内' },
+      { title: '三清殿 · 神像区' },
+      { title: '壁画长廊 · 东壁' },
+      { title: '庭院 · 放生池' },
+      { title: '物料堆放区' },
+    ],
+    note: '高清监控点位 · 24小时实时画面 · 延迟小于5秒',
+  },
+}

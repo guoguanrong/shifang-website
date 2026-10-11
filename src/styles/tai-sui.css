@@ -1,0 +1,29 @@
+.tai-sui-page .offering-container { width: min(100%, 1594px); }
+.tai-sui-page .offering-heading { margin-bottom: 48px; }
+.tai-sui-chart-button { display: block; width: 100%; padding: 0; border: 0; background: transparent; cursor: zoom-in; }
+.tai-sui-controls { display: flex; justify-content: center; flex-wrap: wrap; gap: 24px; margin-top: 44px; }
+.tai-sui-controls button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 8px 20px; color: #3a3a3a; background: #f4ebdb; border: 1px solid #9c723f; border-radius: 24px; font: inherit; font-size: 14px; cursor: pointer; }
+.tai-sui-controls img { width: 20px; height: 20px; }
+.tai-sui-hint { margin: 18px auto 0; color: #756b5b; text-align: center; font-size: 13px; line-height: 1.7; }
+.tai-sui-chart-button:focus-visible, .tai-sui-controls button:focus-visible, .tai-sui-viewer button:focus-visible { outline: 2px solid #9c723f; outline-offset: 4px; }
+.tai-sui-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+/* 居中：浏览器给 dialog 的默认 margin:auto 被全局 reset（* { margin: 0 }）清零了，
+   showModal() 打开的弹窗必须自己声明 margin:auto，否则会贴在视口左上角。 */
+.tai-sui-viewer { width: min(1100px, calc(100vw - 24px)); max-width: none; max-height: calc(100dvh - 24px); margin: auto; padding: 20px; border: 1px solid #bca073; border-radius: 16px; color: #443b30; background: #fff9ed; box-sizing: border-box; }
+.tai-sui-viewer::backdrop { background: rgb(20 26 30 / 65%); }
+.tai-sui-viewer__header { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.tai-sui-viewer h2 { margin: 0; font-size: 22px; }
+.tai-sui-viewer__close { flex-shrink: 0; width: 44px; height: 44px; border: 0; border-radius: 50%; background: #eee2cd; color: inherit; font-size: 28px; cursor: pointer; }
+.tai-sui-viewer__zoom { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 12px; font-size: 14px; }
+.tai-sui-viewer__zoom input { flex: 1; min-width: 80px; accent-color: #9c723f; }
+.tai-sui-viewer__zoom output { min-width: 42px; }
+.tai-sui-viewer .tai-sui-hint { margin: 8px 0 12px; text-align: left; }
+.tai-sui-viewer__scroll { max-height: 65dvh; overflow: auto; overscroll-behavior: contain; }
+@media (max-width: 767px) {
+  .tai-sui-page .offering-heading { margin-bottom: 24px; }
+  .tai-sui-controls { gap: 12px; margin-top: 24px; padding-right: 44px; }
+  .tai-sui-controls button { padding: 8px 12px; font-size: 12px; }
+  .tai-sui-page > .offering-main .tai-sui-hint { padding-right: 44px; }
+  .tai-sui-viewer { padding: 12px; }
+  .tai-sui-viewer h2 { font-size: 18px; }
+}

@@ -1,0 +1,1294 @@
+/* 点灯卡片：整卡覆盖一层透明链接，保证整卡可点击且按钮仍在其上。 */
+.lamp-card-link { position:absolute; inset:0; z-index:2; border-radius:24px; }
+.lamp-card .ceremonial-button { position:relative; z-index:3; }
+.lamp-card:has(.lamp-card-link) { cursor:pointer; }
+.lamp-card:focus-within { filter:drop-shadow(0 8px 12px rgba(90,58,30,.15)); }
+/* 供奉类页面骨架：主区背景、内容容器与面包屑。 */
+.offering-page {
+  min-width: 320px;
+  overflow-x: clip;
+  color: #333;
+  background: #f3f0e9;
+}
+
+/* 书法体只作用于正文区域：写在页面根节点上会级联进公共页头，导致导航字体随页面变化。 */
+.offering-main {
+  position: relative;
+  isolation: isolate;
+  padding: 30px 24px 60px;
+  font-family: var(--font-calligraphy);
+}
+
+.offering-container {
+  width: min(100%, 1440px);
+  margin: 0 auto;
+}
+
+.offering-breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  color: #c29f79;
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.offering-breadcrumb [aria-current] {
+  color: #333;
+}
+
+/* 顶部标题区：小标题、主标题与副标题。 */
+.offering-heading {
+  margin: 65px auto 40px;
+  text-align: center;
+}
+
+.offering-heading p:first-child {
+  color: #d0a06d;
+  font-size: 24px;
+}
+
+.offering-heading h1 {
+  margin: 8px 0 10px;
+  color: #1d4e6e;
+  font-size: 42px;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.offering-heading p:last-child {
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* 纸质感面板：底图与内描边由 ::after 等伪元素叠加。 */
+.offering-paper {
+  position: relative;
+  isolation: isolate;
+  border-radius: 28px;
+}
+
+.offering-paper::before,
+.offering-paper::after {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  content: '';
+  pointer-events: none;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+.offering-paper::after {
+  inset: 6px;
+}
+
+.offering-container h2,
+.offering-container h3 {
+  font-weight: 400;
+}
+
+.offering-container .ornate-heading h2 {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* 点灯列表页：顶部介绍区。 */
+.lamp-intro {
+  max-width: 879px;
+  margin: 0 auto;
+  text-align: center;
+  font-size: 16px;
+  line-height: 28px;
+  letter-spacing: .8px;
+}
+
+/* 灯位选择区与网格。 */
+.lamp-selection {
+  margin-top: 65px;
+}
+
+.lamp-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 50px 30px;
+  padding-top: 24px;
+}
+
+.lamp-card {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  min-height: 500px;
+  padding: 0 24px 48px;
+  text-align: center;
+}
+
+.lamp-card-art {
+  position: absolute;
+  z-index: -2;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.lamp-card-outline {
+  position: absolute;
+  z-index: -1;
+  inset: 6px;
+  width: calc(100% - 12px);
+  height: calc(100% - 12px);
+}
+
+/* 灯位图：底图 + 灯芯 + 描边，多层叠加出立体感。 */
+.lamp-portrait {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 240px;
+  height: 240px;
+  margin: -20px auto 16px;
+}
+
+.lamp-portrait>img:last-child {
+  position: relative;
+  width: 230px;
+  height: 230px;
+  object-fit: contain;
+}
+
+.lamp-portrait-border {
+  position: absolute;
+  inset: 0;
+  width: 240px;
+  height: 240px;
+}
+
+.lamp-card h2 {
+  margin: 10px 0 24px;
+  font-size: 32px;
+  line-height: 1.2;
+}
+
+.lamp-card p {
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 1.6px;
+}
+
+.lamp-card .lamp-period {
+  margin: 22px 0;
+  color: #c7955f;
+}
+
+.lamp-card .ceremonial-button {
+  margin-top: auto;
+}
+
+/* 灯卡悬停：卡片上浮、外框提亮、灯像点亮 */
+.lamp-card {
+  transition: transform .35s ease;
+}
+
+.lamp-card-art {
+  transition: filter .35s ease;
+}
+
+.lamp-card-outline {
+  transition: opacity .35s ease;
+}
+
+.lamp-card h2 {
+  transition: color .3s ease;
+}
+
+.lamp-card .lamp-recommended {
+  transition: filter .3s ease;
+}
+
+.lamp-portrait::before {
+  position: absolute;
+  inset: -16px;
+  content: '';
+  pointer-events: none;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 214, 145, .8) 0%, rgba(255, 192, 106, .32) 48%, rgba(255, 192, 106, 0) 72%);
+  opacity: 0;
+  transform: scale(.55);
+  transition: opacity .35s ease, transform .5s ease;
+}
+
+.lamp-portrait>img:last-child {
+  transition: transform .45s ease;
+}
+
+/* 鼠标设备上的悬停反馈，触屏设备不生效。 */
+@media (hover: hover) and (pointer: fine) {
+  .lamp-card:hover {
+    transform: translateY(-6px);
+  }
+
+  .lamp-card:hover .lamp-card-art {
+    filter: brightness(1.06) saturate(1.05) drop-shadow(0 12px 20px rgba(123, 84, 38, .18));
+  }
+
+  .lamp-card:hover .lamp-card-outline {
+    opacity: .9;
+  }
+
+  .lamp-card:hover .lamp-portrait::before {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .lamp-card:hover .lamp-portrait>img:last-child {
+    transform: scale(1.06);
+  }
+
+  .lamp-card:hover h2 {
+    color: #b07c3f;
+  }
+
+  .lamp-card:hover .lamp-recommended {
+    filter: brightness(1.1) drop-shadow(0 4px 10px rgba(204, 53, 19, .35));
+  }
+}
+
+/* 推荐灯位角标，默认竖排贴在灯位右上角。 */
+.lamp-recommended {
+  position: absolute;
+  top: 30px;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  min-height: 127px;
+  padding: 14px 8px;
+  color: #fff;
+  font-size: 14px;
+  writing-mode: vertical-rl;
+  background: url('@/assets/offerings/recommended-outline.svg') center/calc(100% - 6px) calc(100% - 6px) no-repeat, url('@/assets/offerings/recommended.svg') center/100% 100% no-repeat;
+}
+
+/* 点灯流程步骤条。 */
+.lamp-steps {
+  margin-top: 30px;
+  padding: 30px 100px 80px;
+}
+
+.lamp-steps::before {
+  background-image: url('@/assets/offerings/steps-panel.svg');
+}
+
+/* 四列说明区（供奉功德等）。 */
+.offering-four-columns {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 36px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  text-align: center;
+}
+
+.offering-four-columns h3 {
+  margin: 26px 0 14px;
+  font-size: 28px;
+  line-height: 1.3;
+}
+
+.offering-four-columns p {
+  max-width: 220px;
+  margin: 0 auto;
+  font-size: 16px;
+  line-height: 1.5;
+  letter-spacing: 1px;
+}
+
+.step-symbol {
+  position: relative;
+  width: 138.436px;
+  height: 138.436px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.step-symbol img {
+  position: absolute;
+  inset: 0;
+  width: 138.436px;
+  height: 138.436px;
+}
+
+.step-symbol span {
+  position: relative;
+  font-size: 64px;
+  line-height: 1;
+  color: #050505;
+}
+
+.step-symbol small {
+  position: relative;
+  margin-top: 8px;
+  color: #b4744b;
+  font-size: 16px;
+}
+
+.lamp-merits {
+  margin: 80px 0 90px;
+  padding: 0 100px;
+}
+
+.merit-symbol {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 154px;
+  height: 154px;
+  margin: auto;
+}
+
+.merit-border {
+  position: absolute;
+  inset: 0;
+  width: 154px;
+  height: 154px;
+}
+
+.merit-leaf {
+  position: absolute;
+  width: 138.436px;
+  height: 138.436px;
+  object-fit: contain;
+}
+
+.merit-symbol span {
+  position: relative;
+  color: #fff;
+  font-size: 80px;
+  line-height: 1;
+}
+
+.merit-quote {
+  margin: 50px auto 0;
+  color: #c7955f;
+  text-align: center;
+  font-size: 16px;
+  line-height: 28px;
+}
+
+.offering-notices {
+  padding: 35px 30px 65px;
+}
+
+.offering-notices::before {
+  background-image: url('@/assets/offerings/notice-panel.svg');
+}
+
+.offering-notices::after {
+  background-image: url('@/assets/offerings/notice-outline.svg');
+}
+
+.offering-notices ul {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.offering-notices li {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 56px;
+  padding: 12px 16px;
+  font-size: 16px;
+  line-height: 1.5;
+  background: url('@/assets/offerings/notice-strip.svg') center/100% 100% no-repeat;
+}
+
+.offering-notice-icon {
+  position: relative;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 31.113px;
+  height: 31.113px;
+}
+
+.offering-notice-icon::before {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  content: '';
+  transform: rotate(45deg);
+  background: #cc3513;
+  border: 1px solid #cc3513;
+  box-shadow: inset 0 0 0 2px #f2d2af;
+}
+
+.offering-notice-icon img {
+  position: relative;
+  width: 22.391px;
+  height: 13.639px;
+}
+
+.shrine-display {
+  padding: 30px 100px 70px;
+}
+
+.shrine-display::before {
+  background-image: url('@/assets/offerings/shrine-panel.svg');
+}
+
+.shrine-display::after {
+  background-image: url('@/assets/offerings/shrine-outline.svg');
+}
+
+.shrine-deity-heading {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 120px;
+  text-align: center;
+}
+
+.shrine-deity-heading>img {
+  position: absolute;
+  top: 0;
+  width: 138.436px;
+  height: 138.436px;
+}
+
+.shrine-deity-heading p,
+.shrine-deity-heading h2 {
+  position: relative;
+}
+
+.shrine-deity-heading p {
+  font-size: 16px;
+}
+
+.shrine-deity-heading h2 {
+  margin-top: 14px;
+  font-size: 36px;
+  letter-spacing: 12px;
+}
+
+.shrine-example-heading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin: 20px 0 28px;
+  text-align: center;
+  font-size: 28px;
+}
+
+.shrine-example-heading img {
+  width: 192.154px;
+  height: 10.313px;
+  max-width: 20%;
+}
+
+.shrine-photo {
+  position: relative;
+  aspect-ratio: 1228/500;
+  width: 100%;
+  border: 5px solid #f2d2af;
+  border-radius: 20px;
+  overflow: hidden;
+  outline: 2px solid #d9b079;
+  outline-offset: 4px;
+}
+
+.shrine-photo img {
+  position: absolute;
+  left: 0;
+  top: -1.16%;
+  width: 100%;
+  max-width: none;
+  height: 211.94%;
+}
+
+.shrine-altar {
+  position: relative;
+  width: min(100%, 747px);
+  aspect-ratio: 747/258;
+  margin: 86px auto 30px;
+}
+
+.altar-table {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 86.82%;
+  object-fit: contain;
+}
+
+.altar-candle {
+  position: absolute;
+  top: .77%;
+  width: 7.5%;
+  height: 21.71%;
+}
+
+.altar-candle.left {
+  left: 25.97%;
+}
+
+.altar-candle.right {
+  left: 66.4%;
+}
+
+.altar-censer {
+  position: absolute;
+  left: 46.05%;
+  top: 0;
+  width: 7.76%;
+  height: 22.48%;
+}
+
+.altar-nameplate {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  left: 25%;
+  top: 36%;
+  width: 50%;
+  min-height: 29%;
+  padding: 12px;
+  color: #6d5a43;
+  background: rgba(255, 255, 255, .88);
+  border: 1px solid #f2d2af;
+  outline: 4px solid #fff;
+  border-radius: 14px;
+  text-align: center;
+  font-size: 16px;
+}
+
+.shrine-caption {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  max-width: 100%;
+  min-height: 56px;
+  margin: 0 auto;
+  padding: 12px 24px;
+  background: url('@/assets/offerings/notice-strip.svg') center/100% 100% no-repeat;
+  text-align: center;
+  font-size: 16px;
+}
+
+.deity-offering-order {
+  margin-top: 50px;
+  padding: 30px 100px 60px;
+}
+
+.deity-offering-order::before {
+  background-image: url('@/assets/offerings/deity-order-panel.svg');
+}
+
+.deity-offering-order::after {
+  background-image: url('@/assets/offerings/deity-order-outline.svg');
+}
+
+.offering-plans {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  padding-top: 20px;
+}
+
+.offering-plan {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-height: 280px;
+  padding: 38px;
+  border: 2px solid #f2d2af;
+  border-radius: 18px;
+  color: #333;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+
+.offering-plan.monthly {
+  background: linear-gradient(46deg, #f3f8ff 46%, #6b8ebe);
+}
+
+.offering-plan.yearly {
+  background: linear-gradient(46deg, #fff5f2 46%, #e88970);
+}
+
+.offering-plan[aria-pressed='true'] {
+  box-shadow: 0 0 0 4px #d9ad7e, 0 5px 10px #0002;
+}
+
+.offering-plan>img {
+  position: absolute;
+  z-index: -1;
+  right: 0;
+  top: 0;
+  width: 58%;
+  height: 100%;
+  opacity: .15;
+  object-fit: cover;
+  border-radius: 16px;
+}
+
+.plan-title {
+  font-size: 32px;
+  line-height: 1.3;
+}
+
+.plan-description {
+  margin: 18px 0 30px;
+  font-size: 16px;
+  line-height: 1.5;
+  white-space: pre-line;
+}
+
+.plan-price {
+  margin-top: auto;
+  font-size: 32px;
+}
+
+.plan-price small {
+  font-size: 16px;
+}
+
+.plan-saving {
+  position: absolute;
+  top: -30px;
+  right: 0;
+  padding: 10px 22px;
+  background: #ffd29e;
+  border-radius: 26px 26px 26px 0;
+  color: #73451c;
+  font-size: 28px;
+}
+
+.offering-order-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-top: 32px;
+}
+
+.offering-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  padding-top: 28px;
+  border-top: 1px solid #ddd;
+  font-size: 32px;
+}
+
+.offering-total strong {
+  color: #cc3513;
+  font-weight: 400;
+}
+
+.offering-total small {
+  color: #333;
+  font-size: 16px;
+}
+
+.order-explanation {
+  font-size: 16px;
+  line-height: 1.8;
+  letter-spacing: 1px;
+}
+
+.order-explanation.centered {
+  text-align: center;
+}
+
+.offering-order-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.offering-order-form input,
+.offering-order-form textarea {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  padding: 18px 24px;
+  border: 1px solid #c29f79;
+  border-radius: 20px;
+  background: #fff;
+  color: #333;
+  font: inherit;
+}
+
+.offering-order-form input {
+  min-height: 60px;
+  border-radius: 999px;
+}
+
+.offering-order-form textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.order-submit {
+  margin-top: 50px;
+  text-align: center;
+}
+
+.order-submit .ceremonial-button {
+  width: min(100%, 520px);
+  height: auto;
+  min-height: 56px;
+  padding: 14px 30px;
+  font-size: 24px;
+  line-height: 1.4;
+}
+
+.offering-container a:focus-visible,
+.offering-container button:focus-visible,
+.offering-dialog button:focus-visible,
+.offering-order-form input:focus-visible,
+.offering-order-form textarea:focus-visible {
+  outline: 2px solid #1d4e6e;
+  outline-offset: 4px;
+}
+
+.offering-dialog {
+  width: min(680px, calc(100% - 32px));
+  max-height: calc(100dvh - 40px);
+  margin: auto;
+  padding: 0;
+  overflow-y: auto;
+  border: 1px solid #e5d3ba;
+  border-radius: 20px;
+  background: linear-gradient(180deg, #fffffff0, #fff);
+  color: #333;
+  font-family: var(--font-calligraphy);
+  box-shadow: 0 10px 24px #0005;
+}
+
+.offering-dialog::backdrop {
+  background: rgba(20, 16, 12, .65);
+}
+
+.offering-dialog-content {
+  position: relative;
+  isolation: isolate;
+  padding: 56px 80px 45px;
+}
+
+.offering-dialog-content::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  content: '';
+  pointer-events: none;
+  opacity: .18;
+  background: url('@/assets/offerings/dialog-cloud.webp') right bottom/100% auto no-repeat;
+}
+
+.offering-dialog h2 {
+  margin: 10px 0 50px;
+  font-size: 30px;
+  line-height: 1.4;
+  font-weight: 400;
+  text-align: center;
+}
+
+.dialog-heading {
+  position: relative;
+  isolation: isolate;
+}
+
+.dialog-heading>img {
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  top: -35px;
+  width: 138.436px;
+  height: 138.436px;
+  transform: translateX(-50%);
+}
+
+.dialog-close {
+  position: absolute;
+  right: 24px;
+  top: 24px;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 12px;
+  border: 1px solid #fff;
+  border-radius: 50%;
+  background: #e8dfd1;
+  cursor: pointer;
+}
+
+.dialog-close img {
+  width: 20px;
+  height: 20px;
+}
+
+.order-summary {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.order-summary>div {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 6px 0;
+}
+
+.order-summary dd {
+  margin: 0;
+  text-align: right;
+}
+
+.devotee-summary {
+  margin: 24px 0;
+  padding-top: 20px;
+  border-top: 1px solid #ddd;
+  font-size: 16px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.devotee-summary>div {
+  margin-bottom: 10px;
+}
+
+.devotee-summary dt {
+  display: inline;
+}
+
+.devotee-summary dt::after {
+  content: ': ';
+}
+
+.devotee-summary dd {
+  display: inline;
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.payment-caption {
+  margin: 35px 0 24px;
+  text-align: center;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.payment-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.payment-options button {
+  display: grid;
+  place-items: center;
+  min-height: 78px;
+  border: 1px solid #ddd;
+  border-radius: 18px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.payment-options button[aria-pressed='true'] {
+  border-color: #c7955f;
+  box-shadow: 0 0 0 1px #c7955f;
+}
+
+.payment-options .paypal img {
+  width: 100px;
+  height: 50px;
+  object-fit: contain;
+}
+
+.payment-options .apple-pay img {
+  width: 78px;
+  height: 78px;
+  object-fit: contain;
+}
+
+.dialog-actions {
+  display: flex;
+  gap: 20px;
+  margin-top: 28px;
+}
+
+.dialog-actions .ceremonial-button {
+  flex: 1;
+  min-height: 56px;
+  height: auto;
+  line-height: 1.4;
+}
+
+.dialog-cancel {
+  min-width: 125px;
+  padding: 14px 20px;
+  border: 1px solid #c29f79;
+  border-radius: 999px;
+  background: #fff;
+  color: #333;
+  font: inherit;
+  cursor: pointer;
+}
+
+.payment-notice {
+  margin: 26px 0 0;
+  color: #978977;
+  font-size: 13px;
+  line-height: 1.7;
+  text-align: center;
+}
+
+.payment-unavailable {
+  margin-top: 20px;
+  padding: 15px;
+  color: #8c321d;
+  background: #fff1e3;
+  border-radius: 10px;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.offering-dialog .offering-order-form {
+  gap: 16px;
+}
+
+.offering-dialog .offering-total {
+  display: none;
+}
+
+.offering-dialog .order-submit {
+  margin-top: 10px;
+}
+
+.offering-dialog .order-submit .ceremonial-button {
+  font-size: 18px;
+}
+
+html[data-locale-layout='international'] .offering-page,
+html[data-locale-layout='international'] .offering-dialog {
+  font-family: var(--font-ui-international);
+}
+
+html[data-locale-layout='international'] .lamp-recommended {
+  writing-mode: horizontal-tb;
+  top: 12px;
+  width: auto;
+  min-height: 32px;
+  max-width: 150px;
+  padding: 10px 14px;
+  font-size: 12px;
+  border-radius: 10px;
+  background: #cc3513;
+}
+
+html[data-locale-layout='international'] .lamp-card h2 {
+  font-size: 27px;
+}
+
+html[data-locale-layout='international'] .shrine-deity-heading h2 {
+  letter-spacing: 1px;
+}
+
+@media (max-width:1200px) {
+  .lamp-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .lamp-steps,
+  .lamp-merits {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+
+  .shrine-display,
+  .deity-offering-order {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+
+  .offering-four-columns {
+    gap: 24px;
+  }
+
+  .offering-four-columns h3 {
+    font-size: 24px;
+  }
+
+  .offering-plan {
+    padding: 28px;
+  }
+}
+
+@media (max-width:760px) {
+  .offering-main {
+    padding: 24px 16px 40px;
+  }
+
+  .offering-heading {
+    margin: 42px auto 30px;
+  }
+
+  .offering-heading h1 {
+    font-size: 32px;
+  }
+
+  .offering-heading p:first-child {
+    font-size: 20px;
+  }
+
+  .offering-breadcrumb {
+    font-size: 13px;
+  }
+
+  .lamp-selection {
+    margin-top: 30px;
+  }
+
+  .lamp-grid {
+    grid-template-columns: minmax(0, 460px);
+    justify-content: center;
+    gap: 45px;
+  }
+
+  .lamp-card {
+    padding-inline: 24px;
+  }
+
+  .offering-four-columns {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 36px 18px;
+  }
+
+  .lamp-steps {
+    padding: 16px 16px 44px;
+  }
+
+  .lamp-merits {
+    margin: 36px 0 44px;
+    padding: 0;
+  }
+
+  .offering-four-columns h3 {
+    font-size: 21px;
+  }
+
+  .offering-four-columns p {
+    font-size: 14px;
+  }
+
+  .merit-symbol {
+    transform: scale(.85);
+    transform-origin: center;
+  }
+
+  .offering-notices {
+    padding: 16px 20px 32px;
+  }
+
+  .offering-notices ul {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .offering-notices li {
+    font-size: 14px;
+  }
+
+  .shrine-display {
+    padding: 20px 20px 35px;
+  }
+
+  .shrine-deity-heading h2 {
+    font-size: 28px;
+    letter-spacing: 4px;
+  }
+
+  .shrine-example-heading {
+    gap: 10px;
+    font-size: 20px;
+  }
+
+  .shrine-example-heading img {
+    max-width: 12%;
+  }
+
+  .shrine-photo {
+    border-width: 3px;
+    border-radius: 12px;
+    outline-offset: 2px;
+  }
+
+  .shrine-altar {
+    margin-top: 40px;
+    margin-bottom: 40px;
+  }
+
+  .altar-nameplate {
+    top: 38%;
+    left: 18%;
+    width: 64%;
+    padding: 6px;
+    font-size: 10px;
+    border-radius: 8px;
+  }
+
+  .shrine-caption {
+    padding: 12px;
+    font-size: 13px;
+  }
+
+  .deity-offering-order {
+    margin-top: 30px;
+    padding: 16px 22px 36px;
+  }
+
+  .offering-plans {
+    grid-template-columns: 1fr;
+    gap: 44px;
+  }
+
+  .offering-plan {
+    min-height: 230px;
+    padding: 28px;
+  }
+
+  .plan-title {
+    font-size: 26px;
+  }
+
+  .plan-saving {
+    top: -22px;
+    font-size: 20px;
+    padding: 8px 16px;
+  }
+
+  .offering-total {
+    font-size: 24px;
+  }
+
+  .offering-order-form {
+    gap: 20px;
+  }
+
+  .offering-order-form input,
+  .offering-order-form textarea {
+    padding: 14px 18px;
+  }
+
+  .order-explanation {
+    font-size: 14px;
+    letter-spacing: 0;
+  }
+
+  .order-submit {
+    margin-top: 18px;
+  }
+
+  .order-submit .ceremonial-button {
+    font-size: 18px;
+  }
+
+  .offering-dialog-content {
+    padding: 48px 24px 28px;
+  }
+
+  .offering-dialog h2 {
+    margin: 12px 0 28px;
+    font-size: 24px;
+  }
+
+  .dialog-close {
+    top: 10px;
+    right: 10px;
+    width: 36px;
+    height: 36px;
+    padding: 8px;
+  }
+
+  .payment-options {
+    gap: 12px;
+  }
+
+  .payment-options button {
+    min-height: 64px;
+  }
+
+  .payment-options .paypal img {
+    width: 88px;
+    height: 44px;
+  }
+
+  .payment-options .apple-pay img {
+    width: 62px;
+    height: 62px;
+  }
+
+  .dialog-actions {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .dialog-cancel {
+    flex: 1;
+  }
+}
+
+@media (max-width: 600px) {
+  .offering-dialog { width: min(440px, calc(100% - 40px)); border-radius: 16px; }
+  .offering-dialog-content { padding: 44px 20px 24px; }
+  .offering-dialog h2 { margin-bottom: 22px; font-size: 22px; }
+  .dialog-heading > img { width: 112px; height: 112px; top: -28px; }
+  .offering-dialog .order-summary, .offering-dialog .devotee-summary { font-size: 15px; line-height: 1.6; }
+  .offering-dialog .devotee-summary { margin-block: 18px; padding-top: 18px; }
+  .offering-dialog .payment-caption { margin-block: 20px 18px; font-size: 15px; }
+  .offering-dialog .dialog-actions { margin-top: 22px; }
+  .offering-dialog .dialog-actions .ceremonial-button, .offering-dialog .dialog-cancel { min-height: 50px; padding: 11px 16px; font-size: 17px; }
+}
+
+@media (max-width:360px) {
+  .offering-four-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .lamp-card {
+    padding-inline: 18px;
+  }
+
+  .altar-nameplate {
+    font-size: 9px;
+  }
+}

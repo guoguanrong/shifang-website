@@ -1,0 +1,115 @@
+/* 书法体只作用于正文区域：写在页面根节点上会级联进公共页头，导致导航字体随页面变化。 */
+/* 善款明细页：复用社区详情外壳，这里只覆盖字体、背景与留白。 */
+.fund-details-page .community-detail-main { font-family:var(--font-calligraphy); background:#f3f0e9; padding-bottom:100px; }
+.fund-details-page .community-detail-heading { margin-bottom:68px; }
+.fund-details-page .community-detail-heading > p { font:24px/1.2 var(--font-calligraphy); }
+.fund-details-page .community-detail-heading h1 { font-size:42px; }
+.fund-details-page .community-detail-meta { color:#333; font-size:16px; line-height:1.6; }
+/* 四项汇总卡片：捐款、支出、笔数、结余。 */
+.fund-summary { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:24px; margin-bottom:16px; }
+.fund-summary article { position:relative; isolation:isolate; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:170px; padding:24px 16px; border:1px solid #c29f79; border-radius:20px; background:#fff; text-align:center; }
+.fund-summary article::before { position:absolute; z-index:-1; inset:6px; content:''; border:1px solid #f3d5b5; border-radius:16px; background:linear-gradient(#fff,#f8f5f1); }
+.fund-summary h2 { font-size:16px; font-weight:400; line-height:1.5; letter-spacing:1.6px; }
+.fund-summary p { margin-top:12px; color:#333; font:500 32px/1.4 var(--font-ui-international, sans-serif); overflow-wrap:anywhere; }
+/* 筛选区与流水表共用同一套纸质边框（底图 + 内描边）。 */
+.fund-filters { position:relative; isolation:isolate; min-height:260px; padding:24px 30px 30px; }
+.fund-filters::before, .fund-filters::after, .fund-ledger::before, .fund-ledger::after { position:absolute; z-index:-1; inset:0; content:''; pointer-events:none; background-repeat:no-repeat; background-size:100% 100%; }
+.fund-filters::before { background-image:url('@/assets/fund-details/filter-frame.svg'); }
+.fund-filters::after { inset:6px; background-image:url('@/assets/fund-details/filter-outline.svg'); }
+.fund-filters h2, .fund-ledger h2 { color:#333; font-size:28px; font-weight:400; line-height:1.4; }
+/* 月份快捷按钮行。 */
+.fund-months { display:flex; flex-wrap:wrap; gap:8px; margin:18px 0 14px; }
+.fund-filters button, .fund-pagination button, .fund-empty button { display:inline-flex; align-items:center; justify-content:center; min-width:84px; min-height:36px; padding:7px 22px; color:#333; font:inherit; font-size:16px; line-height:20px; border:1px solid #d9d9d9; border-radius:999px; background:#fff; cursor:pointer; }
+.fund-filters button[aria-pressed='true'], .fund-filters .fund-query, .fund-pagination button[aria-current] { background:#cc3513; border-color:#c7955f; color:#fff; }
+/* 自定义日期区间：两个日期输入框与查询按钮。 */
+.fund-date-range { display:flex; flex-wrap:wrap; align-items:center; gap:14px; padding-bottom:20px; border-bottom:1px solid #ddd; font-size:16px; }
+.fund-date-range > span:first-child { min-width:86px; }
+.fund-date-input { position:relative; width:164px; height:36px; }
+.fund-date-input input { width:100%; height:36px; min-width:0; padding:7px 34px 7px 15px; border:1px solid #d9d9d9; border-radius:999px; background:#fff; color:#333; font:inherit; font-size:14px; }
+.fund-date-input img { position:absolute; right:12px; top:7px; width:22px; height:22px; pointer-events:none; }
+.fund-date-input input::-webkit-calendar-picker-indicator { position:absolute; inset:0; width:100%; height:100%; padding:0; cursor:pointer; opacity:0; }
+/* 类别下拉。 */
+.fund-category { display:flex; align-items:center; flex-wrap:wrap; gap:14px; margin-top:20px; font-size:16px; }
+.fund-category > span { min-width:86px; letter-spacing:4px; }
+.fund-category select { min-height:36px; max-width:100%; padding:6px 44px 6px 20px; color:#333; border:1px solid #d9d9d9; border-radius:999px; appearance:none; background:#fff url('@/assets/fund-details/dropdown.svg') right 16px center/16px 16px no-repeat; font:inherit; cursor:pointer; }
+.fund-filter-error { flex-basis:100%; color:#b02b17; line-height:1.5; }
+.fund-preview-note { margin:12px 8px; color:#796653; font-size:13px; line-height:1.5; }
+.fund-ledger { position:relative; isolation:isolate; padding:28px 30px 30px; }
+.fund-ledger::before { background-image:url('@/assets/fund-details/ledger-frame.svg'); }
+.fund-ledger::after { inset:6px; background-image:url('@/assets/fund-details/ledger-outline.svg'); }
+.fund-ledger h2 { display:flex; align-items:center; min-height:80px; margin:-28px -30px 0; padding:20px 30px; border-radius:20px 20px 0 0; background:linear-gradient(#f2d2af,#fff8f0); }
+.fund-date-column { width:210px; }
+.fund-category-column { width:190px; }
+.fund-amount-column { width:170px; }
+.fund-records { width:100%; border-collapse:collapse; table-layout:fixed; color:#333; }
+.fund-records tr { height:82px; border-bottom:1px solid #ddd; transition:background .18s ease; }
+.fund-records tbody tr:hover { background:#f8f5f1; }
+.fund-records td { padding:14px 30px; text-align:left; font-size:16px; line-height:1.5; }
+.fund-records .fund-record-date { width:210px; white-space:nowrap; padding-right:10px; }
+.fund-records .fund-record-category { width:190px; }
+.fund-record-category span { display:inline-block; min-width:100px; padding:4px 14px; text-align:center; border-radius:20px; background:#ffe9d2; }
+.fund-record-description p { margin-bottom:10px; }
+.fund-record-description small { display:block; color:#696969; font-size:12px; overflow-wrap:anywhere; }
+.fund-records .fund-record-amount { width:170px; text-align:right; color:#c29f79; font-family:var(--font-ui-international, sans-serif); white-space:nowrap; }
+.fund-pagination { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:10px; margin-top:28px; }
+.fund-pagination button { min-width:50px; padding:6px 18px; }
+.fund-pagination button[aria-current] { min-width:50px; }
+.fund-pagination button:disabled { opacity:.45; cursor:default; }
+.fund-page-summary { margin-left:10px; font-size:16px; line-height:1.5; }
+.fund-empty { padding:70px 16px; text-align:center; font-size:18px; line-height:1.6; }
+.fund-empty button { margin-top:20px; }
+.fund-sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+.fund-details-page button:focus-visible, .fund-details-page select:focus-visible, .fund-details-page input:focus-visible { outline:2px solid #1d4e6e; outline-offset:3px; }
+html[data-locale-layout='international'] .fund-details-page .community-detail-main { font-family:var(--font-ui-international); }
+html[data-locale-layout='international'] .fund-summary h2 { letter-spacing:0; }
+html[data-locale-layout='international'] .fund-summary p { font-size:28px; }
+@media (max-width:1100px) {
+  .fund-summary { grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+  .fund-records td { padding-inline:14px; }
+  .fund-records .fund-record-date { width:185px; }
+  .fund-records .fund-record-category { width:160px; }
+  .fund-records .fund-record-amount { width:120px; }
+  .fund-date-column { width:185px; }
+  .fund-category-column { width:160px; }
+  .fund-amount-column { width:120px; }
+}
+@media (max-width:760px) {
+  .fund-details-page .community-detail-heading { margin-bottom:36px; }
+  .fund-details-page .community-detail-heading h1 { font-size:32px; }
+  .fund-details-page .community-detail-heading > p { font-size:20px; }
+  .fund-details-page .community-detail-meta { font-size:14px; }
+  .fund-summary { gap:12px; }
+  .fund-summary article { min-height:136px; padding:22px 10px; }
+  .fund-summary h2 { font-size:14px; letter-spacing:0; }
+  .fund-summary p, html[data-locale-layout='international'] .fund-summary p { font-size:21px; }
+  .fund-filters { padding:24px 20px; }
+  .fund-filters h2, .fund-ledger h2 { font-size:22px; }
+  .fund-months { gap:8px; }
+  .fund-months button { min-width:0; flex:1 0 80px; padding-inline:12px; font-size:14px; }
+  .fund-date-range { gap:12px; }
+  .fund-date-range > span:first-child { flex-basis:100%; }
+  .fund-date-input { width:100%; }
+  .fund-date-range > span:not(:first-child) { display:none; }
+  .fund-date-range .fund-query { width:100%; }
+  .fund-category { gap:10px; }
+  .fund-category select { width:100%; }
+  .fund-preview-note { margin-inline:4px; }
+  .fund-ledger { padding:24px 18px; }
+  .fund-ledger h2 { min-height:72px; margin:-24px -18px 0; padding:20px 18px; }
+  .fund-records colgroup { display:none; }
+  .fund-records, .fund-records tbody { display:block; }
+  .fund-records tr { display:grid; grid-template-columns:minmax(0,1fr) auto; height:auto; gap:12px; padding:20px 4px; }
+  .fund-records td { display:block; padding:0; width:auto !important; font-size:14px; }
+  .fund-records .fund-record-date { grid-column:1 / -1; color:#696969; }
+  .fund-records .fund-record-category { grid-column:1; grid-row:2; }
+  .fund-records .fund-record-description { grid-column:1 / -1; grid-row:3; overflow-wrap:anywhere; }
+  .fund-records .fund-record-amount { grid-column:2; grid-row:2; align-self:center; }
+  .fund-record-description p { margin-bottom:6px; }
+  .fund-pagination { gap:8px; }
+  .fund-pagination button { min-width:36px; padding:6px 12px; font-size:14px; }
+  .fund-pagination button[aria-current] { min-width:36px; }
+  .fund-page-summary { width:100%; margin:6px 0 0; text-align:center; font-size:14px; }
+}
+@media (max-width:360px) {
+  .fund-summary { grid-template-columns:1fr; }
+}

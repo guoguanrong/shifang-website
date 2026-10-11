@@ -1,0 +1,14 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="1428" height="248" viewBox="0 0 1428 248" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Union">
+<mask id="path-1-inside-1_0_31" fill="white">
+<path d="M1412 0C1420.84 0 1428 7.16344 1428 16V232C1428 240.837 1420.84 248 1412 248H16C7.16344 248 0 240.837 0 232V16C0 7.16344 7.16344 2.03344e-07 16 0H1412Z"/>
+</mask>
+<path d="M1412 248V249V249V248ZM16 0V-1V-1V0ZM1412 0V1C1420.28 1 1427 7.71573 1427 16H1428H1429C1429 6.61116 1421.39 -1 1412 -1V0ZM1428 16H1427V232H1428H1429V16H1428ZM1428 232H1427C1427 240.284 1420.28 247 1412 247V248V249C1421.39 249 1429 241.389 1429 232H1428ZM1412 248V247H16V248V249H1412V248ZM16 248V247C7.71573 247 1 240.284 1 232H0H-1C-1 241.389 6.61116 249 16 249V248ZM0 232H1V16H0H-1V232H0ZM0 16H1C1 7.71573 7.71573 1 16 1V0V-1C6.61116 -1 -1 6.61116 -1 16H0ZM16 0V1H1412V0V-1H16V0Z" fill="url(#paint0_linear_0_31)" mask="url(#path-1-inside-1_0_31)"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_0_31" x1="614" y1="-75.946" x2="614" y2="1107.94" gradientUnits="userSpaceOnUse">
+<stop stop-color="#F2D2AF"/>
+<stop offset="1" stop-color="#F2D2AF" stop-opacity="0"/>
+</linearGradient>
+</defs>
+</svg>

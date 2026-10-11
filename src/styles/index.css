@@ -1,0 +1,227 @@
+@import './base/variables.css';
+@import './base/reset.css';
+@import './locale-layouts.css';
+
+:root {
+  --font-calligraphy: 'Huiwen-mincho', 'STKaiti', 'KaiTi', serif;
+  --font-serif-cn: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', 'SimSun', serif;
+  --font-dyming-a: 'DYmingA', '澹雅明体A', 'Huiwen-mincho', 'Songti SC', serif;
+}
+
+/* 全局字体与基础 */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-serif-cn);
+  background-color: #f5f0e8;
+  color: #2c241b;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 页面容器 */
+.site {
+  overflow-x: clip;
+}
+
+section[id],
+[id='governance'],
+[id='community'] {
+  scroll-margin-top: 100px;
+}
+
+/* 通用区块 */
+.section {
+  position: relative;
+  width: 100%;
+}
+
+.section-inner {
+  position: relative;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* 通用标题 */
+.section-title {
+  font-size: 36px;
+  font-weight: 700;
+  color: #2c241b;
+  text-align: center;
+  margin-bottom: 12px;
+  letter-spacing: 4px;
+}
+
+.section-subtitle {
+  font-size: 14px;
+  color: #8c7b66;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 48px;
+}
+
+/* 通用按钮 */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 32px;
+  border-radius: 24px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #bfa065 0%, #8c6d30 100%);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(140, 109, 48, 0.35);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(140, 109, 48, 0.45);
+}
+
+.btn-outline {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.btn-outline:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+/* 卡片基础 */
+.card {
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(44, 36, 27, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 40px rgba(44, 36, 27, 0.14);
+}
+
+/* 首页通用悬停反馈 */
+.hero-actions .button,
+.section-more,
+.seasonal-card button,
+.tabs button,
+.login-button,
+.scroll-hint,
+.temple-card,
+.mission-grid article,
+.organization-grid article,
+.supervision-grid article,
+.seasonal-card,
+.testimonials-grid article,
+.figma-message-card,
+.news-grid article,
+.news-grid img,
+.figma-message-card > img {
+  transition: transform .28s ease, box-shadow .28s ease, filter .28s ease, background-color .28s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .hero-actions .button:hover,
+  .section-more:hover,
+  .seasonal-card button:hover,
+  .login-button:hover {
+    filter: brightness(1.08);
+    box-shadow: 0 10px 24px rgba(33, 35, 37, .2);
+    transform: translateY(-3px);
+  }
+
+  .tabs button:hover {
+    filter: brightness(1.06);
+    transform: translateY(-2px);
+  }
+
+  .scroll-hint:hover {
+    filter: brightness(1.15);
+    transform: translateY(3px);
+  }
+
+  .temple-card:hover,
+  .mission-grid article:hover,
+  .organization-grid article:hover,
+  .supervision-grid article:hover,
+  .seasonal-card:hover,
+  .testimonials-grid article:hover,
+  .figma-message-card:hover,
+  .news-grid article:hover {
+    filter: brightness(1.025);
+    box-shadow: 0 14px 30px rgba(28, 47, 60, .16);
+    transform: translateY(-6px);
+  }
+
+  .news-grid article:hover img,
+  .figma-message-card:hover > img {
+    transform: scale(1.045);
+  }
+
+  .play-button:hover {
+    filter: brightness(1.12);
+    transform: translateX(-50%) scale(1.1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+/* 文字省略 */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* 响应式通用 */
+@media (max-width: 768px) {
+  .section-title {
+    font-size: 26px;
+    letter-spacing: 2px;
+  }
+
+  .section-subtitle {
+    font-size: 12px;
+    margin-bottom: 32px;
+  }
+
+  .section-inner {
+    padding: 0 16px;
+  }
+}

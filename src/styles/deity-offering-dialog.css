@@ -1,0 +1,347 @@
+/* Figma 4012:2：神像供奉确认与完成状态，独立限定，避免改变供灯弹窗。 */
+.offering-dialog.is-deity-confirmation {
+  width: min(680px, calc(100% - 32px));
+  border: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .4) 9.609%, rgba(255, 255, 255, .8) 16.739%, #fff 100%);
+  backdrop-filter: blur(2px);
+  box-shadow: 0 10px 10px rgba(0, 0, 0, .25);
+}
+
+.offering-dialog.is-deity-confirmation::backdrop {
+  background: rgba(0, 0, 0, .6);
+}
+
+.is-deity-confirmation .offering-dialog-content {
+  display: flex;
+  flex-direction: column;
+  min-height: 790px;
+  padding: 24px 90px 28px;
+}
+
+.is-deity-confirmation .offering-dialog-content::before {
+  border-radius: inherit;
+  opacity: .2;
+  background-position: 260px bottom;
+  background-size: 714px 325px;
+}
+
+.is-deity-confirmation .dialog-close {
+  z-index: 2;
+  top: 30px;
+  right: 30px;
+  width: 48px;
+  height: 48px;
+  padding: 14px;
+  border: 0;
+  background: url('@/assets/offerings/close-background.svg') center/48px 48px no-repeat;
+}
+
+/* 弹窗标题区：徽记居中，标题压在其上。 */
+.is-deity-confirmation .dialog-heading {
+  display: grid;
+  place-items: center;
+  min-height: 138.436px;
+  margin: 0 -30px 11px;
+}
+
+.is-deity-confirmation .dialog-heading > img {
+  top: 0;
+}
+
+.is-deity-confirmation .dialog-heading h2 {
+  margin: 0;
+  font-size: 32px;
+  line-height: 1.3;
+  letter-spacing: 3.2px;
+}
+
+/* 订单信息汇总（供奉方案、金额、周期）。 */
+.is-deity-confirmation .order-summary > div {
+  min-height: 36px;
+  padding: 0 0 16px;
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.is-deity-confirmation .order-summary dt {
+  color: #696969;
+  letter-spacing: 9.6px;
+}
+
+.is-deity-confirmation .order-summary dd {
+  letter-spacing: 1.6px;
+}
+
+/* 供奉人信息（姓名、生辰、祈愿）。 */
+.is-deity-confirmation .devotee-summary {
+  min-height: 232px;
+  margin: 0;
+  padding-top: 26px;
+  border-top: 1px solid #ccc;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 1.6px;
+}
+
+.is-deity-confirmation .devotee-summary > div {
+  margin-bottom: 15px;
+}
+
+.is-deity-confirmation .payment-caption {
+  margin: 18px -30px 30px;
+  font-size: 18px;
+  line-height: 24px;
+}
+
+/* 支付方式选择，选中项用 aria-pressed 标记并高亮。 */
+.is-deity-confirmation .payment-options {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.is-deity-confirmation .payment-options button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 80px;
+  padding: 0 12px;
+  border: 1px solid #696969;
+  border-radius: 20px;
+}
+
+.is-deity-confirmation .payment-options button[aria-pressed='true'] {
+  border: 2px solid #c29f79;
+  background: #f3f0e9;
+  box-shadow: none;
+}
+
+.payment-recommended {
+  padding: 2px 7px;
+  color: #c29f79;
+  font-size: 12px;
+  line-height: 16px;
+  white-space: nowrap;
+  border: 1px solid #c29f79;
+  border-radius: 999px;
+}
+
+/* 底部操作区：确认支付与「再想想」。 */
+.is-deity-confirmation .dialog-actions {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.is-deity-confirmation .dialog-actions .ceremonial-button,
+.is-deity-confirmation .dialog-cancel {
+  min-width: 0;
+  min-height: 60px;
+  padding: 12px 18px;
+  font-size: 24px;
+  line-height: 1.4;
+}
+
+.is-deity-confirmation .dialog-cancel {
+  position: relative;
+  border-color: #eccaa5;
+}
+
+.is-deity-confirmation .dialog-cancel::before {
+  position: absolute;
+  inset: 3px;
+  content: '';
+  pointer-events: none;
+  border: .5px solid #eccaa5;
+  border-radius: inherit;
+}
+
+.is-deity-confirmation .payment-notice {
+  margin: 30px -40px 0;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 1.6px;
+  color: rgba(105, 105, 105, .91);
+}
+
+/* 完成态：换成供奉完成的标题与祝福语。 */
+.is-deity-confirmation.is-completed .offering-dialog-content {
+  min-height: 410px;
+  padding-bottom: 60px;
+}
+
+.is-deity-confirmation.is-completed .dialog-heading {
+  margin-bottom: 0;
+}
+
+.offering-completed {
+  text-align: center;
+  color: #c29f79;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 1.6px;
+  overflow-wrap: anywhere;
+}
+
+.offering-completed .completed-blessing {
+  margin: 30px 0 20px;
+}
+
+.offering-completed .ceremonial-button {
+  width: min(100%, 320px);
+  min-height: 60px;
+  height: auto;
+  padding: 14px 20px;
+  font-size: 24px;
+  line-height: 1.4;
+}
+
+html[data-locale-layout='international'] .is-deity-confirmation .order-summary dt,
+html[data-locale-layout='international'] .is-deity-confirmation .devotee-summary,
+/* 英文版：放宽支付说明与 PayPal 按钮的排版。 */
+html[data-locale-layout='international'] .is-deity-confirmation .payment-notice {
+  letter-spacing: 0;
+}
+
+html[data-locale-layout='international'] .is-deity-confirmation .payment-options .paypal {
+  flex-wrap: wrap;
+  align-content: center;
+  gap: 0 7px;
+}
+
+@media (max-width: 760px) {
+  .is-deity-confirmation .offering-dialog-content {
+    min-height: 0;
+    padding: 20px 24px 30px;
+  }
+
+  .is-deity-confirmation .dialog-close {
+    top: 12px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+    padding: 8px;
+    background-size: 36px 36px;
+  }
+
+  .is-deity-confirmation .dialog-heading {
+    min-height: 124px;
+    margin: 16px 0 12px;
+  }
+
+  .is-deity-confirmation .dialog-heading h2 {
+    font-size: 24px;
+    letter-spacing: 1px;
+  }
+
+  .is-deity-confirmation .order-summary dt {
+    letter-spacing: 2px;
+  }
+
+  .is-deity-confirmation .devotee-summary {
+    min-height: 160px;
+    letter-spacing: .5px;
+  }
+
+  .is-deity-confirmation .payment-caption {
+    margin: 20px 0;
+    font-size: 16px;
+  }
+
+  .is-deity-confirmation .payment-options {
+    gap: 12px;
+  }
+
+  .is-deity-confirmation .payment-options button {
+    height: 80px;
+    padding: 0 8px;
+    flex-wrap: wrap;
+    align-content: center;
+    gap: 0;
+  }
+
+  .is-deity-confirmation .dialog-actions {
+    gap: 12px;
+  }
+
+  .is-deity-confirmation .dialog-actions .ceremonial-button,
+  .is-deity-confirmation .dialog-cancel {
+    font-size: 17px;
+    padding: 12px;
+  }
+
+  .is-deity-confirmation .payment-notice {
+    margin: 24px 0 0;
+    font-size: 13px;
+    letter-spacing: 0;
+  }
+
+  .is-deity-confirmation.is-completed .offering-dialog-content {
+    min-height: 0;
+    padding-bottom: 32px;
+  }
+}
+
+@media (max-width: 600px) {
+  .offering-dialog.is-deity-confirmation {
+    width: min(440px, calc(100% - 40px));
+  }
+
+  .is-deity-confirmation .offering-dialog-content {
+    padding: 18px 20px 24px;
+  }
+
+  .is-deity-confirmation .dialog-heading {
+    min-height: 100px;
+    margin: 12px 0 10px;
+  }
+
+  .is-deity-confirmation .dialog-heading > img {
+    top: 0;
+    width: 100px;
+    height: 100px;
+  }
+
+  .is-deity-confirmation .dialog-heading h2 {
+    font-size: 22px;
+  }
+
+  .is-deity-confirmation .order-summary > div {
+    font-size: 15px;
+  }
+
+  .is-deity-confirmation .devotee-summary {
+    min-height: 0;
+    margin: 0;
+    padding-top: 18px;
+  }
+
+  .is-deity-confirmation .payment-caption {
+    margin: 18px 0;
+  }
+
+  .is-deity-confirmation .payment-options button {
+    height: 72px;
+  }
+
+  .is-deity-confirmation .dialog-actions .ceremonial-button,
+  .is-deity-confirmation .dialog-cancel,
+  .offering-completed .ceremonial-button {
+    min-height: 50px;
+    padding: 11px 16px;
+    font-size: 17px;
+  }
+
+  .is-deity-confirmation .payment-notice {
+    margin-top: 18px;
+  }
+
+  .is-deity-confirmation.is-completed .offering-dialog-content {
+    padding-bottom: 24px;
+  }
+
+  .offering-completed .completed-blessing {
+    margin: 22px 0 18px;
+  }
+}
