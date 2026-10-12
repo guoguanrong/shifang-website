@@ -28,7 +28,7 @@ export default {
     codeSent: 'Your verification code has been sent.', autoLoginFailed: 'Registered, but automatic sign-in failed. Please sign in from the sign-in page.', dismiss: 'Got it',
   },
   pages: {
-    testimonials: { breadcrumb: 'Testimonials', eyebrow: 'Testimonials · Full', title: 'Devotee Stories', subtitle: 'More true stories · Wishes fulfilled · Blessings without measure' },
+    testimonials: { breadcrumb: 'Testimonials', eyebrow: 'Testimonials · Full', title: 'Devotee Stories', subtitle: 'More true stories · Wishes fulfilled · Blessings without measure', loading: 'Loading stories…', empty: 'No stories to display.', loadError: 'Stories could not be loaded. Showing sample stories.', pagination: 'Testimonials pagination', previous: 'Previous', next: 'Next', pageInfo: 'Page {current} of {total}' },
     messages: { breadcrumb: 'Messages', eyebrow: 'Messages · Full', title: 'Messages from All Walks', subtitle: 'Voices and blessings from across society', play: 'Play message from {name}', openArticle: 'Read message from {name}' },
     news: { breadcrumb: 'Latest News', eyebrow: 'Latest News · Full', title: 'Latest News', subtitle: 'Discover more recent stories and updates from ShiFang Hall', date: 'Apr 15, 2026', source: 'ShiFang News', readMore: 'Read article', views: 'views', openDetail: 'Read news: {title}' },
     detail: { quoteLabel: 'Note', contentLabel: 'Full Story' },

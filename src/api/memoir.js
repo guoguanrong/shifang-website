@@ -4,8 +4,8 @@ import { request } from './http'
  * 获取实录列表
  * @param {object} data {searchKey, status, startTime, endTime, page, pageSize, type, show}
  */
-export function getMemoirList(data) {
-  return request({ url: '/memoir/list', method: 'post', data })
+export function getMemoirList(data, options = {}) {
+  return request({ url: '/memoir/list', method: 'post', data, ...options })
 }
 
 /**

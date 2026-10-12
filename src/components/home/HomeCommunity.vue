@@ -23,9 +23,16 @@
       <HomeSectionHeading :eyebrow="t('testimonials.en')" :title="t('testimonials.title')"
         :description="t('testimonials.subtitle')" />
       <div class="testimonials-grid">
-        <article v-for="(item, index) in testimonials" :key="`${item.tag}-${index}`">
-          <div><img :src="avatars[index]" alt="" /><span><b>{{ item.name }} <em>{{ item.tag }}</em></b>{{ item.role
-              }}</span></div>
+        <article v-for="(item, index) in testimonials" :key="item.id ?? `${item.tag}-${index}`">
+          <div>
+            <div v-if="item.fromApi" class="testimonial-avatar" aria-hidden="true">{{ item.initial }}</div>
+            <img v-else :src="avatars[index % avatars.length]" alt="" />
+            <span>
+              <b>{{ item.name }} <em v-if="item.fromApi ? item.type : item.tag">{{ item.fromApi ? memoirTypeLabel(item.type) : item.tag }}</em></b>
+              {{ item.role }}
+            </span>
+          </div>
+          <p v-if="item.storyTitle" class="testimonial-story-title">{{ item.storyTitle }}</p>
           <p class="quote">{{ item.quote }}</p>
         </article>
       </div>
@@ -45,13 +52,13 @@
           @click="activeTab = index">{{ tab }}</button>
       </div>
       <div class="message-card-grid">
-        <article v-for="(card, index) in messageCards" :key="index" class="figma-message-card">
-          <img :src="card" alt="" />
-          <button type="button" :aria-label="`播放第${index + 1}条视频`" class="play-button"
+        <article v-for="(card, index) in displayedMessages" :key="card.id ?? index" class="figma-message-card">
+          <img :src="card.cover" :alt="card.title" />
+          <button v-if="card.isVideo" type="button" :aria-label="`播放第${index + 1}条视频`" class="play-button"
             @click="goToPage('messages')">▶</button>
           <div>
-            <h3>{{ messages[index]?.name }}</h3>
-            <p>{{ messages[index]?.quote }}</p>
+            <h3>{{ card.title }}</h3>
+            <p>{{ card.content }}</p>
           </div>
         </article>
       </div>
@@ -64,7 +71,9 @@
   <section id="news" class="news-section">
     <HomeSectionHeading :eyebrow="t('news.en')" :title="t('news.title')" :description="t('news.subtitle')" />
     <div class="news-grid">
-      <article v-for="(item, index) in newsItems" :key="item.title"><img :src="newsImages[index]" :alt="item.title" />
+      <article v-for="(item, index) in newsItems" :key="item.id ?? item.title"><img
+        :src="item.cover || newsImages[index]" :alt="item.title"
+      />
         <h3>{{ item.title }}</h3>
         <p>{{ item.desc }}</p>
       </article>
@@ -90,9 +99,12 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
+import { getDynamicList } from '@/api/dynamic'
+import { getMemoirList } from '@/api/memoir'
+import { getWishesList } from '@/api/wishes'
 import HomeSectionHeading from './HomeSectionHeading.vue'
 import testimonialsBackground from '@/assets/images/bg-testimonials.webp'
 import messagesBackground from '@/assets/cuts/messages-bg.webp'
@@ -117,9 +129,11 @@ import news1 from '@/assets/images/news-1.webp'
 import news2 from '@/assets/images/news-2.webp'
 import news3 from '@/assets/images/news-3.webp'
 
-const { t, tm } = useI18n()
+const { t, tm, locale } = useI18n()
 const router = useRouter()
-// 当前寄语分类索引，为后续按分类替换内容预留状态。
+// 分类标签顺序与语言包 messages.tabs 一一对应，取值为后端 category 字段的中文类别。
+const TAB_CATEGORIES = ['知名人士', '道内人士', '其他重要人士']
+// 当前寄语分类索引，切换时按类别重新拉取数据。
 const activeTab = ref(0)
 // 以下素材数组必须与对应语言包 items 数组保持相同顺序。
 const seasonalImages = [seasonal1, seasonal2, seasonal3, seasonal4]
@@ -128,13 +142,120 @@ const messageCards = [messageCard1, messageCard2, messageCard3]
 const newsImages = [news1, news2, news3]
 // 所有列表通过 computed 获取，切换语言时无需手动刷新组件。
 const seasonalItems = computed(() => tm('seasonal.items'))
-const testimonials = computed(() => tm('testimonials.items'))
+const staticTestimonials = computed(() => tm('testimonials.items'))
+const apiTestimonials = ref([])
+const testimonials = computed(() => apiTestimonials.value.length ? apiTestimonials.value : staticTestimonials.value)
 const messageTabs = computed(() => tm('messages.tabs'))
 const messages = computed(() => tm('messages.items'))
-const newsItems = computed(() => tm('news.items'))
+const apiMessages = ref([])
+const displayedMessages = computed(() => apiMessages.value.length
+  ? apiMessages.value
+  : messageCards.map((cover, index) => ({
+    id: `fallback-${index}`,
+    cover,
+    title: messages.value[index]?.name || '',
+    content: messages.value[index]?.quote || '',
+    isVideo: true,
+  })))
+// 最新动态：优先展示接口数据，无数据或加载失败时回退语言包静态条目。
+const apiNews = ref([])
+
+async function loadNews() {
+  try {
+    const result = await getDynamicList({ page: 1, pageSize: 3, show: true }, { silent: true })
+    const list = Array.isArray(result) ? result : result?.list
+    apiNews.value = Array.isArray(list)
+      ? list.slice(0, 3).map((item, index) => ({
+        id: item.id ?? `news-${index}`,
+        title: item.title || '',
+        desc: item.content || '',
+        cover: parseWishImages(item.cover)[0] || newsImages[index % newsImages.length],
+      }))
+      : []
+  } catch {
+    apiNews.value = []
+  }
+}
+
+const newsItems = computed(() => (apiNews.value.length ? apiNews.value : tm('news.items')))
 const milestones = computed(() => tm('milestones.items'))
 // 时间轴徽章作为 CSS 背景变量使用，避免在模板中增加装饰节点。
 const milestoneEmblemBackground = `url("${milestoneEmblem}")`
+
+function memoirTypeLabel(type) {
+  const labels = {
+    peace: { en: 'Peace', 'zh-CN': '平安', 'zh-TW': '平安' },
+    health: { en: 'Health', 'zh-CN': '健康', 'zh-TW': '健康' },
+    wealth: { en: 'Prosperity', 'zh-CN': '财运', 'zh-TW': '財運' },
+  }
+  const language = locale.value.startsWith('zh-TW') ? 'zh-TW' : locale.value.startsWith('zh') ? 'zh-CN' : 'en'
+  return labels[String(type).toLowerCase()]?.[language] || type
+}
+
+function parseWishImages(value) {
+  let imageList = []
+
+  if (Array.isArray(value)) {
+    imageList = value
+  } else if (typeof value === 'string' && value.trim()) {
+    try {
+      const parsed = JSON.parse(value)
+      imageList = Array.isArray(parsed) ? parsed : [parsed]
+    } catch {
+      imageList = [value]
+    }
+  }
+
+  return imageList.map((image) => typeof image === 'string' ? image : image?.url).filter(Boolean)
+}
+
+onMounted(async () => {
+  try {
+    const result = await getMemoirList({ page: 1, pageSize: 8, show: true }, { silent: true })
+    const list = Array.isArray(result) ? result : result?.list
+    apiTestimonials.value = Array.isArray(list)
+      ? list.map((item) => ({
+        id: item.id,
+        name: item.username || '',
+        type: item.type || '',
+        role: item.job || '',
+        storyTitle: item.title || '',
+        quote: item.content || '',
+        initial: String(item.username || '?').trim().slice(0, 1).toUpperCase(),
+        fromApi: true,
+      }))
+      : []
+  } catch {
+    apiTestimonials.value = []
+  }
+})
+
+// 按当前分类标签加载寄语（仅展示已发布的）。
+async function loadMessages() {
+  try {
+    const result = await getWishesList(
+      { page: 1, pageSize: 3, show: true, category: TAB_CATEGORIES[activeTab.value] },
+      { silent: true },
+    )
+    const list = Array.isArray(result) ? result : result?.list
+    apiMessages.value = Array.isArray(list)
+      ? list.slice(0, 3).map((item, index) => ({
+        id: item.id ?? `wish-${index}`,
+        cover: parseWishImages(item.imgArrUrls)[0] || messageCards[index % messageCards.length],
+        title: item.title || messages.value[index]?.name || '',
+        content: item.content || item.detail || messages.value[index]?.quote || '',
+        isVideo: Number(item.type) === 1 || Boolean(item.videoUrl),
+      }))
+      : []
+  } catch {
+    apiMessages.value = []
+  }
+}
+
+onMounted(loadMessages)
+// 切换分类标签时加载对应类别的寄语。
+watch(activeTab, loadMessages)
+onMounted(loadNews)
 
 function goToPage(name) {
   router.push({ name })
@@ -392,6 +513,19 @@ function goToPage(name) {
   border-radius: 50%;
 }
 
+.testimonial-avatar {
+  display: grid;
+  width: 70px;
+  height: 70px;
+  flex: 0 0 70px;
+  place-items: center;
+  color: #9a321a;
+  font-size: 24px;
+  background: #f1e3cd;
+  border: 1px solid #d9b786;
+  border-radius: 50%;
+}
+
 .testimonials-grid span {
   display: grid;
   gap: 6px;
@@ -421,6 +555,15 @@ function goToPage(name) {
   font-family: var(--font-calligraphy);
   font-size: 15px;
   line-height: 1.65;
+}
+
+.testimonial-story-title {
+  margin: 11px 0 -8px;
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .section-more {

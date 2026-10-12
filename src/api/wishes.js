@@ -4,8 +4,8 @@ import { request } from './http'
  * 获取寄语列表
  * @param {object} data {searchKey, status, startTime, endTime, page, pageSize, category, show}
  */
-export function getWishesList(data) {
-  return request({ url: '/wishes/list', method: 'post', data })
+export function getWishesList(data, options = {}) {
+  return request({ url: '/wishes/list', method: 'post', data, ...options })
 }
 
 /**

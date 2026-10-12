@@ -2,43 +2,112 @@
   <!-- 宫观动态列表：面包屑与标题交给社区页外壳，卡片内容全部取自当前语言包。 -->
   <CommunityPageShell :breadcrumb="t('portal.pages.news.breadcrumb')" :eyebrow="t('portal.pages.news.eyebrow')"
     :title="t('portal.pages.news.title')" :subtitle="t('portal.pages.news.subtitle')">
-    <div class="news-list">
-      <!-- 整张卡片就是链接，进入详情页；aria-label 让读屏用户也能听到新闻标题。 -->
-      <RouterLink v-for="(item, index) in expandedNews" :key="`${item.title}-${index}`" :to="{ name: 'news-detail' }"
-        class="news-card" :aria-label="t('portal.pages.news.openDetail', { title: item.title })">
-        <img class="news-card__image" :src="newsImages[index % newsImages.length]" :alt="item.title" />
-        <div class="news-card__content" :style="{ '--card-image': `url(${newsImages[index % newsImages.length]})` }">
+    <div v-if="displayedNews.length" class="news-list">
+      <!-- 整张卡片就是链接，进入详情页并携带动态 id；aria-label 让读屏用户也能听到新闻标题。 -->
+      <RouterLink v-for="item in displayedNews" :key="item.id"
+        :to="{ name: 'news-detail', query: item.id ? { id: String(item.id) } : undefined }" class="news-card"
+        :aria-label="t('portal.pages.news.openDetail', { title: item.title })">
+        <img class="news-card__image" :src="item.cover" :alt="item.title" />
+        <div class="news-card__content" :style="{ '--card-image': `url(${item.cover})` }">
           <h2>{{ item.title }}</h2>
           <p>{{ item.desc }}</p>
-          <!-- 日期与阅读量均为设计稿占位值，接入接口后应替换为真实数据。 -->
           <footer>
-            <time :datetime="newsDates[index % newsDates.length]">{{ newsDates[index % newsDates.length] }}</time>
-            <span>3,286 {{ t('portal.pages.news.views') }}</span>
+            <time v-if="item.date" :datetime="item.date">{{ item.dateLabel }}</time>
+            <span>{{ formatReads(item.reads) }} {{ t('portal.pages.news.views') }}</span>
           </footer>
         </div>
       </RouterLink>
     </div>
+    <p v-else class="news-empty">{{ t('news.empty') }}</p>
   </CommunityPageShell>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { RouterLink } from 'vue-router'
+import { getDynamicList } from '@/api/dynamic'
 import CommunityPageShell from '@/components/community/CommunityPageShell.vue'
 import news1 from '@/assets/images/news-card-1.webp'
 import news2 from '@/assets/images/news-card-2.webp'
 import news3 from '@/assets/images/news-card-3.webp'
 
 const { t, tm } = useI18n()
-// 封面图与日期只有三套，按顺序循环复用（设计稿未提供更多素材）。
+// 每页数量：宽屏网格约展示 9 张卡片。
+const PAGE_SIZE = 9
+// 封面占位素材：接口未返回图片时循环复用。
 const newsImages = [news1, news2, news3]
 const newsDates = ['2026.04.15', '2026.03.25', '2026.03.08']
-// 语言包仅 3 条示例，这里按序扩展成 8 条，避免宽屏下列表过短留白。
-const expandedNews = computed(() => {
+
+// 解析 cover：后端返回 JSON 数组字符串（多图）或单个 URL。
+function parseNewsImages(value) {
+  let imageList = []
+
+  if (Array.isArray(value)) {
+    imageList = value
+  } else if (typeof value === 'string' && value.trim()) {
+    try {
+      const parsed = JSON.parse(value)
+      imageList = Array.isArray(parsed) ? parsed : [parsed]
+    } catch {
+      imageList = [value]
+    }
+  }
+
+  return imageList.map((image) => typeof image === 'string' ? image : image?.url).filter(Boolean)
+}
+
+// 阅读量：未公布（null）显示 '—'，否则千分位展示。
+function formatReads(reads) {
+  return reads === null || reads === undefined ? '—' : Number(reads).toLocaleString('en-US')
+}
+
+// 按接口加载最新动态（仅展示已发布的）。
+const apiNews = ref([])
+const apiLoaded = ref(false)
+
+async function loadNews() {
+  try {
+    const result = await getDynamicList({ page: 1, pageSize: PAGE_SIZE, show: true }, { silent: true })
+    const list = Array.isArray(result) ? result : result?.list
+    apiNews.value = Array.isArray(list)
+      ? list.map((item, index) => {
+        const date = (item.createTime || '').slice(0, 10)
+        return {
+          id: item.id ?? `news-${index}`,
+          title: item.title || '',
+          desc: item.content || '',
+          cover: parseNewsImages(item.cover)[0] || newsImages[index % newsImages.length],
+          date,
+          dateLabel: date.replaceAll('-', '.'),
+          reads: item.readNum ?? null,
+        }
+      })
+      : []
+  } catch {
+    apiNews.value = []
+  } finally {
+    apiLoaded.value = true
+  }
+}
+
+// 加载完成前展示语言包静态条目占位，避免首屏空白。
+const staticNews = computed(() => {
   const items = tm('news.items')
-  return Array.from({ length: 8 }, (_, index) => items[index % items.length])
+  return Array.from({ length: 8 }, (_, index) => ({
+    id: `static-${index}`,
+    title: items[index % items.length].title,
+    desc: items[index % items.length].desc,
+    cover: newsImages[index % newsImages.length],
+    date: newsDates[index % newsDates.length],
+    dateLabel: newsDates[index % newsDates.length],
+    reads: 3286,
+  }))
 })
+
+const displayedNews = computed(() => (apiLoaded.value ? apiNews.value : staticNews.value))
+
+onMounted(loadNews)
 </script>
 
 <style scoped>
@@ -48,6 +117,13 @@ const expandedNews = computed(() => {
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 400px), 1fr));
   gap: 30px;
   width: 100%;
+}
+
+.news-empty {
+  margin: 0;
+  color: #8b7a63;
+  font-size: 14px;
+  text-align: center;
 }
 
 /* 上半部封面、下半部文案，整体比例由 aspect-ratio 固定。 */

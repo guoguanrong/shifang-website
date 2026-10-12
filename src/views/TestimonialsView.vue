@@ -1,27 +1,37 @@
 <template>
-  <!-- 善信反馈列表：文案取自语言包，头像按顺序循环复用。 -->
+  <!-- 善信反馈列表：优先显示接口实录，接口失败时回退语言包示例。 -->
   <CommunityPageShell :breadcrumb="t('portal.pages.testimonials.breadcrumb')"
     :eyebrow="t('portal.pages.testimonials.eyebrow')" :title="t('portal.pages.testimonials.title')"
     :subtitle="t('portal.pages.testimonials.subtitle')">
-    <div class="testimonial-list">
-      <!-- 语言包条目有限，按序扩展成 11 条以填满三列布局。 -->
-      <article v-for="(item, index) in expandedTestimonials" :key="`${item.tag}-${index}`" class="testimonial-card">
+    <p v-if="loadFailed" class="testimonial-notice" role="status">{{ t('portal.pages.testimonials.loadError') }}</p>
+    <div class="testimonial-list" :aria-busy="loading">
+      <article v-for="(item, index) in testimonials" :key="item.id ?? `${item.tag}-${index}`" class="testimonial-card">
         <header>
-          <img :src="avatars[index % avatars.length]" alt="" />
+          <div v-if="item.fromApi" class="testimonial-avatar" aria-hidden="true">{{ item.initial }}</div>
+          <img v-else :src="avatars[index % avatars.length]" alt="" />
           <div>
-            <h2>{{ item.name }} <span>{{ item.tag }}</span></h2>
+            <h2>{{ item.name }} <span v-if="item.fromApi ? item.type : item.tag">{{ item.fromApi ? memoirTypeLabel(item.type) : item.tag }}</span></h2>
             <p>{{ item.role }}</p>
           </div>
         </header>
+        <p v-if="item.storyTitle" class="testimonial-title">{{ item.storyTitle }}</p>
         <blockquote>{{ item.quote }}</blockquote>
       </article>
+      <p v-if="loading && !testimonials.length" class="testimonial-state" role="status">{{ t('portal.pages.testimonials.loading') }}</p>
+      <p v-else-if="!loading && !testimonials.length" class="testimonial-state" role="status">{{ t('portal.pages.testimonials.empty') }}</p>
     </div>
+    <nav v-if="!loadFailed && totalPages > 1" class="testimonial-pagination" :aria-label="t('portal.pages.testimonials.pagination')">
+      <button type="button" :disabled="loading || currentPage <= 1" @click="changePage(currentPage - 1)">{{ t('portal.pages.testimonials.previous') }}</button>
+      <span>{{ t('portal.pages.testimonials.pageInfo', { current: currentPage, total: totalPages }) }}</span>
+      <button type="button" :disabled="loading || currentPage >= totalPages" @click="changePage(currentPage + 1)">{{ t('portal.pages.testimonials.next') }}</button>
+    </nav>
   </CommunityPageShell>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { getMemoirList } from '@/api/memoir'
 import CommunityPageShell from '@/components/community/CommunityPageShell.vue'
 import avatar1 from '@/assets/images/avatar-1.webp'
 import avatar2 from '@/assets/images/avatar-2.webp'
@@ -32,14 +42,72 @@ import avatar6 from '@/assets/images/avatar-6.webp'
 import avatar7 from '@/assets/images/avatar-7.webp'
 import avatar8 from '@/assets/images/avatar-8.webp'
 
-const { t, tm } = useI18n()
-// 八张头像素材按索引循环复用。
+const PAGE_SIZE = 12
+const { t, tm, locale } = useI18n()
 const avatars = [avatar1, avatar2, avatar3, avatar4, avatar5, avatar6, avatar7, avatar8]
-// 语言包只提供少量示例，扩展成 11 条避免列表过短。
-const expandedTestimonials = computed(() => {
+const currentPage = ref(1)
+const totalPages = ref(1)
+const records = ref([])
+const loading = ref(true)
+const loadFailed = ref(false)
+const fallbackTestimonials = computed(() => {
   const items = tm('testimonials.items')
-  return Array.from({ length: 11 }, (_, index) => items[index % items.length])
+  return Array.from({ length: 11 }, (_, index) => ({ ...items[index % items.length], id: `fallback-${index}` }))
 })
+const testimonials = computed(() => loadFailed.value ? fallbackTestimonials.value : records.value)
+
+function memoirTypeLabel(type) {
+  const labels = {
+    peace: { en: 'Peace', 'zh-CN': '平安', 'zh-TW': '平安' },
+    health: { en: 'Health', 'zh-CN': '健康', 'zh-TW': '健康' },
+    wealth: { en: 'Prosperity', 'zh-CN': '财运', 'zh-TW': '財運' },
+  }
+  const language = locale.value.startsWith('zh-TW') ? 'zh-TW' : locale.value.startsWith('zh') ? 'zh-CN' : 'en'
+  return labels[String(type).toLowerCase()]?.[language] || type
+}
+
+async function loadTestimonials() {
+  loading.value = true
+
+  try {
+    const result = await getMemoirList({ page: currentPage.value, pageSize: PAGE_SIZE, show: true }, { silent: true })
+    const list = Array.isArray(result) ? result : result?.list
+    if (!Array.isArray(list)) throw new Error('实录列表响应格式无效')
+
+    records.value = list.map((item) => ({
+      id: item.id,
+      name: item.username || '',
+      type: item.type || '',
+      role: item.job || '',
+      storyTitle: item.title || '',
+      quote: item.content || '',
+      initial: String(item.username || '?').trim().slice(0, 1).toUpperCase(),
+      fromApi: true,
+    }))
+    const totalRow = Number(result?.totalRow)
+    const pageCount = Number(result?.totalPage)
+    totalPages.value = Number.isFinite(pageCount) && pageCount > 0
+      ? pageCount
+      : Math.max(1, Math.ceil((Number.isFinite(totalRow) ? totalRow : list.length) / PAGE_SIZE))
+    const responsePage = Number(result?.currentPage)
+    if (Number.isFinite(responsePage) && responsePage > 0) currentPage.value = responsePage
+    loadFailed.value = false
+  } catch {
+    records.value = []
+    totalPages.value = 1
+    loadFailed.value = true
+  } finally {
+    loading.value = false
+  }
+}
+
+function changePage(page) {
+  if (loading.value || page < 1 || page > totalPages.value) return
+  currentPage.value = page
+  loadTestimonials()
+}
+
+onMounted(loadTestimonials)
 </script>
 
 <style scoped>
@@ -71,6 +139,19 @@ const expandedTestimonials = computed(() => {
   width: 66px;
   height: 66px;
   object-fit: cover;
+  border: 2px solid #d6ab79;
+  border-radius: 50%;
+}
+
+.testimonial-avatar {
+  display: grid;
+  flex: 0 0 66px;
+  width: 66px;
+  height: 66px;
+  place-items: center;
+  color: #9a321a;
+  font-size: 24px;
+  background: #f1e3cd;
   border: 2px solid #d6ab79;
   border-radius: 50%;
 }
@@ -111,6 +192,57 @@ const expandedTestimonials = computed(() => {
   line-height: 1.7;
 }
 
+.testimonial-title {
+  margin: 16px 0 -10px;
+  color: #3d3934;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.testimonial-notice,
+.testimonial-state {
+  color: #756b60;
+  font-size: 14px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.testimonial-notice {
+  margin: 0 0 20px;
+}
+
+.testimonial-state {
+  grid-column: 1 / -1;
+  margin: 24px 0;
+}
+
+.testimonial-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-top: 40px;
+  color: #756b60;
+  font-size: 14px;
+}
+
+.testimonial-pagination button {
+  min-width: 88px;
+  padding: 9px 16px;
+  color: #fff;
+  background: #c83a1b;
+  border: 1px solid #c83a1b;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.testimonial-pagination button:disabled {
+  color: #9d958b;
+  background: #ebe5dc;
+  border-color: #d8d0c4;
+  cursor: not-allowed;
+}
+
 /* 上浮反馈只在鼠标设备上启用，触屏不生效。 */
 @media (hover: hover) and (pointer: fine) {
   .testimonial-card:hover {
@@ -141,6 +273,22 @@ const expandedTestimonials = computed(() => {
   .testimonial-card img {
     width: 58px;
     height: 58px;
+  }
+
+  .testimonial-avatar {
+    flex-basis: 58px;
+    width: 58px;
+    height: 58px;
+  }
+
+  .testimonial-pagination {
+    gap: 10px;
+    font-size: 12px;
+  }
+
+  .testimonial-pagination button {
+    min-width: 72px;
+    padding-inline: 10px;
   }
 }
 </style>

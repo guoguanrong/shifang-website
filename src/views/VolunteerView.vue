@@ -50,7 +50,8 @@
           <label for="volunteer-message">{{ t('accountPages.volunteer.message') }}</label>
           <textarea id="volunteer-message" v-model="form.message" name="message" rows="4" maxlength="1000" :placeholder="t('accountPages.volunteer.messagePlaceholder')" />
         </div>
-        <CeremonialButton type="submit" :label="t('accountPages.volunteer.submit')" />
+        <CeremonialButton type="submit" :disabled="submitting" :aria-busy="submitting" :label="t('accountPages.volunteer.submit')" />
+        <p v-if="submissionError" class="volunteer-error" role="alert">{{ submissionError }}</p>
         <p class="volunteer-privacy">{{ t('accountPages.volunteer.privacy') }}</p>
       </form>
     </section>
@@ -65,6 +66,7 @@ import AccountPageShell from '@/components/account/AccountPageShell.vue'
 import VolunteerApplicationDialog from '@/components/account/VolunteerApplicationDialog.vue'
 import OrnateSectionHeading from '@/components/common/OrnateSectionHeading.vue'
 import CeremonialButton from '@/components/common/CeremonialButton.vue'
+import { saveVolunteer } from '@/api/volunteer'
 import templeBenefit from '@/assets/account-pages/volunteer-temple.webp'
 import fellowshipBenefit from '@/assets/account-pages/volunteer-fellowship.webp'
 import meritBenefit from '@/assets/account-pages/volunteer-merit.webp'
@@ -81,7 +83,21 @@ const times = ['weekend', 'weekdays', 'evenings', 'flexible']
 const form = reactive({ name: '', country: '+86', phone: '', role: 'temple', time: 'weekend', message: '' })
 const attempted = ref(false)
 const feedback = ref(null)
+const submitting = ref(false)
+const submissionError = ref('')
 const applicationForm = ref(null)
+const roleValues = {
+  temple: '道场护持',
+  ceremony: '道会协助',
+  media: '文宣服务',
+  online: '线上服务',
+}
+const timeValues = {
+  weekend: '周末',
+  weekdays: '工作日',
+  evenings: '晚间',
+  flexible: '均可',
+}
 const errors = computed(() => {
   if (!attempted.value) return {}
   const result = {}
@@ -100,11 +116,28 @@ async function chooseRole(role) {
 }
 
 async function submit() {
+  if (submitting.value) return
   attempted.value = true
+  submissionError.value = ''
   await nextTick()
   const invalid = applicationForm.value.querySelector('[aria-invalid="true"]')
   if (invalid) return invalid.focus()
-  // 仅预览当前申请信息；接口未接入，不宣称申请已发送。
-  feedback.value = { role: form.role, time: form.time }
+
+  submitting.value = true
+  try {
+    const normalizedPhone = form.phone.replace(/[\s()-]/g, '')
+    await saveVolunteer({
+      username: form.name.trim(),
+      phone: `${form.country}${normalizedPhone}`,
+      applyPost: roleValues[form.role],
+      serviceTime: timeValues[form.time],
+      remark: form.message.trim(),
+    })
+    feedback.value = { role: form.role, time: form.time }
+  } catch (error) {
+    submissionError.value = error.userMessage || error.message || '申请提交失败，请稍后重试'
+  } finally {
+    submitting.value = false
+  }
 }
 </script>

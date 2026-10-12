@@ -3,9 +3,10 @@ import { request } from './http'
 /**
  * 获取动态列表
  * @param {object} data {searchKey, status, startTime, endTime, page, pageSize, show}
+ * @param {object} options 请求附加选项（如 { silent: true } 静默失败）
  */
-export function getDynamicList(data) {
-  return request({ url: '/dynamic/list', method: 'post', data })
+export function getDynamicList(data, options = {}) {
+  return request({ url: '/dynamic/list', method: 'post', data, ...options })
 }
 
 /**

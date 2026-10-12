@@ -72,6 +72,13 @@ export default {
       eyebrow: 'Testimonials · Full',
       title: '信众实录',
       subtitle: '更多真实案例 · 善愿得偿 · 福生无量',
+      loading: '正在加载信众实录…',
+      empty: '暂无可展示的实录。',
+      loadError: '实录加载失败，当前显示示例内容。',
+      pagination: '信众实录分页',
+      previous: '上一页',
+      next: '下一页',
+      pageInfo: '第 {current} / {total} 页',
     },
     messages: {
       breadcrumb: '各界寄语',

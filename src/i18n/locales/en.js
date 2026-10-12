@@ -156,6 +156,7 @@ export default {
     subtitle: 'Voices and blessings from across society',
     more: 'View more',
     tabs: ['Public Figures', 'Industry Voices', 'Other Benefactors'],
+    empty: 'No messages yet',
     items: [
       { name: 'Renowned Cultural Scholar · Lou Yulie', quote: '「Cultural revival begins with reverence for tradition. The good work of ShiFang Hall is deeply admirable.」' },
       { name: 'Renowned Cultural Scholar · Lou Yulie', quote: '「Cultural revival begins with reverence for tradition. The good work of ShiFang Hall is deeply admirable.」' },
@@ -168,6 +169,7 @@ export default {
     title: 'Latest News',
     subtitle: 'Stay up to date with ShiFang Hall',
     more: 'View more',
+    empty: 'No news yet',
     items: [
       { title: 'Beam-Raising Ceremony of the Mahavira Hall', desc: 'The restoration of the Mahavira Hall reached a key milestone — the beam-raising ceremony, joined by over a hundred devotees.' },
       { title: 'Qingming Blessing Ceremony · Remembrance', desc: 'During Qingming, ShiFang Hall holds a three-day blessing and remembrance ceremony; devotees may offer a light lamp online.' },

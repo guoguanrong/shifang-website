@@ -6,7 +6,7 @@
     :title="t('portal.pages.messages.title')"
     :subtitle="t('portal.pages.messages.subtitle')"
   >
-    <!-- 分类标签目前只负责高亮切换，列表数据尚未按分类过滤。 -->
+    <!-- 分类标签切换时按类别加载寄语数据。 -->
     <div class="message-tabs" role="tablist">
       <button
         v-for="(tab, index) in tabs"
@@ -21,19 +21,19 @@
       </button>
     </div>
 
-    <div class="message-list">
-      <article v-for="(item, index) in expandedMessages" :key="index" class="message-card">
+    <div v-if="displayedMessages.length" class="message-list">
+      <article v-for="(item, index) in displayedMessages" :key="item.id ?? index" class="message-card">
         <!-- 封面就是入口按钮，键盘与读屏用户也能打开视频/文章。 -->
         <button
           class="message-card__media"
           type="button"
-          :aria-label="isVideoMessage(index)
+          :aria-label="item.isVideo
             ? t('portal.pages.messages.play', { name: item.name })
             : t('portal.pages.messages.openArticle', { name: item.name })"
           @click="openMessage(index)"
         >
-          <img :src="messageImages[index % messageImages.length]" alt="" />
-          <span v-if="isVideoMessage(index)" aria-hidden="true">▶</span>
+          <img :src="item.cover" alt="" />
+          <span v-if="item.isVideo" aria-hidden="true">▶</span>
         </button>
         <div class="message-card__copy">
           <h2>{{ item.name }}</h2>
@@ -41,13 +41,15 @@
         </div>
       </article>
     </div>
+    <p v-else class="message-empty">{{ t('messages.empty') }}</p>
   </CommunityPageShell>
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
+import { getWishesList } from '@/api/wishes'
 import CommunityPageShell from '@/components/community/CommunityPageShell.vue'
 import message1 from '@/assets/images/msg-card-1.webp'
 import message2 from '@/assets/images/msg-card-2.webp'
@@ -57,18 +59,84 @@ const { t, tm } = useI18n()
 const router = useRouter()
 // 当前选中的分类标签索引。
 const activeTab = ref(0)
-// 封面素材同样循环复用。
+// 分类标签顺序与语言包 messages.tabs 一一对应，取值为后端 category 字段的中文类别。
+const TAB_CATEGORIES = ['知名人士', '道内人士', '其他重要人士']
+// 每页数量：三列布局展示 9 条。
+const PAGE_SIZE = 9
+// 封面占位素材：接口未返回图片时循环复用。
 const messageImages = [message1, message2, message3]
 const tabs = computed(() => tm('messages.tabs'))
-// 语言包条目有限，扩展到 9 条以填满三列布局。
-const expandedMessages = computed(() => {
+
+function parseWishImages(value) {
+  let imageList = []
+
+  if (Array.isArray(value)) {
+    imageList = value
+  } else if (typeof value === 'string' && value.trim()) {
+    try {
+      const parsed = JSON.parse(value)
+      imageList = Array.isArray(parsed) ? parsed : [parsed]
+    } catch {
+      imageList = [value]
+    }
+  }
+
+  return imageList.map((image) => typeof image === 'string' ? image : image?.url).filter(Boolean)
+}
+
+// 按当前分类加载寄语（仅展示已发布的）。
+const apiMessages = ref([])
+const apiLoaded = ref(false)
+
+async function loadMessages() {
+  try {
+    const result = await getWishesList(
+      { page: 1, pageSize: PAGE_SIZE, show: true, category: TAB_CATEGORIES[activeTab.value] },
+      { silent: true },
+    )
+    const list = Array.isArray(result) ? result : result?.list
+    apiMessages.value = Array.isArray(list)
+      ? list.map((item, index) => ({
+        id: item.id ?? `wish-${index}`,
+        cover: parseWishImages(item.imgArrUrls)[0] || messageImages[index % messageImages.length],
+        name: item.title || '',
+        quote: item.content || item.detail || '',
+        isVideo: Number(item.type) === 1 || Boolean(item.videoUrl),
+      }))
+      : []
+  } catch {
+    apiMessages.value = []
+  } finally {
+    apiLoaded.value = true
+  }
+}
+
+// 加载完成前展示语言包静态条目占位，避免首屏空白。
+const staticMessages = computed(() => {
   const items = tm('messages.items')
-  return Array.from({ length: 9 }, (_, index) => items[index % items.length])
+  return Array.from({ length: 9 }, (_, index) => ({
+    id: `static-${index}`,
+    cover: messageImages[index % messageImages.length],
+    name: items[index % items.length].name,
+    quote: items[index % items.length].quote,
+    isVideo: index % messageImages.length === 0,
+  }))
 })
-// 每三张卡片中的第一张按视频处理，其余为文章。
-const isVideoMessage = (index) => index % messageImages.length === 0
-// 依据卡片类型跳转到对应的详情页。
-const openMessage = (index) => router.push({ name: isVideoMessage(index) ? 'message-video-detail' : 'message-article-detail' })
+
+const displayedMessages = computed(() => (apiLoaded.value ? apiMessages.value : staticMessages.value))
+
+// 依据卡片类型跳转到对应的详情页，并携带寄语 id 供详情页使用。
+function openMessage(index) {
+  const item = displayedMessages.value[index]
+  router.push({
+    name: item?.isVideo ? 'message-video-detail' : 'message-article-detail',
+    query: item?.id != null ? { id: String(item.id) } : undefined,
+  })
+}
+
+// 切换分类标签时加载对应类别的寄语。
+watch(activeTab, loadMessages)
+onMounted(loadMessages)
 </script>
 
 <style scoped>
@@ -102,6 +170,13 @@ const openMessage = (index) => router.push({ name: isVideoMessage(index) ? 'mess
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 28px;
+}
+
+.message-empty {
+  margin: 0;
+  color: #8b7a63;
+  font-size: 14px;
+  text-align: center;
 }
 
 .message-card {
