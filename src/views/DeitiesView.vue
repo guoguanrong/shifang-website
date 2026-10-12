@@ -13,6 +13,7 @@
           v-if="activeFilter === 'all' || featured.categories.includes(activeFilter)"
           :deity="featured"
           :merit-label="t('deities.meritLabel')"
+          :worship-loaded="worshipLoaded"
         />
 
         <!-- 卡片内容和图片通过稳定 id 关联；翻译包只管理文案，不重复打包图片。 -->
@@ -23,6 +24,7 @@
             :deity="deity"
             :image="deityImages[deity.id]"
             :merit-label="t('deities.meritLabel')"
+            :worship-loaded="worshipLoaded"
           />
         </TransitionGroup>
 
@@ -35,7 +37,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { setAppLocale } from '@/i18n'
 import DeitiesHero from '@/components/deities/DeitiesHero.vue'
@@ -45,20 +47,47 @@ import DeityFilters from '@/components/deities/DeityFilters.vue'
 import HomeFooter from '@/components/home/HomeFooter.vue'
 import HomeHeader from '@/components/home/HomeHeader.vue'
 import { deityImages } from '@/components/deities/deityImages'
+import { getWorshipList } from '@/api/worship'
+import { deityGodNames, getWorshipRecords } from '@/data/deityWorship'
 
 const { t, tm } = useI18n()
 const activeFilter = ref('all')
+const worshipRecords = ref([])
+const worshipLoaded = ref(false)
 
-const featured = computed(() => tm('deities.featured'))
-const deities = computed(() => tm('deities.cards'))
+const recordsByName = computed(() => new Map(worshipRecords.value.map((record) => [record.matchGod, record])))
+function getWorshipForDeity(id) {
+  return recordsByName.value.get(deityGodNames[id]) || null
+}
+
+const featured = computed(() => {
+  const deity = tm('deities.featured')
+  return { ...deity, worship: getWorshipForDeity(deity.id) }
+})
+const deities = computed(() => tm('deities.cards').map((deity) => ({
+  ...deity,
+  worship: getWorshipForDeity(deity.id),
+})))
 const filteredDeities = computed(() => {
   if (activeFilter.value === 'all') return deities.value
   return deities.value.filter((deity) => deity.categories.includes(activeFilter.value))
 })
 
+async function loadWorshipRecords() {
+  try {
+    const payload = await getWorshipList({ page: 1, pageSize: 1000 })
+    worshipRecords.value = getWorshipRecords(payload)
+    worshipLoaded.value = true
+  } catch {
+    worshipRecords.value = []
+  }
+}
+
 async function setLocale(nextLocale) {
   await setAppLocale(nextLocale)
 }
+
+onMounted(loadWorshipRecords)
 </script>
 
 <style scoped>

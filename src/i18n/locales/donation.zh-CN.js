@@ -38,6 +38,9 @@ export default {
   "chooseAmount": "选择捐赠金额",
   "chooseGoods": "选择捐赠物品（以善款购置）",
   "goodsNote": "捐物即捐钱——您所捐的每件物品，皆由十方殿以善款统一采购、登记功德，并实际用于道观建设与供养。",
+  "targetLabel": "捐赠目标",
+  "noTargets": "暂无可选的捐赠目标",
+  "noGoods": "此目标暂未配置可捐赠物品",
   "amountLabels": [
     "随喜起步",
     "香花灯果",

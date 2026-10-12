@@ -42,6 +42,8 @@ export default {
   },
   practice: {
     eyebrow: 'Exercise Videos', title: 'Movement Practice · Follow-Along Videos', subtitle: 'Expert demonstrations and a steady path you can practise anywhere', action: 'Start Practice', more: 'View More',
+    loading: 'Loading practice videos…', loadingMore: 'Loading…', loadError: 'Could not load practice videos', retry: 'Retry', empty: 'No practice videos available',
+    beginner: 'Beginner', advanced: 'Advanced', durationUnit: 'min', videoLoadFailed: 'This video is temporarily unavailable. Please try again later.', closePlayer: 'Close video',
     items: [
       { title: 'Eight Brocades · Full Practice', desc: 'A standard eight-form sequence demonstrated step by step, coordinated with breathing for a smooth daily practice.', tags: ['Beginner', '25 min', 'Morning'] },
       { title: 'Jingang Gong · Strong Foundation', desc: 'A vigorous Taoist sequence transmitted by Master Zhang Zhishun, suited to practitioners with some experience.', tags: ['Beginner', '25 min', 'Morning'] },
@@ -53,6 +55,8 @@ export default {
   },
   knowledge: {
     eyebrow: 'Wellness Knowledge', title: 'Wellness Wisdom · Canon Readings', subtitle: 'Read the classics and discover the longevity wisdom of earlier masters', more: 'View More',
+    loading: 'Loading classic articles…', loadingMore: 'Loading…', loadError: 'Could not load classic articles', retry: 'Retry', empty: 'No classic articles available',
+    reads: 'reads', close: 'Close article', detailLoading: 'Loading article…', detailError: 'Could not load article details. Please try again later.',
     items: [
       { title: 'Seasonal Living in the Inner Canon', desc: 'A guide to the four seasons in the Yellow Emperor’s Inner Canon and how to align body and mind with nature.', meta: 'Dongshen Canon · 3,286 reads' },
       { title: 'Sun Simiao’s Food Remedies', desc: 'Ten practical recipes inspired by the Essential Prescriptions, where food and medicine share one origin.', meta: 'Taiping Canon · 2,451 reads' },

@@ -235,7 +235,7 @@ const router = createRouter({
       component: () => import('@/views/DeityOfferingView.vue'),
     },
     {
-      path: '/blessings/lamps/:lampId(guangming|taisui|wenchang)',
+      path: '/blessings/lamps/:lampId([a-z0-9-]+)',
       name: 'lamp-detail',
       props: true,
       meta: { navigation: 'blessings' },

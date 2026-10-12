@@ -27,6 +27,8 @@
         <template v-else>
           <dl class="order-summary">
             <div><dt>{{ t('donation.typeLabel') }}</dt><dd>{{ t(`donation.types.${order.mode}.title`) }}</dd></div>
+            <div><dt>{{ t('donation.purposeLabel') }}</dt><dd>{{ order.targetTitle }}</dd></div>
+            <div v-if="order.mode === 'goods'"><dt>{{ t('donation.itemLabel') }}</dt><dd>{{ order.itemName }} × {{ order.quantity }}</dd></div>
             <div><dt>{{ t('donation.total') }}</dt><dd>{{ amountLabel }}</dd></div>
           </dl>
           <dl class="devotee-summary">

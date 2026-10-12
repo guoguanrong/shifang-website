@@ -40,6 +40,8 @@ export default {
   },
   practice: {
     eyebrow: 'Exercise Videos', title: '運動養生 · 跟練視頻', subtitle: '名師示範，循序漸進，足不出戶亦可修煉', action: '開始跟練', more: '查看更多',
+    loading: '正在載入跟練影片…', loadingMore: '正在載入…', loadError: '跟練影片載入失敗', retry: '重試', empty: '暫無跟練影片',
+    beginner: '入門', advanced: '進階', durationUnit: '分鐘', videoLoadFailed: '影片暫時無法播放，請稍後重試。', closePlayer: '關閉影片',
     items: [
       { title: '八段錦 · 完整跟練版', desc: '國家體育總局標準版，道長親自示範。八式動作詳解，配合呼吸吐納，每日一遍，氣血通暢。', tags: ['入門', '25分鐘', '晨練'] },
       { title: '金剛功 · 剛猛築基', desc: '道家秘傳金剛功，以剛猛之勢疏通經脈。張至順道長傳承版本，適合有一定基礎者習練。強身健體，祛病延年。', tags: ['入門', '25分鐘', '晨練'] },
@@ -51,6 +53,8 @@ export default {
   },
   knowledge: {
     eyebrow: 'Wellness Knowledge', title: '養生知識 · 道典精讀', subtitle: '閱道藏養生經典，悟先賢長壽之道', more: '查看更多',
+    loading: '正在載入道典文章…', loadingMore: '正在載入…', loadError: '道典文章載入失敗', retry: '重試', empty: '暫無道典文章',
+    reads: '次閱讀', close: '關閉文章', detailLoading: '正在載入文章內容…', detailError: '文章詳情載入失敗，請稍後重試。',
     items: [
       { title: '《黃帝內經》四季養生法', desc: '春生夏長、秋收冬藏——詳解《黃帝內經·四氣調神大論》中的四季養生要旨，教您如何順天應時調養身心。', meta: '道藏·洞神部  3,286 次閱讀' },
       { title: '孫思邈《千金》食療方', desc: '藥王孫思邈在《備急千金要方》中收錄了大量食療藥膳方，以食代藥、藥食同源。精選十道家常養生食譜與您分享。', meta: '道藏·太平部  2,451 次閱讀' },

@@ -20,10 +20,10 @@
           </article>
         </div>
 
-        <button class="details-button" type="button" @click="router.push({ name: 'fund-details' })">
+        <!-- <button class="details-button" type="button" @click="router.push({ name: 'fund-details' })">
           <span>{{ t('cloudBuild.transparency.action') }}</span>
           <img :src="detailsArrow" alt="" aria-hidden="true" />
-        </button>
+        </button> -->
       </div>
 
       <div class="chart-panel">

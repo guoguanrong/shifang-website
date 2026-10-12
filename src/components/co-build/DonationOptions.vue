@@ -14,13 +14,17 @@
     <!-- 实物卡片：选中项由父级的 itemIndex 控制。 -->
     <div v-else class="donation-goods" role="group" :aria-label="t('donation.chooseGoods')">
       <button v-for="(item, index) in goods" :key="item.id" type="button" class="donation-choice donation-goods-card"
-        :class="[{ selected: itemIndex === index }, item.id]" :aria-pressed="itemIndex === index"
+        :class="{ selected: itemIndex === index }" :aria-pressed="itemIndex === index"
         @click="emit('update:itemIndex', index)">
-        <span class="donation-item-art"><img :src="item.image" alt="" aria-hidden="true" /></span>
-        <span class="donation-item-title">{{ t(`donation.items.${index}.title`) }}</span>
-        <span>{{ t(`donation.items.${index}.description`) }}</span><strong>$ {{ item.price }}</strong>
+        <span class="donation-item-art">
+          <img v-if="item.picture || item.image" :src="item.picture || item.image" alt="" aria-hidden="true" />
+          <span v-else aria-hidden="true">{{ String(item.name || '').slice(0, 1) }}</span>
+        </span>
+        <span class="donation-item-title">{{ item.name }}</span>
+        <span>{{ item.useType || item.unit }}</span><strong>$ {{ item.price }} <small>{{ item.unit }}</small></strong>
       </button>
     </div>
+    <p v-if="mode === 'goods' && !goods.length" class="donation-error" role="status">{{ t('donation.noGoods') }}</p>
     <div v-if="mode === 'money'" class="donation-option-input">
       <label for="donation-custom">{{ t('donation.custom') }}</label>
       <div class="donation-field"><span aria-hidden="true">$</span>

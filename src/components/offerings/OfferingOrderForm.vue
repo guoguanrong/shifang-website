@@ -3,17 +3,19 @@
   <form class="offering-order-form" @submit.prevent="submit">
     <p v-if="!compact" class="order-explanation">{{ t(kind === 'lamp' ? 'offerings.materialExplanation' :
       'offerings.deityExplanation') }}</p>
-    <div v-if="!hideTotal" class="offering-total"><span>{{ t('offerings.total') }}</span><strong>${{ amount }}<small v-if="period"> / {{
-      period }}</small></strong></div>
-    <label>{{ t('offerings.name') }}<input v-model="name" name="devoteeName" autocomplete="name" required maxlength="80"
+    <div v-if="!hideTotal" class="offering-total"><span>{{ t('offerings.total') }}</span><strong>${{ amount }}<small
+          v-if="period"> / {{
+            period }}</small></strong></div>
+    <label>{{ t('offerings.name') }}<input v-model="name" name="devoteeName" autocomplete="name" required maxlength="30"
         :placeholder="t('offerings.namePlaceholder')" /></label>
     <!-- 生辰仅点灯需要，且不允选择未来日期。 -->
     <label v-if="kind === 'lamp'">{{ t('offerings.birth') }}<input v-model="birth" name="birthDate" type="date" required
         :max="today" /></label>
-    <label>{{ t('offerings.wish') }}<textarea v-model="wish" name="wish" rows="3" maxlength="1000"
+    <label>{{ t('offerings.wish') }}<textarea v-model="wish" name="wish" rows="3" maxlength="300"
         :placeholder="t('offerings.wishPlaceholder')" /></label>
     <div class="order-submit">
-      <CeremonialButton type="submit" :label="submitLabel || t(kind === 'lamp' ? 'offerings.submitLamp' : 'offerings.submitDeity')" />
+      <CeremonialButton type="submit"
+        :label="submitLabel || t(kind === 'lamp' ? 'offerings.submitLamp' : 'offerings.submitDeity')" />
     </div>
     <p v-if="kind === 'deity'" class="order-explanation centered">{{ t('offerings.deityPromise') }}</p>
   </form>

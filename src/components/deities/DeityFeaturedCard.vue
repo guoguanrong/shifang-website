@@ -34,7 +34,13 @@
         :description="deity.meritDescription"
       />
 
-      <DeityActionButtons class="featured-actions" large />
+      <DeityActionButtons
+        class="featured-actions"
+        :deity-id="deity.id"
+        :worship="deity.worship"
+        :worship-loaded="worshipLoaded"
+        large
+      />
     </div>
   </article>
 </template>
@@ -42,7 +48,7 @@
 <script setup>
 import { RouterLink } from 'vue-router'
 // 装饰资源与内容数据分离：资源固定还原视觉，deity 数据可随语言响应式切换。
-import featuredDeity from '@/assets/deities/featured-deity.svg'
+import featuredDeity from '@/assets/deities/featured-deity.png'
 import featuredFrame from '@/assets/deities/featured-frame.svg'
 import featuredImageBorder from '@/assets/deities/featured-deity.svg'
 import featuredOutline from '@/assets/deities/featured-outline.svg'
@@ -50,7 +56,11 @@ import featuredShadow from '@/assets/deities/featured-shadow.svg'
 import DeityActionButtons from './DeityActionButtons.vue'
 import DeityMerit from './DeityMerit.vue'
 
-defineProps({ deity: { type: Object, required: true }, meritLabel: { type: String, required: true } })
+defineProps({
+  deity: { type: Object, required: true },
+  meritLabel: { type: String, required: true },
+  worshipLoaded: { type: Boolean, default: false },
+})
 </script>
 
 <style scoped>

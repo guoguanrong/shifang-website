@@ -16,13 +16,16 @@
     <!-- 供奉方案与下单表单：选中的方案决定金额、周期与弹窗文案。 -->
     <section class="deity-offering-order offering-paper">
       <OrnateSectionHeading :title="t('offerings.plansTitle')" />
-      <div class="deity-order-inner">
-        <!-- 方案卡片是按钮组，aria-pressed 标记当前选中的方案。 -->
+      <p v-if="loading" class="worship-status" role="status">{{ t('offerings.worshipLoading') }}</p>
+      <p v-else-if="!worship" class="worship-status" role="status">
+        {{ t(loadError ? 'offerings.worshipLoadFailed' : 'offerings.worshipUnavailable') }}
+      </p>
+      <div v-else class="deity-order-inner">
         <div class="offering-plans" role="group" :aria-label="t('offerings.plansTitle')">
           <button v-for="plan in plans" :key="plan.id" class="offering-plan" :class="plan.id" type="button" :aria-pressed="selectedPlan === plan.id" @click="selectedPlan = plan.id">
-            <img :src="plan.image" alt="" /><span v-if="plan.id === 'yearly'" class="plan-saving">{{ t('offerings.saving') }}</span>
+            <img :src="plan.image" alt="" /><span v-if="plan.id === 'yearly' && yearlySavings > 0" class="plan-saving">{{ t('offerings.saving', { amount: formatPrice(yearlySavings) }) }}</span>
             <span class="plan-title">{{ t(`offerings.${plan.id}`) }}</span><span class="plan-description">{{ t(`offerings.${plan.id}Text`) }}</span>
-            <span class="plan-price">${{ plan.amount }}<small> / {{ t(`offerings.${plan.period}`) }}</small></span>
+            <span class="plan-price">${{ formatPrice(plan.amount) }}<small> / {{ t(`offerings.${plan.period}`) }}</small></span>
           </button>
         </div>
         <OfferingOrderForm kind="deity" :amount="activePlan.amount" :period="t(`offerings.${activePlan.period}`)" @submit="details = $event" />
@@ -33,7 +36,7 @@
   </OfferingPageShell>
 </template>
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import OfferingPageShell from '@/components/offerings/OfferingPageShell.vue'
@@ -50,16 +53,70 @@ import headingRight from '@/assets/offerings/heading-right.svg'
 import noticeIcon from '@/assets/offerings/notice-icon.svg'
 import monthly from '@/assets/offerings/monthly.png'
 import yearly from '@/assets/offerings/yearly.png'
+import { getWorshipByGodName } from '@/api/worship'
+import { deityGodNames } from '@/data/deityWorship'
 const { t, tm } = useI18n()
 const route = useRoute()
-// 供奉对象取 ?deity= 对应的神明，匹配不到时回退到主推神明。
-const deity = computed(() => tm('deities.cards').find(item => item.id === route.query.deity) || tm('deities.featured'))
-// 两种供奉方案：月供 18 与年供 180，period 决定价格后缀的单位。
-const plans = [{ id: 'monthly', amount: 18, period: 'month', image: monthly }, { id: 'yearly', amount: 180, period: 'year', image: yearly }]
-// 默认选中年供。
+const selectedDeityId = computed(() => (
+  typeof route.query.deity === 'string' && deityGodNames[route.query.deity]
+    ? route.query.deity
+    : 'doumu'
+))
+const deity = computed(() => {
+  const entries = [tm('deities.featured'), ...tm('deities.cards')]
+  return entries.find((item) => item.id === selectedDeityId.value) || tm('deities.featured')
+})
+const worship = ref(null)
+const loading = ref(false)
+const loadError = ref(false)
 const selectedPlan = ref('yearly')
-// 当前方案，供下单金额、周期与弹窗文案使用。
-const activePlan = computed(() => plans.find(plan => plan.id === selectedPlan.value))
-// 提交后的下单信息；非空即展示确认弹窗。
+const plans = computed(() => [
+  { id: 'monthly', amount: Number(worship.value?.monthPrice ?? 0), period: 'month', image: monthly },
+  { id: 'yearly', amount: Number(worship.value?.yearPrice ?? 0), period: 'year', image: yearly },
+])
+const activePlan = computed(() => plans.value.find((plan) => plan.id === selectedPlan.value) || plans.value[0])
+const yearlySavings = computed(() => Math.max(0, plans.value[0].amount * 12 - plans.value[1].amount))
 const details = ref(null)
+
+function formatPrice(value) {
+  const price = Number(value)
+  return Number.isFinite(price) ? price.toLocaleString(undefined, { maximumFractionDigits: 2 }) : '0'
+}
+
+let requestSequence = 0
+async function loadWorship() {
+  const sequence = ++requestSequence
+  const godName = deityGodNames[selectedDeityId.value]
+  worship.value = null
+  loadError.value = false
+  details.value = null
+  selectedPlan.value = 'yearly'
+
+  if (!godName) {
+    loadError.value = true
+    return
+  }
+
+  loading.value = true
+  try {
+    const result = await getWorshipByGodName(godName)
+    if (sequence === requestSequence) worship.value = result || null
+  } catch {
+    if (sequence === requestSequence) loadError.value = true
+  } finally {
+    if (sequence === requestSequence) loading.value = false
+  }
+}
+
+watch(selectedDeityId, loadWorship, { immediate: true })
 </script>
+
+<style scoped>
+.worship-status {
+  margin: 40px auto;
+  color: #8e6e49;
+  font-size: 16px;
+  line-height: 1.6;
+  text-align: center;
+}
+</style>

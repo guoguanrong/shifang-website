@@ -26,7 +26,12 @@
     <DeityMerit class="card-merit" :label="meritLabel" :title="deity.meritTitle"
       :description="deity.meritDescription" />
 
-    <DeityActionButtons class="card-actions" :deity-id="deity.id" />
+    <DeityActionButtons
+      class="card-actions"
+      :deity-id="deity.id"
+      :worship="deity.worship"
+      :worship-loaded="worshipLoaded"
+    />
   </article>
 </template>
 
@@ -41,6 +46,7 @@ defineProps({
   deity: { type: Object, required: true },
   image: { type: String, required: true },
   meritLabel: { type: String, required: true },
+  worshipLoaded: { type: Boolean, default: false },
 })
 </script>
 

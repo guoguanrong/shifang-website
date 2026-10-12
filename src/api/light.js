@@ -17,6 +17,14 @@ export function getLightById(id) {
 }
 
 /**
+ * 根据匹配的神祇名称获取对应灯型
+ * @param {string} name 神祇名称
+ */
+export function getLightByGodName(name) {
+  return request({ url: `/light/getByGodName/${encodeURIComponent(name)}` })
+}
+
+/**
  * 新增点灯
  * @param {object} data {picture, name, matchGod, price, shopItemsIds}
  */
