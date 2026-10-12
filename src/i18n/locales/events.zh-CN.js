@@ -15,5 +15,27 @@ export default {
     { numeral: '叁', roman: 'SAN', title: '高功当面 · 指点迷津', desc: '道会间隙，高功法师亲自答疑——事业、健康、财运、流年，当面请教，句句受用。此等机缘，错过再等来年。' },
     { numeral: '肆', roman: 'SI', title: '涤荡身心 · 满载福报', desc: '一场道会，涤荡身心：消晦气、解郁结、结善缘。离场时带走的不仅是一份心安，更是满满的福报与欢喜。' },
   ] },
-  recentTitle: '近期道会 · 随喜参加', futureTitle: '未来规划 · 道会日程', cards, futureCards: cards.slice(3).concat(cards.slice(3)), details: '了解详情', more: '查看更多', backToTop: '返回顶部',
+  recentTitle: '近期道会 · 随喜参加', futureTitle: '未来规划 · 道会日程', cards, futureCards: cards.slice(3).concat(cards.slice(3)), details: '了解详情', more: '查看更多', empty: '暂无数据', loading: '加载中', backToTop: '返回顶部',
+  detail: {
+    time: '道会时间', location: '道会地点', tags: '活动标签', join: '参加方式', deadline: '报名截止', audience: '适合人群', limit: '限有限制人数', limitPeople: '{count} 人',
+    intro: '道会简介', ritual: '仪轨流程', benefit: '参加道会的功德利益', crowd: '适合人群',
+    registerOnline: '线上登记祈福', registerOffline: '线下亲临', deadlineLine: '登记截止：{time}', ahead: '道会日前 {days} 天',
+    collective: '集体活动', reserved: '专场预约', joinOnline: '线上登记', joinOffline: '线下亲临',
+    monthly: '每月{day}日', daily: '每日', prev: '上一张', next: '下一张', back: '返回道会活动',
+  },
+  registerDialog: {
+    subtitle: '善信登记 · 共赴道会', name: '善信姓名', namePlaceholder: '用于现场核验与功德登记', mobile: '联络手机', mobilePlaceholder: '请输入手机号码',
+    companions: '随行人数', selfOnly: '0人 仅本人', companionCount: '{count}人', wish: '祈福心愿(选填)', wishPlaceholder: '心愿不拘多少，道长代呈疏文',
+    next: '下一步 · 核对信息', notice: '请线上登记姓名、手机号码，线下准时参加，出示登记信息',
+    nameRequired: '请填写善信姓名', mobileRequired: '请输入手机号码', mobileInvalid: '请输入正确的手机号码',
+    confirmTitle: '核对登记信息', confirmSubtitle: '信息无误，即登记功德', gathering: '道会', devotee: '善信', phone: '手机', party: '随行人数', partyValue: '{count}人', self: '仅本人',
+    back: '返回修改', submit: '登记功德', submitting: '登记中',
+    successTitle: '登记功德已成', successSubtitle: '感恩善信护持，请于道会时间准时赴会', cert: '登记凭证',
+    sms: '同时会将登记成功结果信息以短信形式发送至{mobile}', arrival: '到场出示登记信息，即可核验入场，福生无量天尊！', closeBlessing: '福生无量天尊', failed: '登记失败，请稍后再试',
+  },
+  schedule: {
+    breadcrumb: '道会日程', eyebrow: 'Ritual Schedule', title: '道会日程', subtitle: '线上登记 · 随缘参加',
+    futureTitle: '道会日程 · 未来规划', futureSubtitle: '未来规划 · 随缘参加 · 共修共福',
+    previous: '上一页', next: '下一页', pageInfo: '第 {current} / {total} 页', total: '共 {count} 条', pagination: '道会日程分页',
+  },
 }

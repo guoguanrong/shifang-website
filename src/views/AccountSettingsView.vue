@@ -76,7 +76,7 @@ const errors = computed(() => {
 
 watch(user, value => {
   savedProfile.value = null
-  Object.assign(form, { name: value?.name || '', phone: value?.phone || '', email: value?.email || '' })
+  Object.assign(form, { name: value?.nickname || '', phone: value?.phone || '', email: value?.email || '' })
   notice.value = ''
   attempted.value = false
 }, { immediate: true, flush: 'sync' })

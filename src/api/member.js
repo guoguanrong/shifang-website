@@ -17,6 +17,15 @@ export function getMemberById(id) {
 }
 
 /**
+ * 获取当前登录会员信息
+ * @param {object} [options] 额外请求配置，如 { silent: true } 关闭全局错误弹窗
+ * @returns {Promise<object>} MemberVo
+ */
+export function getMemberInfo(options) {
+  return request({ url: '/member/info', ...options })
+}
+
+/**
  * 注册会员
  * @param {object} data RegisterBody{email*, emailCode*, phone*(含国际区号), smsCode*, sessionInfo, source, uvid*}
  * @param {object} [options] 额外请求配置，如 { silent: true } 关闭全局错误弹窗

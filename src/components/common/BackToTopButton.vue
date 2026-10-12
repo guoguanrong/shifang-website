@@ -11,9 +11,23 @@ import arrow from '@/assets/site-tools/top-arrow.svg'
 
 defineProps({ label: { type: String, required: true } })
 
+let frame = 0
+
 function scrollToTop() {
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  window.scrollTo({ top: 0, behavior: reducedMotion ? 'instant' : 'smooth' })
+  const scroller = document.scrollingElement || document.documentElement
+  const start = scroller.scrollTop
+  if (start <= 0) return
+  cancelAnimationFrame(frame)
+  // 距离越长略久一点，但控制在可感知的缓动里，避免一下跳到顶部。
+  const duration = Math.min(1000, Math.max(620, start * 0.4))
+  const startTime = performance.now()
+  const step = (now) => {
+    const progress = Math.min(1, (now - startTime) / duration)
+    const eased = 1 - Math.pow(1 - progress, 3)
+    scroller.scrollTop = start * (1 - eased)
+    if (progress < 1) frame = requestAnimationFrame(step)
+  }
+  frame = requestAnimationFrame(step)
 }
 </script>
 

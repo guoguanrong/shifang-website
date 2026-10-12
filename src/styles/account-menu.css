@@ -47,7 +47,7 @@
 .account-body { padding: 20px 28px 16px; }
 .account-statistics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 0 -14px 18px; text-align: center; }
 .account-statistics > a { display: block; min-width: 0; padding: 4px; border-radius: 12px; text-decoration: none; }
-.account-stat-number { display: block; margin: 0 0 4px; color: #000; font-size: 28px; line-height: 1.2; }
+.account-stat-number { display: block; margin: 0 0 4px; color: #000; font-size: 28px; line-height: 1.2; font-variant-numeric: tabular-nums; }
 .account-stat-label { display: block; color: #696969; font-size: 12px; line-height: 24px; overflow-wrap: anywhere; }
 .account-statistics > a:nth-child(2) span { color: #c7955f; }
 .account-statistics > a:hover { background: #f8f5f1; }

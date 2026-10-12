@@ -10,7 +10,7 @@
       <hr />
       <p class="desc">{{ item.desc }}</p>
       <div class="tags"><span v-for="tag in item.tags" :key="tag">{{ tag }}</span></div>
-      <CeremonialButton :label="details" />
+      <CeremonialButton :label="details" :to="item.id != null && item.id !== '' ? { name: 'event-detail', params: { id: item.id } } : undefined" />
     </div>
   </article>
 </template>

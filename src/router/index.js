@@ -197,6 +197,29 @@ const router = createRouter({
       name: 'events',
       component: () => import('@/views/EventsView.vue'),
     },
+    // 道会日程：近期「查看更多」，活动列表每页 9 条。
+    {
+      path: '/events/schedule',
+      name: 'event-schedule',
+      meta: { navigation: 'events' },
+      props: { isFuture: 0 },
+      component: () => import('@/views/EventScheduleView.vue'),
+    },
+    // 未来规划日程：未来道会「查看更多」，同样分页，每页 9 条。
+    {
+      path: '/events/schedule/future',
+      name: 'event-schedule-future',
+      meta: { navigation: 'events' },
+      props: { isFuture: 1 },
+      component: () => import('@/views/EventScheduleView.vue'),
+    },
+    // 道会详情：从活动卡片「了解详情」进入，按活动 id 拉取内容。
+    {
+      path: '/events/:id',
+      name: 'event-detail',
+      meta: { navigation: 'events' },
+      component: () => import('@/views/EventDetailView.vue'),
+    },
     // 供灯祈福：祈福纳祥的二级页，展示各类灯供。
     {
       path: '/blessings/lamps',

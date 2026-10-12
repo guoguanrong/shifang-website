@@ -20,8 +20,8 @@ export function getActivityRegisterById(id) {
  * 新增活动报名（道会登记）
  * @param {object} data {activityId, username, mobile, followUser, prayWish, cert}
  */
-export function saveActivityRegister(data) {
-  return request({ url: '/activityRegister/save', method: 'post', data })
+export function saveActivityRegister(data, options) {
+  return request({ url: '/activityRegister/save', method: 'post', data, ...options })
 }
 
 /**

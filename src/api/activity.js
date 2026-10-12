@@ -2,18 +2,21 @@ import { request } from './http'
 
 /**
  * 获取活动列表
- * @param {object} data {searchKey, status, startTime, endTime, page, pageSize, title, activityType, type}
+ * @param {object} data {searchKey, status, startTime, endTime, page, pageSize, title, activityType, type, isFuture}
+ * isFuture：0 近期道会，1 未来道会
+ * @param {object} [options] 额外请求配置，如 { silent: true }
  */
-export function getActivityList(data) {
-  return request({ url: '/activity/list', method: 'post', data })
+export function getActivityList(data, options) {
+  return request({ url: '/activity/list', method: 'post', data, ...options })
 }
 
 /**
  * 获取活动详情
- * @param {number} id 活动 id
+ * @param {number|string} id 活动 id
+ * @param {object} [options] 额外请求配置，如 { silent: true }
  */
-export function getActivityById(id) {
-  return request({ url: `/activity/get/${id}` })
+export function getActivityById(id, options) {
+  return request({ url: `/activity/get/${id}`, ...options })
 }
 
 /**

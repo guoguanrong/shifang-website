@@ -4,30 +4,74 @@
     <main class="events-stage">
       <EventsHero />
       <EventOpportunities />
-      <EventCardsSection class="recent" kind="recent" :title="t('events.recentTitle')" :items="recentItems"
-        :images="recentImages" />
-      <EventCardsSection class="future" kind="future" :title="t('events.futureTitle')" :items="futureItems"
-        :images="futureImages" />
+      <EventCardsSection class="recent" kind="recent" :title="t('events.recentTitle')" :items="recentActivities"
+        :images="recentImages" :loading="recentLoading" :more-to="{ name: 'event-schedule' }" />
+      <EventCardsSection class="future" kind="future" :title="t('events.futureTitle')" :items="futureActivities"
+        :images="futureImages" :loading="futureLoading" :more-to="{ name: 'event-schedule-future' }" />
     </main>
     <HomeFooter />
   </div>
 </template>
 <script setup>
-import { computed } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { setAppLocale } from '@/i18n'
+import { getActivityList } from '@/api/activity'
 import HomeHeader from '@/components/home/HomeHeader.vue'
 import HomeFooter from '@/components/home/HomeFooter.vue'
 import EventsHero from '@/components/events/EventsHero.vue'
 import EventOpportunities from '@/components/events/EventOpportunities.vue'
 import EventCardsSection from '@/components/events/EventCardsSection.vue'
+import { formatSchedule, splitList, text } from '@/utils/activityDisplay'
 import recent1 from '@/assets/events/recent-1.webp'; import recent2 from '@/assets/events/recent-2.webp'; import recent3 from '@/assets/events/recent-3.webp'; import recent4 from '@/assets/events/recent-4.webp'; import recent5 from '@/assets/events/recent-5.webp'; import recent6 from '@/assets/events/recent-6.webp'
 import future1 from '@/assets/events/future-1.webp'; import future2 from '@/assets/events/future-2.webp'; import future3 from '@/assets/events/future-3.webp'; import future4 from '@/assets/events/future-4.webp'; import future5 from '@/assets/events/future-5.webp'; import future6 from '@/assets/events/future-6.webp'
+
+const PAGE_SIZE = 6
 const recentImages = [recent1, recent2, recent3, recent4, recent5, recent6]
 const futureImages = [future1, future2, future3, future4, future5, future6]
-const { t, tm } = useI18n()
-const recentItems = computed(() => tm('events.cards'))
-const futureItems = computed(() => tm('events.futureCards'))
+const { t } = useI18n()
+const recentLoading = ref(true)
+const futureLoading = ref(true)
+const recentActivities = ref([])
+const futureActivities = ref([])
+
+function mapActivity(item, index, images) {
+  const pictures = splitList(item.pictureUrls)
+  return {
+    id: item.id ?? null,
+    title: text(item.title),
+    date: text(item.subTitle) || formatSchedule(item),
+    desc: text(item.intro),
+    tags: splitList(item.tag),
+    image: pictures[0] || images[index % images.length],
+  }
+}
+
+async function loadActivities(isFuture, images) {
+  const result = await getActivityList({ isFuture, page: 1, pageSize: PAGE_SIZE }, { silent: true })
+  const list = Array.isArray(result) ? result : result?.list
+  if (!Array.isArray(list)) return []
+  return list
+    .filter((item) => Number(item?.type) !== 2)
+    .map((item, index) => mapActivity(item, index, images))
+}
+
+async function loadSection(isFuture, images, target, loading) {
+  try {
+    target.value = await loadActivities(isFuture, images)
+  } catch {
+    // 1002 等失败，以及 data 为 null，都按暂无数据处理。
+    target.value = []
+  } finally {
+    loading.value = false
+  }
+}
+
+onMounted(() => {
+  loadSection(0, recentImages, recentActivities, recentLoading)
+  loadSection(1, futureImages, futureActivities, futureLoading)
+})
+
 const setLocale = (locale) => setAppLocale(locale)
 </script>
 <style scoped>

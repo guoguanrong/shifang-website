@@ -100,7 +100,7 @@ const props = defineProps({ mode: { type: String, required: true, validator: (va
 const emit = defineEmits(['close', 'switch-mode'])
 
 const { t } = useI18n()
-const { startDemoSession } = useUserSession()
+const { refreshMemberInfo, startDemoSession } = useUserSession()
 // 当前是注册还是登录，决定标题、字段与校验项。
 const isRegister = computed(() => props.mode === 'register')
 // 供 aria-labelledby 使用的标题 id。
@@ -151,6 +151,12 @@ function showError(description) {
   feedback.value = { title: t('portal.auth.errorTitle'), description, action: t('portal.auth.dismiss'), success: false }
 }
 
+// 令牌写入后拉取会员资料。接口暂时不可用时仍用邮箱进入本地会话，不中断登录。
+async function establishSession(email) {
+  const profile = await refreshMemberInfo({ fallbackEmail: email, signOutOnAuthError: false })
+  if (!profile) startDemoSession(email)
+}
+
 // 登录/注册：校验通过后调用对应接口，成功后保存 accessToken 并进入登录态。
 async function submit() {
   const error = validationMessage()
@@ -170,7 +176,7 @@ async function submit() {
         setToken(loginResult.accessToken)
       }
 
-      startDemoSession(form.email)
+      await establishSession(form.email)
       feedback.value = {
         title: t('portal.auth.successTitle'),
         description: t('portal.auth.successDescription'),
@@ -210,7 +216,7 @@ async function submit() {
         setToken(loginResult.accessToken)
       }
 
-      startDemoSession(form.email)
+      await establishSession(form.email)
       feedback.value = {
         title: t('portal.auth.registerSuccessTitle'),
         description: t('portal.auth.successDescription'),

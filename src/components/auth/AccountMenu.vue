@@ -4,7 +4,7 @@
   <button ref="trigger" class="account-trigger" type="button" aria-haspopup="dialog" :aria-expanded="isOpen"
     :aria-controls="dialogId" :aria-label="t('portal.account.open', { name: user.name })"
     @pointerenter="onTriggerEnter" @pointerleave="onTriggerLeave" @click="toggle">
-    <img :src="avatar" alt="" width="36" height="36" />
+    <img :src="avatarSrc" alt="" width="36" height="36" @error="onAvatarError" />
     <span :title="user.name">{{ user.name }}</span>
   </button>
 
@@ -17,7 +17,7 @@
         <!-- 顶部资料区：头像、昵称、实名状态与会员编号。 -->
         <header class="account-profile">
           <button class="account-close" type="button" autofocus :aria-label="t('portal.common.close')" @click="close">×</button>
-          <img class="account-avatar" :src="avatar" alt="" width="128" height="128" />
+          <img class="account-avatar" :src="avatarSrc" alt="" width="128" height="128" @error="onAvatarError" />
           <div class="account-identity">
             <h2>{{ user.name }}</h2>
             <!-- 实名状态入口与个人设置共用认证页面。 -->
@@ -29,10 +29,10 @@
         </header>
 
         <div class="account-body">
-          <!-- 三项数据概览：点灯、捐赠、供奉，暂未接接口故统一显示占位符。 -->
+          <!-- 三项数据概览：供灯、捐赠次数、供奉，来自当前登录会员信息。 -->
           <nav class="account-statistics" :aria-label="t('accountPages.records.navigation')">
             <RouterLink v-for="stat in statistics" :key="stat.id" :to="stat.to" @click="close">
-              <span class="account-stat-number" :aria-label="t('portal.account.noStatistics')">—</span>
+              <span class="account-stat-number"><CountUp :value="statValue(stat.id)" :active="isOpen" /></span>
               <span class="account-stat-label">{{ t(`portal.account.${stat.id}`) }}</span>
             </RouterLink>
           </nav>
@@ -73,11 +73,12 @@
 </template>
 
 <script setup>
-import { nextTick, onBeforeUnmount, ref, useId, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, ref, useId, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { RouterLink, useRoute } from 'vue-router'
 import { useUserSession } from '@/composables/useUserSession'
-import avatar from '@/assets/account/avatar.webp'
+import CountUp from '@/components/common/CountUp.vue'
+import defaultAvatar from '@/assets/account/avatar.webp'
 import verifiedIcon from '@/assets/account/verified.svg'
 import volunteerIcon from '@/assets/account/volunteer.svg'
 import ordersIcon from '@/assets/account/orders.svg'
@@ -94,7 +95,23 @@ const emit = defineEmits(['open', 'logout'])
 const { t } = useI18n()
 const route = useRoute()
 // 登录用户信息与退出方法由全局会话 composable 提供。
-const { user, signOut } = useUserSession()
+const { user, refreshMemberInfo, signOut } = useUserSession()
+const avatarBroken = ref(false)
+const avatarSrc = computed(() => (!avatarBroken.value && user.value?.avatar) || defaultAvatar)
+
+watch(() => user.value?.avatar, () => {
+  avatarBroken.value = false
+})
+const statKeys = { lampCount: 'lightCount', donationCount: 'donateCount', deityCount: 'worshipCount' }
+
+function statValue(id) {
+  const value = Number(user.value?.[statKeys[id]])
+  return Number.isFinite(value) ? value : 0
+}
+
+function onAvatarError() {
+  avatarBroken.value = true
+}
 const dialogId = `account-${useId()}`
 const trigger = ref(null)
 const dialog = ref(null)
@@ -186,16 +203,31 @@ function toggle() {
  * @param {{ lockScroll?: boolean }} options 悬停打开时传 lockScroll: false ——
  *   否则鼠标停在头像上就会锁住整页滚动。
  */
-function open({ lockScroll = true } = {}) {
+function open({ lockScroll = true } = {}, retried = false) {
   if (isOpen.value) return
+  // Teleport 到 body 的 dialog 在刚挂载或热更新后可能还没写上 ref，悬停会早于它一步。
+  const panel = dialog.value
+  if (!panel) {
+    if (!retried) nextTick(() => open({ lockScroll }, true))
+    return
+  }
   selectedService.value = ''
+  refreshMemberInfo()
   updatePosition()
   if (lockScroll) {
     previousOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
     scrollLocked = true
   }
-  dialog.value.showModal()
+  try {
+    if (!panel.open) panel.showModal()
+  } catch {
+    if (scrollLocked) {
+      document.body.style.overflow = previousOverflow
+      scrollLocked = false
+    }
+    return
+  }
   isOpen.value = true
   window.addEventListener('resize', updatePosition)
   window.visualViewport?.addEventListener('resize', updatePosition)
