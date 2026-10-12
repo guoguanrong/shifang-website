@@ -11,6 +11,12 @@ export default {
   filters: ['全部', '事业', '学业', '平安', '财运', '健康'],
   meritLabel: '所求功德',
   actions: { light: '线上点灯', offer: '神像供奉' },
+  monthlyPrice: '月供',
+  yearlyPrice: '年供',
+  worshipUnavailable: '供奉暂未开放',
+  lightUnavailable: '该神像暂未配置线上点灯',
+  lightLookupFailed: '读取点灯配置失败，请稍后重试',
+  lightUnknownDeity: '无法识别该神像的点灯配置',
   empty: '该分类暂无神祇资料',
   backToTop: '返回顶部',
   featured: {

@@ -38,6 +38,9 @@ export default {
   "chooseAmount": "Choose Your Amount",
   "chooseGoods": "Choose Supplies to Sponsor",
   "goodsNote": "Your contribution funds the purchase of the selected supplies. ShiFang Hall arranges procurement and records each donation for temple construction and offerings.",
+  "targetLabel": "Donation Goal",
+  "noTargets": "No donation goals are currently available.",
+  "noGoods": "No donation items are configured for this goal yet.",
   "amountLabels": [
     "A Kind Beginning",
     "Flowers & Lamps",

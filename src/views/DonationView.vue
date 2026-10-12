@@ -5,6 +5,13 @@
     <article class="donation-paper offering-paper">
       <section class="donation-types">
         <OrnateSectionHeading :art="headingArt" :title="t('donation.chooseType')" />
+        <div v-if="targetOptions.length" class="donation-target-select">
+          <label for="donation-target">{{ t('donation.targetLabel') }}</label>
+          <select id="donation-target" :value="selectedTarget?.id || ''" @change="setTarget($event.target.value)">
+            <option v-for="target in targetOptions" :key="target.id" :value="target.id">{{ target.title }}</option>
+          </select>
+        </div>
+        <p v-else class="donation-target-empty" role="status">{{ t('donation.noTargets') }}</p>
         <!-- 类型切换实现为 tablist：支持左右方向键与 Home/End 切换，并同步移动焦点。 -->
         <div class="donation-tabs" role="tablist" :aria-label="t('donation.chooseType')">
           <button v-for="(type, index) in types" :id="`donation-tab-${type}`" :key="type" type="button" role="tab"
@@ -28,8 +35,8 @@
         <!-- 实时汇总当前选择；aria-live 让读屏用户也能感知金额变化。 -->
         <dl class="donation-summary" aria-live="polite" aria-atomic="true">
           <div><dt>{{ t('donation.typeLabel') }}</dt><dd>{{ t(`donation.types.${mode}.title`) }}</dd></div>
-          <div v-if="mode === 'goods'"><dt>{{ t('donation.itemLabel') }}</dt><dd>{{ t(`donation.items.${itemIndex}.name`) }} × {{ quantity }}</dd></div>
-          <div><dt>{{ t('donation.purposeLabel') }}</dt><dd>{{ t(`donation.purposes.${mode}`) }}</dd></div>
+          <div v-if="mode === 'goods'"><dt>{{ t('donation.itemLabel') }}</dt><dd>{{ selectedGood?.name || t('donation.noGoods') }} × {{ quantity }}</dd></div>
+          <div><dt>{{ t('donation.purposeLabel') }}</dt><dd>{{ selectedTarget?.title || t(`donation.purposes.${mode}`) }}</dd></div>
           <div class="donation-total"><dt>{{ t('donation.total') }}</dt><dd>{{ formattedTotal }}</dd></div>
         </dl>
         <div class="donation-pay">
@@ -44,7 +51,7 @@
 </template>
 
 <script setup>
-import { computed, nextTick, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import OfferingPageShell from '@/components/offerings/OfferingPageShell.vue'
@@ -53,58 +60,112 @@ import CeremonialButton from '@/components/common/CeremonialButton.vue'
 import DonationOptions from '@/components/co-build/DonationOptions.vue'
 import DonationDonorForm from '@/components/co-build/DonationDonorForm.vue'
 import DonationDialog from '@/components/co-build/DonationDialog.vue'
+import { getDonateTargetList } from '@/api/donateTarget'
+import { getShopItemsList } from '@/api/shopItems'
 import headingArt from '@/assets/donation/heading.svg'
 import moneyArt from '@/assets/donation/money.png'
 import goodsArt from '@/assets/donation/goods.png'
-import brick from '@/assets/donation/brick.webp'
-import tile from '@/assets/donation/tile.webp'
-import incense from '@/assets/donation/incense.webp'
-import fruit from '@/assets/donation/fruit.webp'
-import wood from '@/assets/donation/wood.webp'
-import gilding from '@/assets/donation/gilding.webp'
 import '@/styles/donation.css'
 
 const { t, locale } = useI18n()
 const route = useRoute()
 const router = useRouter()
-// 两种捐赠类型：善款 money 与实物 goods。
 const types = ['money', 'goods']
-// 当前类型取自地址栏 ?type=，缺省为善款；分享或刷新页面都能保持同一类型。
-const mode = computed(() => route.query.type === 'goods' ? 'goods' : 'money')
-// 善款：预设金额或自填金额；实物：选中的物品索引与数量。
+const mode = computed(() => ['2', 'goods'].includes(String(route.query.type)) ? 'goods' : 'money')
+const goals = ref([])
+const shopItems = ref([])
 const amount = ref(1000)
 const customAmount = ref('')
-const itemIndex = ref(5)
+const itemIndex = ref(0)
 const quantity = ref(10)
 const donorForm = ref(null)
-// 弹窗状态：null 表示关闭，'amount' 金额非法、'name' 未填姓名、'confirm' 确认下单。
 const dialogState = ref(null)
 const order = ref(null)
-// 切换类型时关掉可能残留的提示弹窗。
-watch(mode, () => { dialogState.value = null })
-// 实物捐赠的单价表，数组下标即 itemIndex。
-const goods = [
-  { id: 'brick', price: 50, image: brick },
-  { id: 'tile', price: 100, image: tile },
-  { id: 'incense', price: 150, image: incense },
-  { id: 'fruit', price: 200, image: fruit },
-  { id: 'wood', price: 500, image: wood },
-  { id: 'gilding', price: 1000, image: gilding },
-]
-// 自填金额需为 50 ~ 999999999 之间、最多两位小数的数字。
+const targetOptions = computed(() => goals.value.filter((goal) => Number(goal.type) === (mode.value === 'goods' ? 2 : 1)))
+const selectedTarget = computed(() => targetOptions.value.find((goal) => String(goal.id) === String(route.query.targetId)) || targetOptions.value[0] || null)
+const goods = computed(() => shopItems.value
+  .filter((item) => Number(item.type) === 2 && (item.status === undefined || Number(item.status) === 1))
+  .map((item) => ({
+    ...item,
+    id: Number(item.id),
+    picture: item.picture || item.image || '',
+    name: item.name || '',
+    price: Number(item.price || 0),
+    unit: item.unit || '',
+  })))
+const selectedGood = computed(() => goods.value[itemIndex.value] || null)
 const invalidAmount = computed(() => customAmount.value !== '' && (!Number.isFinite(Number(customAmount.value)) || Number(customAmount.value) < 50 || Number(customAmount.value) > 999999999 || !/^\d+(\.\d{1,2})?$/.test(customAmount.value)))
-// 实物为单价 × 数量；善款金额非法时返回 null，界面显示占位符。
-const total = computed(() => mode.value === 'goods' ? goods[itemIndex.value].price * quantity.value : invalidAmount.value ? null : Number(customAmount.value || amount.value))
-// 按当前语言格式化金额。
+const total = computed(() => mode.value === 'goods'
+  ? selectedGood.value ? selectedGood.value.price * quantity.value : null
+  : invalidAmount.value ? null : Number(customAmount.value || amount.value))
 const formattedTotal = computed(() => total.value === null ? '—' : `$${new Intl.NumberFormat(locale.value, { maximumFractionDigits: 2 }).format(total.value)}`)
 
-// 用 replace 改写地址栏，切换类型不留下多余历史记录。
+function getList(payload) {
+  const result = payload?.data ?? payload
+  if (Array.isArray(result)) return result
+  return result?.list || result?.records || []
+}
+
+async function getAllPages(fetchPage) {
+  const records = []
+  let page = 1
+  let totalPage = 1
+  do {
+    const payload = await fetchPage({ page, pageSize: 200 })
+    const result = payload?.data ?? payload
+    const pageRecords = getList(result)
+    records.push(...pageRecords)
+    totalPage = Number(result?.totalPage) || 1
+    if (!pageRecords.length || page >= totalPage) break
+    page += 1
+  } while (page <= 50)
+  return records
+}
+
+async function loadDonationData() {
+  const [targetResult, itemResult] = await Promise.allSettled([
+    getAllPages(getDonateTargetList),
+    getAllPages(getShopItemsList),
+  ])
+  if (targetResult.status === 'fulfilled') {
+    goals.value = targetResult.value.map((goal) => ({
+      ...goal,
+      id: Number(goal.id),
+      type: Number(goal.type),
+      completedAmount: Number(goal.completedAmount || 0),
+      shopItems: goal.shopItems || goal.shopItemsIds || [],
+    }))
+  }
+  if (itemResult.status === 'fulfilled') {
+    shopItems.value = itemResult.value.filter((item) => Number(item.status) === 1)
+  }
+}
+
+watch(mode, () => {
+  dialogState.value = null
+  itemIndex.value = 0
+})
+watch(goods, () => {
+  if (itemIndex.value >= goods.value.length) itemIndex.value = 0
+})
+
 function setMode(type) {
-  return router.replace({ query: { ...route.query, type } })
+  const numericType = type === 'goods' ? '2' : '1'
+  const matchingTarget = goals.value.find((goal) => Number(goal.type) === Number(numericType))
+  const query = { ...route.query, type: numericType }
+  if (matchingTarget) query.targetId = String(matchingTarget.id)
+  else delete query.targetId
+  return router.replace({ query })
+}
+
+function setTarget(id) {
+  itemIndex.value = 0
+  return router.replace({ query: { ...route.query, targetId: String(id) } })
 }
 
 // 提交前依次校验：自填金额是否合法、非匿名时是否填写姓名、表单其余字段是否通过。
 function openConfirmation(details) {
+  if (!selectedTarget.value || (mode.value === 'goods' && !selectedGood.value)) return
   if (mode.value === 'money' && invalidAmount.value) {
     dialogState.value = 'amount'
     return
@@ -114,7 +175,17 @@ function openConfirmation(details) {
     return
   }
   if (!donorForm.value.validate()) return
-  order.value = { ...details, mode: mode.value, amount: total.value, itemIndex: itemIndex.value, quantity: quantity.value }
+  order.value = {
+    ...details,
+    mode: mode.value,
+    targetId: selectedTarget.value.id,
+    targetTitle: selectedTarget.value.title,
+    shopItemsId: selectedGood.value?.id,
+    itemName: selectedGood.value?.name,
+    amount: total.value,
+    itemIndex: itemIndex.value,
+    quantity: quantity.value,
+  }
   dialogState.value = 'confirm'
 }
 
@@ -138,4 +209,6 @@ async function onTabKey(event, index) {
   await nextTick()
   document.getElementById(`donation-tab-${types[next]}`)?.focus()
 }
+
+onMounted(loadDonationData)
 </script>

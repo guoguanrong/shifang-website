@@ -11,6 +11,12 @@ export default {
   filters: ['All', 'Career', 'Study', 'Peace', 'Wealth', 'Health'],
   meritLabel: 'Blessing',
   actions: { light: 'Light a Lamp', offer: 'Make an Offering' },
+  monthlyPrice: 'Monthly',
+  yearlyPrice: 'Annual',
+  worshipUnavailable: 'Offering is not available yet',
+  lightUnavailable: 'Online lamp lighting is not configured for this deity.',
+  lightLookupFailed: 'Could not load the lamp configuration. Please try again.',
+  lightUnknownDeity: 'This deity could not be matched to a lamp configuration.',
   empty: 'No deity profiles are available in this category.',
   backToTop: 'Back to top',
   featured: {

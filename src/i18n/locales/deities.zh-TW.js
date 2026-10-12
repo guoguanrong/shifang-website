@@ -6,7 +6,12 @@ export default {
   },
   filtersLabel: '按所求分類篩選神祇',
   filters: ['全部', '事業', '學業', '平安', '財運', '健康'],
-  meritLabel: '所求功德', actions: { light: '線上點燈', offer: '神像供奉' }, empty: '該分類暫無神祇資料', backToTop: '返回頂部',
+  meritLabel: '所求功德', actions: { light: '線上點燈', offer: '神像供奉' },
+  monthlyPrice: '月供', yearlyPrice: '年供', worshipUnavailable: '供奉尚未開放',
+  lightUnavailable: '該神祇尚未設定線上點燈',
+  lightLookupFailed: '讀取點燈設定失敗，請稍後再試',
+  lightUnknownDeity: '無法識別該神祇的點燈設定',
+  empty: '該分類暫無神祇資料', backToTop: '返回頂部',
   featured: {
     id: 'doumu', categories: ['health', 'peace'], title: '斗姆元君', subtitle: '北斗眾星之母 · 消災延壽', tags: ['消 災', '延 壽', '解 厄'],
     description: '斗姆元君，又稱斗姥、中天梵炁斗姥元君，為北斗眾星之母，是道教最重要的女神之一。據《斗姥經》記載，斗姆元君乃先天一炁化生，化身於中天梵炁斗府，育化北斗九皇、南斗六司及周天列宿，掌管人的生死壽夭、禍福吉凶。',

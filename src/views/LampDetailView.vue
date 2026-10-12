@@ -19,21 +19,32 @@
       <OrnateSectionHeading :title="t('offerings.orderTitle')" />
       <div class="lamp-material-package">
         <dl><div><dt>{{ t('offerings.lampType') }}</dt><dd>{{ lamp.title }}</dd></div><div><dt>{{ t('offerings.lighting') }}</dt><dd class="lamp-free">{{ t('offerings.free') }}</dd></div><div><dt>{{ t('offerings.materials') }}</dt><dd>{{ t('offerings.materialPackage') }}</dd></div></dl>
-        <div class="lamp-materials"><article v-for="(material, index) in tm('lampDetail.materials')" :key="material.title" class="lamp-material" :class="{ 'is-incense': index === 1 }">
-          <img :src="materialImages[index]" alt="" /><div class="lamp-material-caption"><h3>{{ material.title }}</h3><p>{{ material.text }}</p></div>
+        <div class="lamp-materials"><article v-for="(material, index) in materials" :key="material.id || material.title || material.name" class="lamp-material" :class="{ 'is-incense': index === 1 }">
+          <img :src="material.picture || materialImages[index % materialImages.length]" alt="" /><div class="lamp-material-caption"><h3>{{ material.name || material.title }}</h3><p>{{ material.useType || material.text || material.unit }}</p></div>
         </article></div>
-        <div class="lamp-package-total"><span>{{ t('lampDetail.total') }}</span><strong>$88</strong></div>
+        <div v-if="!lightLoading && (staticLamp || currentLight)" class="lamp-package-total"><span>{{ t('lampDetail.total') }}</span><strong>${{ price }}</strong></div>
       </div>
-      <OfferingOrderForm :key="lampId" class="lamp-detail-form" :amount="88" hide-total :submit-label="`${t('offerings.pay')}  $88`" @submit="details = $event" />
+      <div v-if="lightLoading" class="lamp-detail-loading" role="status" aria-label="Loading lamp information"><span /></div>
+      <OfferingOrderForm
+        v-else-if="currentLight || (staticLamp && !route.query.lightId)"
+        :key="`${lampId}-${route.query.lightId || ''}`"
+        class="lamp-detail-form"
+        :amount="price"
+        hide-total
+        :submit-label="`${t('offerings.pay')}  $${price}`"
+        @submit="details = $event"
+      />
     </section>
     <OfferingNotices :title="t('lampDetail.noticesTitle')" />
-    <OfferingDialog v-if="details" :title="lamp.title" :amount="88" :details="details" @close="details = null" />
+    <OfferingDialog v-if="details" :title="lamp.title" :amount="price" :details="details" @close="details = null" />
   </OfferingPageShell>
 </template>
 
 <script setup>
 import { computed, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { getLightById } from '@/api/light'
 import OfferingPageShell from '@/components/offerings/OfferingPageShell.vue'
 import OfferingOrderForm from '@/components/offerings/OfferingOrderForm.vue'
 import OfferingDialog from '@/components/offerings/OfferingDialog.vue'
@@ -55,12 +66,68 @@ import '@/styles/lamp-detail.css'
 
 const props = defineProps({ lampId: { type: String, required: true } })
 const { t, tm } = useI18n()
-const lamp = computed(() => tm('offerings.lamps').find(item => item.id === props.lampId))
-const portrait = computed(() => ({ guangming, taisui, wenchang })[props.lampId])
+const route = useRoute()
+const currentLight = ref(null)
+const lightLoading = ref(false)
+const details = ref(null)
+const staticLamp = computed(() => tm('offerings.lamps').find(item => item.id === props.lampId))
+const lamp = computed(() => ({
+  id: props.lampId,
+  title: currentLight.value?.name || staticLamp.value?.title || t('offerings.lampTitle'),
+  eyebrow: staticLamp.value?.eyebrow || t('offerings.lampEyebrow'),
+  description: staticLamp.value?.description || currentLight.value?.matchGod || '',
+  audience: staticLamp.value?.audience || '',
+}))
+const portrait = computed(() => currentLight.value?.picture || ({ guangming, taisui, wenchang })[props.lampId] || guangming)
 // 独立长文仅提供光明灯；其他灯种沿用自身介绍，不套用光明灯的道场资料。
 const description = computed(() => props.lampId === 'guangming' ? tm('lampDetail.guangmingDescription') : [lamp.value.description, lamp.value.audience])
 const meritImages = [wisdom, peace, fortune]
 const materialImages = [oil, incense, prayer]
-const details = ref(null)
-watch(() => props.lampId, () => { details.value = null })
+const materials = computed(() => {
+  const configuredMaterials = currentLight.value?.shopItemsList
+  if (currentLight.value && Array.isArray(configuredMaterials)) return configuredMaterials
+  return tm('lampDetail.materials')
+})
+const price = computed(() => {
+  const configuredPrice = Number(currentLight.value?.price)
+  return Number.isFinite(configuredPrice) && currentLight.value?.price !== undefined ? configuredPrice : 88
+})
+
+let lightRequestVersion = 0
+watch(() => route.query.lightId, async (id) => {
+  const requestVersion = ++lightRequestVersion
+  currentLight.value = null
+  details.value = null
+  lightLoading.value = Boolean(id)
+  if (!id) return
+  try {
+    const light = await getLightById(id)
+    if (requestVersion === lightRequestVersion) currentLight.value = light
+  } catch {
+    if (requestVersion === lightRequestVersion) currentLight.value = null
+  } finally {
+    if (requestVersion === lightRequestVersion) lightLoading.value = false
+  }
+}, { immediate: true })
 </script>
+
+<style scoped>
+.lamp-detail-loading {
+  display: grid;
+  min-height: 72px;
+  place-items: center;
+}
+
+.lamp-detail-loading span {
+  width: 24px;
+  height: 24px;
+  border: 2px solid rgba(141, 104, 58, .2);
+  border-top-color: #8d683a;
+  border-radius: 50%;
+  animation: lamp-loading-spin .7s linear infinite;
+}
+
+@keyframes lamp-loading-spin {
+  to { transform: rotate(360deg); }
+}
+</style>

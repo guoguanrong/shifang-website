@@ -18,6 +18,9 @@ export default {
     progressLabel: '筹款进度',
     raisedLabel: '已筹集',
     raised: '$8,624,300',
+    targetStatLabel: '筹款目标',
+    completedStatLabel: '已筹金额',
+    typeStatLabel: '捐赠类型',
     stats: [
       { label: '已捐赠善款', value: '$8,624,300' },
       { label: '已使用善款', value: '$2,624,300' },

@@ -1,5 +1,5 @@
 <template>
-  <section class="co-build-hero">
+  <section class="co-build-hero" :style="{ '--hero-height': `${heroHeight}px` }">
     <!-- 全站内页统一顶部背景，募捐卡片的独立切图不变。 -->
     <PageHeroBackground />
 
@@ -18,44 +18,47 @@
     <CoBuildSectionHeading class="fundraising-heading" :title="t('coBuild.project.heading')"
       :subtitle="t('coBuild.project.eyebrow')" />
 
-    <article id="donation-project" class="project-card">
-      <img class="project-frame project-frame-outer" :src="projectFrameOuter" alt="" aria-hidden="true" />
-      <img class="project-frame project-frame-inner" :src="projectFrameInner" alt="" aria-hidden="true" />
-      <div class="project-card-inner">
-        <figure class="project-photo">
-          <img class="project-photo-frame" :src="projectImageFrame" alt="" aria-hidden="true" />
-          <!-- <img class="project-photo-image" :src="projectTemple" :alt="t('coBuild.project.title')" /> -->
-        </figure>
+    <div class="project-list">
+      <article v-for="(goal, index) in displayGoals" :id="index === 0 ? 'donation-project' : undefined"
+        :key="goal?.id || 'fallback-project'" class="project-card">
+        <img class="project-frame project-frame-outer" :src="projectFrameOuter" alt="" aria-hidden="true" />
+        <img class="project-frame project-frame-inner" :src="projectFrameInner" alt="" aria-hidden="true" />
+        <div class="project-card-inner">
+          <figure class="project-photo">
+            <img class="project-photo-frame" :src="projectImageFrame" alt="" aria-hidden="true" />
+            <img class="project-photo-image" :src="goal?.picture || projectTemple" :alt="projectTitle(goal)" />
+          </figure>
 
-        <div class="project-copy">
-          <h2>{{ t('coBuild.project.title') }}</h2>
-          <strong class="project-total">{{ t('coBuild.project.total') }}</strong>
-          <p class="project-description">{{ t('coBuild.project.description') }}</p>
+          <div class="project-copy">
+            <h2>{{ projectTitle(goal) }}</h2>
+            <strong class="project-total">{{ goal ? formatMoney(goal.targetAmount) : t('coBuild.project.total') }}</strong>
+            <p class="project-description">{{ goal?.subTitle || t('coBuild.project.description') }}</p>
 
-          <div class="progress-track" role="progressbar" :aria-label="t('coBuild.project.progressLabel')"
-            aria-valuemin="0" aria-valuemax="100" aria-valuenow="68">
-            <span />
-          </div>
-          <div class="progress-copy">
-            <span>{{ t('coBuild.project.raisedLabel') }} <b>{{ t('coBuild.project.raised') }}</b></span>
-            <span>68%</span>
-          </div>
-
-          <dl class="project-stats">
-            <div v-for="stat in projectStats" :key="stat.label">
-              <dt>{{ stat.label }}</dt>
-              <dd>{{ stat.value }}</dd>
+            <div class="progress-track" role="progressbar" :aria-label="t('coBuild.project.progressLabel')"
+              aria-valuemin="0" aria-valuemax="100" :aria-valuenow="progressPercent(goal)">
+              <span :style="{ width: `${progressPercent(goal)}%` }" />
             </div>
-          </dl>
+            <div class="progress-copy">
+              <span>{{ t('coBuild.project.raisedLabel') }} <b>{{ goal ? formatMoney(goal.completedAmount) : t('coBuild.project.raised') }}</b></span>
+              <span>{{ progressPercent(goal) }}%</span>
+            </div>
 
-          <button class="ornate-button" type="button" @click="router.push({ name: 'donation' })">
-            <span>{{ t('coBuild.cta') }}</span>
-          </button>
+            <dl class="project-stats">
+              <div v-for="stat in projectStats(goal)" :key="stat.label">
+                <dt>{{ stat.label }}</dt>
+                <dd>{{ stat.value }}</dd>
+              </div>
+            </dl>
+
+            <button class="ornate-button" type="button" @click="goToDonation(goal)">
+              <span>{{ goal ? t(`donation.types.${goalType(goal)}.title`) : t('coBuild.cta') }}</span>
+            </button>
+          </div>
         </div>
-      </div>
-    </article>
+      </article>
+    </div>
 
-    <div class="assurance-grid">
+    <div class="assurance-grid" :style="{ '--assurance-top': `${assuranceTop}px` }">
       <article v-for="(item, index) in assurances" :key="item.title" class="assurance-card">
         <img class="assurance-frame" :src="assuranceFrames[index]" alt="" aria-hidden="true" />
         <img class="assurance-icon" :src="assuranceIcons[index]" alt="" aria-hidden="true" />
@@ -68,12 +71,13 @@
 
 <script setup>
 import PageHeroBackground from '@/components/common/PageHeroBackground.vue'
-import { computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import CoBuildSectionHeading from './CoBuildSectionHeading.vue'
+import { getDonateTargetList } from '@/api/donateTarget'
 import quoteScroll from '@/assets/co-build/quote-scroll.webp'
-// import projectTemple from '@/assets/co-build/project-temple.webp'
+import projectTemple from '@/assets/deities/featured-deity.png'
 import projectFrameOuter from '@/assets/co-build/project-frame-outer.svg'
 import projectFrameInner from '@/assets/co-build/project-frame-inner.svg'
 import projectImageFrame from '@/assets/co-build/project-image-frame.svg'
@@ -84,12 +88,68 @@ import assuranceIcon1 from '@/assets/co-build/assurance-icon-1.svg'
 import assuranceIcon2 from '@/assets/co-build/assurance-icon-2.svg'
 import assuranceIcon3 from '@/assets/co-build/assurance-icon-3.svg'
 
-const { t, tm } = useI18n()
+const { t, tm, locale } = useI18n()
 const router = useRouter()
 const assurances = computed(() => tm('coBuild.assurances'))
-const projectStats = computed(() => tm('coBuild.project.stats'))
+const goals = ref([])
+const displayGoals = computed(() => goals.value.length ? goals.value : [null])
+const heroHeight = computed(() => Math.max(1454, 604 + displayGoals.value.length * 520
+  + Math.max(0, displayGoals.value.length - 1) * 24 + 40 + 210 + 80))
+const assuranceTop = computed(() => 604 + displayGoals.value.length * 520
+  + Math.max(0, displayGoals.value.length - 1) * 24 + 40)
 const assuranceFrames = [assuranceFrame1, assuranceFrame2, assuranceFrame3]
 const assuranceIcons = [assuranceIcon1, assuranceIcon2, assuranceIcon3]
+
+function goalType(goal) {
+  return Number(goal?.type) === 2 ? 'goods' : 'money'
+}
+
+function projectTitle(goal) {
+  return goal?.title || t('coBuild.project.title')
+}
+
+function progressPercent(goal) {
+  if (!goal) return 68
+  const target = Number(goal.targetAmount || 0)
+  const completed = Number(goal.completedAmount || 0)
+  return target ? Math.min(100, Math.round(completed / target * 100)) : 0
+}
+
+function projectStats(goal) {
+  return goal
+    ? [
+      { label: t('coBuild.project.targetStatLabel'), value: formatMoney(goal.targetAmount) },
+      { label: t('coBuild.project.completedStatLabel'), value: formatMoney(goal.completedAmount) },
+      { label: t('coBuild.project.typeStatLabel'), value: t(`donation.types.${goalType(goal)}.title`) },
+    ]
+    : tm('coBuild.project.stats')
+}
+
+function formatMoney(value) {
+  return `$${new Intl.NumberFormat(locale.value, { maximumFractionDigits: 2 }).format(Number(value || 0))}`
+}
+
+async function loadGoals() {
+  try {
+    const payload = await getDonateTargetList({ page: 1, pageSize: 100 })
+    const result = payload?.data ?? payload
+    goals.value = Array.isArray(result) ? result : result?.list || result?.records || []
+  } catch {
+    goals.value = []
+  }
+}
+
+function goToDonation(goal) {
+  router.push({
+    name: 'donation',
+    query: {
+      type: goalType(goal) === 'goods' ? '2' : '1',
+      ...(goal?.id ? { targetId: String(goal.id) } : {}),
+    },
+  })
+}
+
+onMounted(loadGoals)
 
 </script>
 
@@ -97,7 +157,7 @@ const assuranceIcons = [assuranceIcon1, assuranceIcon2, assuranceIcon3]
 .co-build-hero {
   isolation: isolate;
   position: relative;
-  height: 1454px;
+  height: max(1454px, var(--hero-height, 1454px));
   overflow: hidden;
   background: #f3f0e9;
 }
@@ -200,14 +260,23 @@ const assuranceIcons = [assuranceIcon1, assuranceIcon2, assuranceIcon3]
   letter-spacing: 0;
 }
 
-.project-card {
+.project-list {
   position: absolute;
   z-index: 1;
   top: 604px;
-  left: 50%;
+  left: 0;
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.project-card {
+  position: relative;
+  flex: 0 0 auto;
   width: 1440px;
   height: 520px;
-  transform: translateX(-50%);
 }
 
 .project-frame {
@@ -405,7 +474,7 @@ const assuranceIcons = [assuranceIcon1, assuranceIcon2, assuranceIcon3]
 .assurance-grid {
   position: absolute;
   z-index: 1;
-  top: 1164px;
+  top: var(--assurance-top, 1164px);
   left: 50%;
   display: grid;
   grid-template-columns: repeat(3, 466.67px);
@@ -513,6 +582,7 @@ const assuranceIcons = [assuranceIcon1, assuranceIcon2, assuranceIcon3]
   .hero-heading,
   .hero-quote,
   .fundraising-heading,
+  .project-list,
   .project-card,
   .assurance-grid {
     position: relative;
@@ -529,11 +599,16 @@ const assuranceIcons = [assuranceIcon1, assuranceIcon2, assuranceIcon3]
     margin-top: 56px;
   }
 
+  .project-list {
+    gap: 24px;
+    margin-top: 2px;
+  }
+
   .project-card {
     width: min(100%, 1000px);
     height: auto;
     min-height: 490px;
-    margin-top: 2px;
+    margin-top: 0;
     padding: 34px;
     background: #fff;
     border: 1px solid #f2d2af;
