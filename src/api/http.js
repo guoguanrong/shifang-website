@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { i18n } from '@/i18n'
 
 // 测试服请求地址（直连用；开发环境默认走 Vite 代理规避跨域）
 export const TEST_BASE_URL = 'http://1.94.147.242:9999/api'
@@ -72,10 +73,23 @@ export function clearToken() {
   window.localStorage.removeItem(TOKEN_STORAGE_KEY)
 }
 
-// 请求拦截：注入客户端标识、授权方式与登录令牌。
+// 当前界面语言映射为 Accept-Language：默认中文，英文传 en。
+function getAcceptLanguage() {
+  const locale = i18n.global.locale?.value ?? i18n.global.locale
+
+  if (locale === 'en') {
+    return 'en'
+  }
+
+  // 其余语言按默认中文处理（zh-TW 保留繁体标识，后端可按需区分）。
+  return locale === 'zh-TW' ? 'zh-TW' : 'zh-CN'
+}
+
+// 请求拦截：注入客户端标识、授权方式、登录令牌与界面语言。
 apiClient.interceptors.request.use((config) => {
   config.headers.clientId = CLIENT_ID
   config.headers.grantType = GRANT_TYPE
+  config.headers['Accept-Language'] = getAcceptLanguage()
 
   const token = window.localStorage.getItem(TOKEN_STORAGE_KEY)
 

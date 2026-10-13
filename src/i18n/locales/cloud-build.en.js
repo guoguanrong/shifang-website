@@ -36,5 +36,7 @@ export default {
       { title: 'Materials Storage Area' },
     ],
     note: 'HD monitoring · Live 24/7 · Less than 5 seconds delay',
+    comingSoon: 'This module is coming soon',
+    gotIt: 'Got it',
   },
 }

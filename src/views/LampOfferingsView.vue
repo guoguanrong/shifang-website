@@ -42,7 +42,7 @@ import portraitBorder from '@/assets/offerings/lamp-border.svg'
 import guangming from '@/assets/offerings/lamp-guangming.png'
 import taisui from '@/assets/offerings/lamp-taisui.png'
 import wenchang from '@/assets/offerings/lamp-wenchang.png'
-import guangmingSecond from '@/assets/offerings/lamp-guangming-second.png'
+import caishenArt from '@/assets/offerings/lamp-guangming-second.png'
 import wenchangSecond from '@/assets/offerings/lamp-wenchang-second.png'
 import stepEmblem from '@/assets/offerings/step-emblem.svg'
 import meritBorder from '@/assets/offerings/merit-border.svg'
@@ -53,9 +53,9 @@ import peace from '@/assets/offerings/merit-peace.png'
 const { t, tm } = useI18n()
 const router = useRouter()
 const meritImages = [wisdom, longevity, wealth, peace]
-// 设计稿为五张卡片，后两张重复光明灯、文昌灯；保留其顺序，不擅自新增灯种。
+// 设计稿为五张卡片：光明、太岁、文昌、财神、文昌（第二版图）；财神灯文案已在语言包补齐。
 const lamps = computed(() => {
   const types = tm('offerings.lamps')
-  return [0, 1, 2, 0, 2].map((type, index) => ({ ...types[type], image: [guangming, taisui, wenchang, guangmingSecond, wenchangSecond][index] }))
+  return [0, 1, 2, 3, 2].map((type, index) => ({ ...types[type], image: [guangming, taisui, wenchang, caishenArt, wenchangSecond][index] }))
 })
 </script>

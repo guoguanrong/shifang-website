@@ -2,11 +2,11 @@
   <section class="tests">
     <OrnateSectionHeading :title="t('blessings.testsTitle')" />
     <div class="test-grid">
-      <article v-for="(item, index) in items" :key="item.title" class="test-card">
-        <img :src="icons[index]" alt="" />
-        <h3>{{ item.title }}</h3>
-        <p><span v-for="line in item.lines" :key="line">{{ line }}</span></p>
-        <CeremonialButton :label="item.action" @click="router.push({ name: testRoutes[index] })" />
+      <article v-for="card in cards" :key="card.title" class="test-card">
+        <img :src="card.icon" alt="" />
+        <h3>{{ card.title }}</h3>
+        <p><span v-for="line in card.lines" :key="line">{{ line }}</span></p>
+        <CeremonialButton :label="card.action" @click="router.push({ name: card.route })" />
       </article>
     </div>
   </section>
@@ -25,7 +25,12 @@ const icons = [lots, five, fortune, zodiac]
 const testRoutes = ['five-elements-test', 'taoist-lots', 'fortune-review', 'taoist-zodiac']
 const router = useRouter()
 const { t, tm } = useI18n()
-const items = computed(() => tm('blessings.tests'))
+// 本期暂不开放的测试：下期上线时从名单移除即可恢复（语言包文案与路由配置均保留，未删除）。
+const HIDDEN_TESTS = ['five-elements-test']
+// 图标/路由与语言包 tests 数组按下标一一对应，组合后再按隐藏名单过滤，避免过滤后下标错位。
+const cards = computed(() => tm('blessings.tests')
+  .map((item, index) => ({ ...item, icon: icons[index], route: testRoutes[index] }))
+  .filter((card) => !HIDDEN_TESTS.includes(card.route)))
 </script>
 <style scoped>
 .tests {
@@ -39,7 +44,8 @@ const items = computed(() => tm('blessings.tests'))
 
 .test-grid {
   display: grid;
-  grid-template-columns: repeat(4, 290px);
+  grid-template-columns: repeat(3, 290px);
+  justify-content: center;
   gap: 26px;
   margin-top: -16px;
 }
@@ -157,6 +163,7 @@ const items = computed(() => tm('blessings.tests'))
 
   .test-grid {
     grid-template-columns: 290px;
+    justify-content: center;
   }
 }
 </style>

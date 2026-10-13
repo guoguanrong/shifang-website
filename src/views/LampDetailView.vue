@@ -78,7 +78,7 @@ const lamp = computed(() => ({
   description: staticLamp.value?.description || currentLight.value?.matchGod || '',
   audience: staticLamp.value?.audience || '',
 }))
-const portrait = computed(() => currentLight.value?.picture || ({ guangming, taisui, wenchang })[props.lampId] || guangming)
+const portrait = computed(() => currentLight.value?.picture || ({ guangming, taisui, wenchang, caishen: guangmingSecond })[props.lampId] || guangming)
 // 独立长文仅提供光明灯；其他灯种沿用自身介绍，不套用光明灯的道场资料。
 const description = computed(() => props.lampId === 'guangming' ? tm('lampDetail.guangmingDescription') : [lamp.value.description, lamp.value.audience])
 const meritImages = [wisdom, peace, fortune]

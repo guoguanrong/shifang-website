@@ -39,6 +39,13 @@ export default {
       "eyebrow": "Wenchang Lamp",
       "description": "祈愿学业进步、金榜题名",
       "audience": "适合考生、求晋升、求功名"
+    },
+    {
+      "id": "caishen",
+      "title": "财神灯",
+      "eyebrow": "Caishen Lamp",
+      "description": "祈愿财源广进、生意兴隆",
+      "audience": "适合经营者、创业者、求财运"
     }
   ],
   "stepsTitle": "点灯流程 · 简单四步",

@@ -8,7 +8,10 @@
     </header>
 
     <div class="camera-grid">
-      <article v-for="(camera, index) in cameras" :key="camera.title" class="camera-card">
+      <!-- 监控实时流尚未接入：点击卡片弹出"待上线"提示。 -->
+      <article v-for="(camera, index) in cameras" :key="camera.title" class="camera-card" role="button" tabindex="0"
+        :aria-label="`${camera.title} · ${t('cloudBuild.cameras.comingSoon')}`" @click="openComingSoon"
+        @keydown.enter.prevent="openComingSoon">
         <div class="camera-image">
           <img :class="`camera-photo camera-photo-${index + 1}`" :src="cameraImages[index]" :alt="camera.title" />
           <!-- LIVE 角标仅为静态示意，尚未接入实时视频流。 -->
@@ -19,11 +22,25 @@
     </div>
 
     <p class="camera-note">{{ t('cloudBuild.cameras.note') }}</p>
+
+    <Teleport to="body">
+      <Transition name="camera-dialog">
+        <div v-if="comingSoonVisible" class="camera-dialog-mask" @click.self="closeComingSoon">
+          <div class="camera-dialog" role="alertdialog" aria-modal="true">
+            <span class="camera-dialog-icon" aria-hidden="true">❈</span>
+            <p class="camera-dialog-text">{{ t('cloudBuild.cameras.comingSoon') }}</p>
+            <button type="button" class="camera-dialog-close" @click="closeComingSoon">
+              {{ t('cloudBuild.cameras.gotIt') }}
+            </button>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
   </section>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, onUnmounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import camera1 from '@/assets/cloud-build/camera-1.webp'
 import camera2 from '@/assets/cloud-build/camera-2.webp'
@@ -37,6 +54,25 @@ const { t, tm } = useI18n()
 const cameras = computed(() => tm('cloudBuild.cameras.items'))
 // 六路机位画面，顺序与语言包 items 保持一致。
 const cameraImages = [camera1, camera2, camera3, camera4, camera5, camera6]
+
+// 监控实时流尚未接入：点击卡片弹出"待上线"提示，接口就绪后替换为播放器。
+const comingSoonVisible = ref(false)
+
+function onDialogKeydown(event) {
+  if (event.key === 'Escape') closeComingSoon()
+}
+
+function openComingSoon() {
+  comingSoonVisible.value = true
+  document.addEventListener('keydown', onDialogKeydown)
+}
+
+function closeComingSoon() {
+  comingSoonVisible.value = false
+  document.removeEventListener('keydown', onDialogKeydown)
+}
+
+onUnmounted(() => document.removeEventListener('keydown', onDialogKeydown))
 </script>
 
 <style scoped>
@@ -100,9 +136,80 @@ const cameraImages = [camera1, camera2, camera3, camera4, camera5, camera6]
 .camera-card {
   height: 240px;
   overflow: hidden;
+  cursor: pointer;
   background: linear-gradient(-38.08deg, #f3eae0 6.538%, #fff 35.173%);
   border-radius: 12px;
   transition: box-shadow .25s ease, transform .25s ease;
+}
+
+.camera-card:focus-visible {
+  outline: 2px solid #d0a06d;
+  outline-offset: 2px;
+}
+
+/* 监控点击提示弹窗：遮罩 + 米色金边卡片，与站点弹窗风格一致。 */
+.camera-dialog-mask {
+  position: fixed;
+  z-index: 9999;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(20, 16, 10, .55);
+}
+
+.camera-dialog {
+  min-width: min(360px, 86vw);
+  padding: 40px 48px 32px;
+  text-align: center;
+  background: #f9f5ed;
+  border: 3px double #d0a06d;
+  border-radius: 12px;
+  box-shadow: 0 24px 60px rgba(30, 20, 10, .35);
+}
+
+.camera-dialog-icon {
+  display: block;
+  color: #d0a06d;
+  font-size: 34px;
+  line-height: 1;
+}
+
+.camera-dialog-text {
+  margin: 16px 0 0;
+  color: #5a4a38;
+  font-family: var(--font-calligraphy);
+  font-size: 19px;
+  letter-spacing: 1.5px;
+}
+
+.camera-dialog-close {
+  min-width: 136px;
+  margin-top: 26px;
+  padding: 9px 26px;
+  color: #fff;
+  font-family: var(--font-calligraphy);
+  font-size: 15px;
+  letter-spacing: 2px;
+  background: #cc3513;
+  border: 3px double #f2d2af;
+  border-radius: 99px;
+  cursor: pointer;
+  transition: background-color .2s ease;
+}
+
+.camera-dialog-close:hover {
+  background: #b32e10;
+}
+
+.camera-dialog-enter-active,
+.camera-dialog-leave-active {
+  transition: opacity .2s ease;
+}
+
+.camera-dialog-enter-from,
+.camera-dialog-leave-to {
+  opacity: 0;
 }
 
 .camera-image {

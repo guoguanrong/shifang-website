@@ -36,5 +36,7 @@ export default {
       { title: '物料堆放區' },
     ],
     note: '高清監控點位 · 24小時即時畫面 · 延遲小於5秒',
+    comingSoon: '此功能模塊待上線',
+    gotIt: '知道了',
   },
 }

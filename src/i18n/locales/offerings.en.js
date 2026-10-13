@@ -39,6 +39,13 @@ export default {
       "eyebrow": "Wenchang Lamp",
       "description": "For learning and academic achievement",
       "audience": "For students, examinations and advancement"
+    },
+    {
+      "id": "caishen",
+      "title": "Caishen Lamp",
+      "eyebrow": "Caishen Lamp",
+      "description": "For wealth and a thriving business",
+      "audience": "For business owners and those seeking fortune"
     }
   ],
   "stepsTitle": "Four Steps to Your Offering",
