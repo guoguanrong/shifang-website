@@ -9,6 +9,15 @@ export function getActivityRegisterList(data) {
 }
 
 /**
+ * 会员获取自己的报名活动列表
+ * @param {object} data {searchKey, status, startTime, endTime, page, pageSize}
+ * @param {object} [options] 额外请求配置，如 { silent: true }
+ */
+export function listSelfActivity(data, options) {
+  return request({ url: '/activityRegister/selfActivityList', method: 'post', data, ...options })
+}
+
+/**
  * 获取活动报名记录详情
  * @param {number} id 报名记录 id
  */

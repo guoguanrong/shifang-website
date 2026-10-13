@@ -36,7 +36,7 @@
       />
     </section>
     <OfferingNotices :title="t('lampDetail.noticesTitle')" />
-    <OfferingDialog v-if="details" :title="lamp.title" :amount="price" :details="details" @close="details = null" />
+    <OfferingDialog v-if="details" :title="lamp.title" :amount="price" :business-id="businessId" :details="details" @close="details = null" />
   </OfferingPageShell>
 </template>
 
@@ -93,8 +93,11 @@ const price = computed(() => {
   return Number.isFinite(configuredPrice) && currentLight.value?.price !== undefined ? configuredPrice : 88
 })
 
+const businessId = computed(() => currentLight.value?.id || (/^\d+$/.test(String(props.lampId)) ? props.lampId : null))
+const requestedLightId = computed(() => /^\d+$/.test(String(props.lampId)) ? props.lampId : (route.query.lightId || ''))
+
 let lightRequestVersion = 0
-watch(() => route.query.lightId, async (id) => {
+watch(requestedLightId, async (id) => {
   const requestVersion = ++lightRequestVersion
   currentLight.value = null
   details.value = null

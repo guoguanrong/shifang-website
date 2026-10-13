@@ -7,7 +7,8 @@
       <OrnateSectionHeading :title="t(`${pageKey}.explanationTitle`)" />
       <p>{{ t(`${pageKey}.explanation`) }}</p>
       <!-- i18n-t 让「继续供奉」这类句子里的链接位置由译文决定；scope="global" 表示 keypath 从根命名空间解析。 -->
-      <i18n-t :keypath="`${pageKey}.continue`" tag="p" scope="global"><template #link><RouterLink :to="destination">{{ t(`${pageKey}.link`) }}</RouterLink></template></i18n-t>
+      <!-- 资金明细暂时下线，捐款记录不再提供跳转。 -->
+      <i18n-t v-if="kind !== 'donations'" :keypath="`${pageKey}.continue`" tag="p" scope="global"><template #link><RouterLink :to="destination">{{ t(`${pageKey}.link`) }}</RouterLink></template></i18n-t>
     </section>
 
     <!-- 记录列表区：标题 id 供本区 aria-labelledby 引用。 -->
@@ -16,60 +17,200 @@
         <h2 :id="headingId">{{ t(`${pageKey}.details`) }}</h2>
         <div class="record-filter-row">
           <label :for="filterId">{{ t(`accountPages.records.${kind === 'donations' ? 'type' : 'status'}`) }}</label>
-          <!-- 按状态/类型筛选：选项来自 filters 计算属性，切换后由 visibleRecords 过滤列表。 -->
+          <!-- 供灯、供奉按订单状态筛选；捐款按捐钱或捐物筛选。 -->
           <select :id="filterId" v-model="filter">
             <option v-for="option in filters" :key="option" :value="option">{{ t(`accountPages.records.${option}`) }}</option>
           </select>
-          <!-- role="status" 让筛选后的条数变化能被读屏播报；count 由 i18n 复数处理。 -->
-          <span role="status">{{ t('accountPages.records.total', { count: visibleRecords.length }) }}</span>
-          <!-- 示例记录开关：关闭后列表为空，页面显示空状态引导。 -->
-          <label class="record-example-toggle"><input v-model="showExamples" type="checkbox" />{{ t('accountPages.records.showExamples') }}</label>
+          <span role="status">{{ t('accountPages.records.total', { count: shownCount }) }}</span>
         </div>
-        <!-- 免责声明：明确提示以下数据仅为展示样例。 -->
-        <p class="record-example-notice">{{ t('accountPages.records.exampleNotice') }}</p>
       </header>
-      <!-- 卡片点击图片时抛出 preview，由下方弹窗展示大图。 -->
+      <p v-if="loading" class="record-example-notice" role="status">{{ t('accountPages.records.loading') }}</p>
       <AccountRecordCard v-for="record in visibleRecords" :key="record.id" :record="record" :kind="kind" @preview="preview = $event" />
-      <!-- 空状态：提示可调整筛选或打开示例开关。 -->
-      <div v-if="!visibleRecords.length" class="record-empty" role="status">
-        <h3>{{ t('accountPages.records.empty') }}</h3><p>{{ t('accountPages.records.emptyDescription') }}</p>
-        <RouterLink :to="destination">{{ t(`${pageKey}.link`) }} →</RouterLink>
+      <div v-if="!loading && !visibleRecords.length" class="record-empty" role="status">
+        <h3>{{ emptyTitle }}</h3>
+        <p v-if="notice !== 'login'">{{ t('accountPages.records.emptyLive') }}</p>
+        <RouterLink v-if="!notice && kind !== 'donations'" :to="destination">{{ t(`${pageKey}.link`) }} →</RouterLink>
       </div>
+      <nav v-if="!loading && totalCount > 0" class="record-pager" :aria-label="t('accountPages.records.pagination')">
+        <button type="button" :disabled="page <= 1" @click="go(page - 1)">‹ {{ t('accountPages.records.previous') }}</button>
+        <span>{{ t('accountPages.records.pageInfo', { current: page, total: totalPages }) }}</span>
+        <span>{{ t('accountPages.records.total', { count: totalCount }) }}</span>
+        <button type="button" :disabled="page >= totalPages" @click="go(page + 1)">{{ t('accountPages.records.next') }} ›</button>
+      </nav>
     </section>
-    <!-- 图片预览弹窗；供灯目前上传的是视频，photo 为空时改用「暂不可预览」的说明文案。 -->
-    <AccountFeedbackDialog v-if="preview" :title="t(`accountPages.examples.${preview.title}`)" :image="preview.photo"
-      :description="t(`accountPages.records.${kind === 'lamps' ? 'videoUnavailable' : 'imagePreview'}`)" @close="preview = null" />
+    <AccountFeedbackDialog v-if="preview" :title="preview.titleText" :image="preview.video ? '' : preview.photo" :video="preview.video" :description="preview.wishText" @close="preview = null" />
   </AccountPageShell>
 </template>
 
 <script setup>
 import { computed, ref, useId, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import AccountPageShell from '@/components/account/AccountPageShell.vue'
 import AccountRecordCard from '@/components/account/AccountRecordCard.vue'
 import AccountFeedbackDialog from '@/components/account/AccountFeedbackDialog.vue'
 import OrnateSectionHeading from '@/components/common/OrnateSectionHeading.vue'
-import { accountRecordExamples } from '@/data/account-record-examples'
+import { listSelfOrder } from '@/api/order'
+import { ResultCode } from '@/api/http'
+import lampAvatar from '@/assets/account-pages/lamp-avatar.webp'
+import donationAvatar from '@/assets/account-pages/donation-avatar.webp'
+import doumuAvatar from '@/assets/account-pages/doumu-avatar.webp'
 
-// kind 决定整页数据：lamps 供灯、donations 捐赠、deities 供奉，取值不在白名单内会在开发模式下告警。
+// kind 决定整页数据：lamps 供灯、donations 捐赠、deities 供奉。
 const props = defineProps({ kind: { type: String, required: true, validator: value => ['lamps', 'donations', 'deities'].includes(value) } })
 const { t } = useI18n()
-// 用 useId 生成唯一 id，保证同页面出现多个本组件时 aria 关联也不会互相干扰。
+const route = useRoute()
+const router = useRouter()
 const headingId = `record-heading-${useId()}`
 const filterId = `record-filter-${useId()}`
-// 语言包前缀，所有文案都挂在这个 key 下。
 const pageKey = computed(() => `accountPages.${props.kind}`)
-// 「继续供奉 / 再做一次」的跳转目标，按类型指向对应的业务页。
 const destination = computed(() => ({ lamps: '/blessings/lamps', donations: '/cloud-build/fund-details', deities: '/deities' })[props.kind])
-// 捐赠按类型筛选（money / goods），其余两类按状态筛选；all 表示不过滤。
-const filters = computed(() => props.kind === 'donations' ? ['all', 'money', 'goods'] : ['all', 'active', 'pending', 'completed'])
+const filters = computed(() => props.kind === 'donations' ? ['all', 'money', 'goods'] : ['all', 'unpaid', 'pending', 'active', 'expired'])
 const filter = ref('all')
-// 是否展示 Figma 示例数据；真实记录接入前，页面内容完全依赖这个开关。
-const showExamples = ref(true)
-// 当前预览的记录，非 null 即打开弹窗。
+const loading = ref(false)
+const orders = ref([])
+const totalCount = ref(0)
+const totalPages = ref(1)
+const notice = ref('')
 const preview = ref(null)
-// 数据取自本地示例文件：先按开关决定是否展示，再按筛选条件过滤（捐赠看 type，其余看 status）。
-const visibleRecords = computed(() => showExamples.value ? accountRecordExamples[props.kind].filter(record => filter.value === 'all' || (props.kind === 'donations' ? record.type : record.status) === filter.value) : [])
-// 切换记录类型时重置筛选并关闭预览，避免沿用上一类的筛选项（它在新类型里可能并不存在）。
-watch(() => props.kind, () => { filter.value = 'all'; preview.value = null })
+const pageSize = 10
+const orderType = { lamps: 1, deities: 2, donations: 3 }
+const statusByFilter = { unpaid: 1, pending: 2, active: 3, expired: 4 }
+const statusKey = { 1: 'unpaid', 2: 'pending', 3: 'active', 4: 'expired' }
+const page = computed(() => {
+  const value = Number(route.query.page)
+  return Number.isInteger(value) && value > 0 ? value : 1
+})
+const visibleRecords = computed(() => {
+  const records = orders.value.map(mapOrder)
+  if (props.kind !== 'donations' || filter.value === 'all') return records
+  const donateType = filter.value === 'goods' ? 2 : 1
+  return records.filter(record => record.donateType === donateType)
+})
+const shownCount = computed(() => props.kind === 'donations' && filter.value !== 'all' ? visibleRecords.value.length : totalCount.value)
+const emptyTitle = computed(() => {
+  if (notice.value === 'login') return t('accountPages.records.loginRequired')
+  if (notice.value === 'failed') return t('accountPages.records.loadFailed')
+  return t('accountPages.records.empty')
+})
+
+function text(value) {
+  return value == null ? '' : String(value).trim()
+}
+
+function stamp(value) {
+  const raw = text(value)
+  return /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}/.test(raw) ? raw.replace(' ', 'T') : raw
+}
+
+function mediaOf(url, preferVideo) {
+  const value = text(url)
+  if (!value) return {}
+  const image = /\.(png|jpe?g|webp|gif|avif)(\?|$)/i.test(value)
+  const video = /\.(mp4|webm|mov|m4v)(\?|$)/i.test(value)
+  if (video || (preferVideo && !image)) return { video: value }
+  return { photo: value }
+}
+
+function mapOrder(order) {
+  const type = orderType[props.kind]
+  const wishText = text(order.prayWish)
+  const devoteeText = text(order.username)
+  const birth = text(order.birthday)
+  const amount = Number(order.amount)
+  const base = {
+    id: text(order.orderNo) || text(order.id),
+    status: statusKey[Number(order.status)] || 'pending',
+    date: stamp(order.createTime),
+    amount: Number.isFinite(amount) ? amount : '',
+    devoteeText,
+    wishText,
+    birth,
+    email: text(order.email),
+    donateType: Number(order.donateType),
+  }
+  if (type === 2) {
+    const god = text(order.worship?.matchGod) || t('accountPages.history.worshipFallback')
+    const cycle = Number(order.cycleType)
+    const file = mediaOf(order.fileUrl, false)
+    return {
+      ...base,
+      titleText: god,
+      subtitleText: wishText,
+      avatar: text(order.worship?.picture) || doumuAvatar,
+      photo: file.photo || text(order.worship?.picture),
+      planText: cycle === 1 ? t('accountPages.records.yearly') : cycle === 2 ? t('accountPages.records.monthly') : '',
+      mediaLabel: t('accountPages.records.photoLabel'),
+    }
+  }
+  if (type === 3) {
+    const titleText = text(order.donateTarget?.title) || text(order.shopItems?.name) || t('accountPages.history.donateFallback')
+    const goods = Number(order.donateType) === 2
+    const count = Number(order.number)
+    return {
+      ...base,
+      titleText,
+      subtitleText: goods && count > 0 ? `${t('accountPages.records.goods')} · ${count}` : t(goods ? 'accountPages.records.goods' : 'accountPages.records.money'),
+      avatar: text(order.donateTarget?.picture) || text(order.shopItems?.picture) || donationAvatar,
+    }
+  }
+  const name = text(order.light?.name) || t('accountPages.history.lampFallback')
+  const god = text(order.light?.matchGod)
+  const file = mediaOf(order.fileUrl, true)
+  return {
+    ...base,
+    titleText: god ? `${name} · ${god}` : name,
+    subtitleText: wishText,
+    avatar: text(order.light?.picture) || lampAvatar,
+    photo: file.photo || (!file.video ? text(order.light?.picture) : ''),
+    video: file.video,
+    mediaLabel: file.video ? t('accountPages.records.videoLabel') : t('accountPages.records.photoLabel'),
+  }
+}
+
+function readPage(result, list) {
+  const totalRow = Number(result?.totalRow ?? result?.total ?? result?.totalCount)
+  const pageCount = Number(result?.totalPage ?? result?.pages ?? result?.pageCount)
+  const total = Number.isFinite(totalRow) && totalRow >= 0 ? totalRow : list.length
+  const pages = Number.isFinite(pageCount) && pageCount > 0 ? pageCount : Math.max(1, Math.ceil(total / pageSize))
+  return { total, pages }
+}
+
+async function loadRecords() {
+  loading.value = true
+  notice.value = ''
+  preview.value = null
+  try {
+    const data = { type: orderType[props.kind], page: page.value, pageSize }
+    const status = statusByFilter[filter.value]
+    if (status) data.status = status
+    const result = await listSelfOrder(data, { silent: true })
+    const list = Array.isArray(result) ? result : result?.list || result?.records || result?.rows
+    orders.value = Array.isArray(list) ? list : []
+    const counted = readPage(result, orders.value)
+    totalCount.value = counted.total
+    totalPages.value = counted.pages
+  } catch (error) {
+    orders.value = []
+    totalCount.value = 0
+    totalPages.value = 1
+    notice.value = error?.code === ResultCode.NOT_LOGIN || error?.code === ResultCode.NOT_LOGIN_USER ? 'login' : 'failed'
+  } finally {
+    loading.value = false
+  }
+}
+
+function go(next) {
+  if (next < 1 || next > totalPages.value || next === page.value) return
+  router.push({ name: route.name, query: next === 1 ? {} : { page: String(next) } })
+}
+
+watch(() => props.kind, () => {
+  preview.value = null
+  if (filter.value !== 'all') filter.value = 'all'
+})
+watch(filter, () => {
+  if (page.value !== 1) router.push({ name: route.name, query: {} })
+})
+watch([() => props.kind, page, filter], loadRecords, { immediate: true })
 </script>

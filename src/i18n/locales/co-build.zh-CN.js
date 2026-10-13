@@ -21,6 +21,7 @@ export default {
     targetStatLabel: '筹款目标',
     completedStatLabel: '已筹金额',
     typeStatLabel: '捐赠类型',
+    empty: '暂无筹款项目',
     stats: [
       { label: '已捐赠善款', value: '$8,624,300' },
       { label: '已使用善款', value: '$2,624,300' },

@@ -45,10 +45,11 @@
             </button>
           </div>
           <div class="dialog-actions">
-            <CeremonialButton :label="`${t('offerings.pay')} ${amountLabel}`" @click="unavailable = true" />
-            <button class="dialog-cancel" type="button" @click="dialog.close()">{{ t('offerings.reconsider') }}</button>
+            <CeremonialButton :label="paying ? t('offerings.paying') : `${t('offerings.pay')} ${amountLabel}`" :disabled="paying" @click="pay" />
+            <button class="dialog-cancel" type="button" :disabled="paying" @click="dialog.close()">{{ t('offerings.reconsider') }}</button>
           </div>
-          <p v-if="unavailable" class="payment-unavailable" role="status">{{ t('donation.dialog.unavailable') }}</p>
+          <p v-if="payError" class="payment-unavailable" role="alert">{{ payError }}</p>
+          <p v-else-if="unavailable" class="payment-unavailable" role="status">{{ t('donation.dialog.unavailable') }}</p>
           <p class="payment-notice">{{ t('offerings.paymentNotice') }}</p>
         </template>
       </div>
@@ -60,6 +61,9 @@
 import { computed, onBeforeUnmount, onMounted, ref, useId } from 'vue'
 import { useI18n } from 'vue-i18n'
 import CeremonialButton from '@/components/common/CeremonialButton.vue'
+import { createOrder } from '@/api/order'
+import { createStripePayment } from '@/api/stripe'
+import { useUserSession } from '@/composables/useUserSession'
 import closeIcon from '@/assets/donation/close.svg'
 import emblem from '@/assets/donation/confirm-emblem.svg'
 import paypal from '@/assets/donation/paypal.png'
@@ -74,14 +78,82 @@ const { t, locale } = useI18n()
 const titleId = useId()
 const dialog = ref(null)
 // 选中的支付方式与「支付暂未开放」提示。
+const { user } = useUserSession()
 const payment = ref('paypal')
 const unavailable = ref(false)
+const paying = ref(false)
+const payError = ref('')
 const methods = [{ id: 'paypal', label: 'PayPal', image: paypal }, { id: 'apple-pay', label: 'Apple Pay', image: applePay }]
 // 金额按当前语言格式化。
 const amountLabel = computed(() => `$${new Intl.NumberFormat(locale.value, { maximumFractionDigits: 2 }).format(props.order?.amount ?? 0)}`)
 // 记住打开前的焦点与页面滚动状态，关闭后原样恢复。
 let previousOverflow
 let previousFocus
+
+function orderNumber(data) {
+  if (typeof data === 'string' || typeof data === 'number') return String(data)
+  return data?.orderNo || data?.id || ''
+}
+
+function paymentUrl(data) {
+  if (typeof data === 'string') return /^https?:\/\//.test(data) ? data : ''
+  if (!data || typeof data !== 'object') return ''
+  const named = data.url || data.checkoutUrl || data.sessionUrl || data.payUrl
+  if (named) return named
+  return Object.values(data).find(value => typeof value === 'string' && /^https?:\/\//.test(value)) || ''
+}
+
+async function pay() {
+  if (paying.value) return
+  if (!props.order?.targetId) {
+    unavailable.value = true
+    return
+  }
+  paying.value = true
+  payError.value = ''
+  unavailable.value = false
+  try {
+    const member = user.value
+    const goods = props.order.mode === 'goods'
+    const shopItemsId = Number(props.order.shopItemsId)
+    const created = await createOrder({
+      type: 3,
+      businessId: props.order.targetId,
+      memberId: member?.id || undefined,
+      username: props.order.anonymous ? undefined : (props.order.name || undefined),
+      mobile: props.order.phone ? `${props.order.country} ${props.order.phone}`.trim() : (member?.phone || undefined),
+      email: props.order.email || member?.email || undefined,
+      prayWish: props.order.wish || undefined,
+      donateType: goods ? 2 : 1,
+      shopItemsId: Number.isInteger(shopItemsId) && shopItemsId > 0 ? shopItemsId : undefined,
+      number: goods ? props.order.quantity : 1,
+      amount: props.order.amount,
+    }, { silent: true })
+    const session = await createStripePayment({
+      orderNo: orderNumber(created),
+      amount: Number(props.order.amount),
+      pageUrl: window.location.href,
+    }, { silent: true })
+    const url = paymentUrl(session)
+    if (!url) {
+      payError.value = t('offerings.paymentRedirectMissing')
+      return
+    }
+    try {
+      sessionStorage.setItem('shifang-stripe-return', JSON.stringify({
+        title: props.order.targetTitle,
+        name: props.order.anonymous ? '' : props.order.name,
+      }))
+    } catch {
+      // 回跳后仍可按支付状态展示结果。
+    }
+    window.location.assign(url)
+  } catch (error) {
+    payError.value = error?.message || t('offerings.paymentFailed')
+  } finally {
+    paying.value = false
+  }
+}
 
 onMounted(() => {
   previousFocus = document.activeElement

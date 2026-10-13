@@ -7,8 +7,9 @@
       <button class="account-feedback-close" type="button" autofocus :aria-label="t('portal.common.close')" @click="close">×</button>
       <h2 :id="titleId">{{ title }}</h2>
       <!-- 无图时（如供灯记录存的是视频）不渲染图片，只保留说明文字。 -->
-      <img v-if="image" class="account-feedback-image" :src="image" :alt="title" />
-      <p>{{ description }}</p>
+      <video v-if="video" class="account-feedback-image" :src="video" controls playsinline />
+      <img v-else-if="image" class="account-feedback-image" :src="image" :alt="title" />
+      <p v-if="description">{{ description }}</p>
       <CeremonialButton :label="t('portal.auth.dismiss')" @click="close" />
     </dialog>
   </Teleport>
@@ -20,7 +21,7 @@ import { useI18n } from 'vue-i18n'
 import CeremonialButton from '@/components/common/CeremonialButton.vue'
 
 // title / description / image 均为可选，由调用方决定展示内容。
-defineProps({ title: String, description: String, image: String })
+defineProps({ title: String, description: String, image: String, video: String })
 // 关闭统一抛给父级，由父级把承载数据的变量置空（组件本身是 v-if 挂载的）。
 const emit = defineEmits(['close'])
 const { t } = useI18n()

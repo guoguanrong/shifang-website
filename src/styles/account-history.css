@@ -1,6 +1,10 @@
 .history-list-heading { display: flex; flex-wrap: wrap; align-items: center; gap: 18px; min-height: 90px; padding: 24px 30px; background: #fff; }
 .history-list-heading h2 { margin: 0; color: #000; font-size: 28px; line-height: 1.4; }
 .history-example-notice { margin: 12px 4px 20px; color: #85735f; font-size: 13px; line-height: 1.6; }
+.history-pager { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 18px 28px; margin-top: 28px; color: #8a7764; font-size: 14px; }
+.history-pager button { padding: 0; color: inherit; font: inherit; background: none; border: 0; cursor: pointer; }
+.history-pager button:disabled { color: #c4b8aa; cursor: default; }
+.history-pager button:not(:disabled):hover { color: #cc3513; }
 .history-card { padding: 20px 30px 30px; }
 .history-card .record-card-heading { margin-bottom: 20px; }
 .history-card .history-reference { font-size: 16px; overflow-wrap: anywhere; }

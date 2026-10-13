@@ -27,8 +27,9 @@
       </section>
       <!-- 选项面板：金额/实物/数量通过 v-model 与子组件双向同步。 -->
       <div id="donation-options-panel" role="tabpanel" :aria-labelledby="`donation-tab-${mode}`">
-        <DonationOptions v-model:amount="amount" v-model:custom-amount="customAmount" v-model:item-index="itemIndex"
-          v-model:quantity="quantity" :mode="mode" :goods="goods" :invalid-amount="invalidAmount" />
+        <DonationOptions v-model:amount="amount" v-model:custom-amount="customAmount" v-model:money-id="selectedMoneyId"
+          v-model:item-index="itemIndex" v-model:quantity="quantity" :mode="mode" :amounts="moneyOptions" :goods="goods"
+          :items-loading="shopItemsLoading" :invalid-amount="invalidAmount" />
       </div>
       <!-- 捐赠人信息表单：向插槽暴露 submit，由下方按钮触发，真正提交前先走 openConfirmation 校验。 -->
       <DonationDonorForm ref="donorForm" v-slot="{ submit }" @submit="openConfirmation">
@@ -61,7 +62,7 @@ import DonationOptions from '@/components/co-build/DonationOptions.vue'
 import DonationDonorForm from '@/components/co-build/DonationDonorForm.vue'
 import DonationDialog from '@/components/co-build/DonationDialog.vue'
 import { getDonateTargetList } from '@/api/donateTarget'
-import { getShopItemsList } from '@/api/shopItems'
+import { getDonateShopItems } from '@/api/shopItems'
 import headingArt from '@/assets/donation/heading.svg'
 import moneyArt from '@/assets/donation/money.png'
 import goodsArt from '@/assets/donation/goods.png'
@@ -74,7 +75,9 @@ const types = ['money', 'goods']
 const mode = computed(() => ['2', 'goods'].includes(String(route.query.type)) ? 'goods' : 'money')
 const goals = ref([])
 const shopItems = ref([])
-const amount = ref(1000)
+const shopItemsLoading = ref(false)
+const amount = ref(0)
+const selectedMoneyId = ref(null)
 const customAmount = ref('')
 const itemIndex = ref(0)
 const quantity = ref(10)
@@ -83,16 +86,9 @@ const dialogState = ref(null)
 const order = ref(null)
 const targetOptions = computed(() => goals.value.filter((goal) => Number(goal.type) === (mode.value === 'goods' ? 2 : 1)))
 const selectedTarget = computed(() => targetOptions.value.find((goal) => String(goal.id) === String(route.query.targetId)) || targetOptions.value[0] || null)
-const goods = computed(() => shopItems.value
-  .filter((item) => Number(item.type) === 2 && (item.status === undefined || Number(item.status) === 1))
-  .map((item) => ({
-    ...item,
-    id: Number(item.id),
-    picture: item.picture || item.image || '',
-    name: item.name || '',
-    price: Number(item.price || 0),
-    unit: item.unit || '',
-  })))
+const goods = computed(() => shopItems.value.filter((item) => Number(item.type) !== 1 && item.name))
+const moneyOptions = computed(() => shopItems.value.filter((item) => Number(item.type) !== 2 && item.price > 0))
+const selectedMoneyItem = computed(() => moneyOptions.value.find((item) => item.id === selectedMoneyId.value) || null)
 const selectedGood = computed(() => goods.value[itemIndex.value] || null)
 const invalidAmount = computed(() => customAmount.value !== '' && (!Number.isFinite(Number(customAmount.value)) || Number(customAmount.value) < 50 || Number(customAmount.value) > 999999999 || !/^\d+(\.\d{1,2})?$/.test(customAmount.value)))
 const total = computed(() => mode.value === 'goods'
@@ -122,22 +118,64 @@ async function getAllPages(fetchPage) {
   return records
 }
 
-async function loadDonationData() {
-  const [targetResult, itemResult] = await Promise.allSettled([
-    getAllPages(getDonateTargetList),
-    getAllPages(getShopItemsList),
-  ])
-  if (targetResult.status === 'fulfilled') {
-    goals.value = targetResult.value.map((goal) => ({
-      ...goal,
-      id: Number(goal.id),
-      type: Number(goal.type),
-      completedAmount: Number(goal.completedAmount || 0),
-      shopItems: goal.shopItems || goal.shopItemsIds || [],
+function normalizeShopItems(list) {
+  return (Array.isArray(list) ? list : [])
+    .filter((item) => item && (item.status === undefined || Number(item.status) === 1))
+    .map((item) => ({
+      id: Number(item.id),
+      type: Number(item.type),
+      picture: item.picture || '',
+      name: item.name || '',
+      price: Number(item.price || 0),
+      unit: item.unit || '',
+      useType: item.useType || '',
+      seq: item.seq == null ? Number.MAX_SAFE_INTEGER : Number(item.seq),
     }))
+    .sort((left, right) => left.seq - right.seq || left.price - right.price)
+}
+
+async function loadDonationData() {
+  try {
+    const records = await getAllPages((data) => getDonateTargetList({ status: 1, ...data }, { silent: true }))
+    goals.value = records
+      .filter((goal) => goal.status === undefined || Number(goal.status) === 1)
+      .map((goal) => ({
+        ...goal,
+        id: Number(goal.id),
+        type: Number(goal.type),
+        targetAmount: Number(goal.targetAmount || 0),
+        completedAmount: Number(goal.completedAmount || 0),
+      }))
+  } catch {
+    goals.value = []
   }
-  if (itemResult.status === 'fulfilled') {
-    shopItems.value = itemResult.value.filter((item) => Number(item.status) === 1)
+}
+
+let shopItemsToken = 0
+
+async function loadShopItems() {
+  const targetId = selectedTarget.value?.id
+  const itemType = mode.value === 'goods' ? 2 : 1
+  const token = ++shopItemsToken
+  if (!targetId) {
+    shopItems.value = []
+    shopItemsLoading.value = false
+    return
+  }
+  shopItemsLoading.value = true
+  try {
+    const payload = await getDonateShopItems({
+      donateTargetId: Number(targetId),
+      type: itemType,
+    }, { silent: true })
+    if (token !== shopItemsToken) return
+    const list = Array.isArray(payload) ? payload : payload?.list || payload?.records || []
+    shopItems.value = normalizeShopItems(list)
+  } catch {
+    if (token !== shopItemsToken) return
+    shopItems.value = []
+  } finally {
+    if (token === shopItemsToken) shopItemsLoading.value = false
   }
 }
 
@@ -145,9 +183,24 @@ watch(mode, () => {
   dialogState.value = null
   itemIndex.value = 0
 })
+watch(() => [selectedTarget.value?.id, mode.value], loadShopItems, { immediate: true })
 watch(goods, () => {
   if (itemIndex.value >= goods.value.length) itemIndex.value = 0
 })
+watch(customAmount, (value) => {
+  if (value !== '') return
+  const match = moneyOptions.value.find((item) => item.price === amount.value)
+  if (match) selectedMoneyId.value = match.id
+})
+watch(moneyOptions, (options) => {
+  const current = options.find((item) => item.id === selectedMoneyId.value)
+  if (current) {
+    amount.value = current.price
+    return
+  }
+  selectedMoneyId.value = options[0]?.id ?? null
+  if (options[0]) amount.value = options[0].price
+}, { immediate: true })
 
 function setMode(type) {
   const numericType = type === 'goods' ? '2' : '1'
@@ -180,7 +233,7 @@ function openConfirmation(details) {
     mode: mode.value,
     targetId: selectedTarget.value.id,
     targetTitle: selectedTarget.value.title,
-    shopItemsId: selectedGood.value?.id,
+    shopItemsId: mode.value === 'goods' ? selectedGood.value?.id : selectedMoneyItem.value?.id,
     itemName: selectedGood.value?.name,
     amount: total.value,
     itemIndex: itemIndex.value,

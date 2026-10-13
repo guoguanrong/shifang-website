@@ -65,10 +65,11 @@
                   :alt="method.label" /><span v-if="kind === 'deity' && method.id === 'paypal'" class="payment-recommended">{{ t('offerings.paymentRecommended') }}</span></button>
             </div>
             <div class="dialog-actions">
-              <CeremonialButton :label="`${t('offerings.pay')}  $${amount}`" @click="unavailable = true" /><button
-                class="dialog-cancel" type="button" @click="cancel">{{ t('offerings.reconsider') }}</button>
+              <CeremonialButton :label="paying ? t('offerings.paying') : `${t('offerings.pay')}  $${amount}`" :disabled="paying" @click="pay" /><button
+                class="dialog-cancel" type="button" :disabled="paying" @click="cancel">{{ t('offerings.reconsider') }}</button>
             </div>
-            <p v-if="unavailable" class="payment-unavailable" role="status">{{ t('offerings.paymentUnavailable') }}</p>
+            <p v-if="payError" class="payment-unavailable" role="alert">{{ payError }}</p>
+            <p v-else-if="unavailable" class="payment-unavailable" role="status">{{ t('offerings.paymentUnavailable') }}</p>
             <p class="payment-notice">{{ t('offerings.paymentNotice') }}</p>
           </template>
         </template>
@@ -81,6 +82,9 @@ import { onMounted, onBeforeUnmount, ref, useId } from 'vue'
 import { useI18n } from 'vue-i18n'
 import CeremonialButton from '@/components/common/CeremonialButton.vue'
 import OfferingOrderForm from './OfferingOrderForm.vue'
+import { createOrder } from '@/api/order'
+import { createStripePayment } from '@/api/stripe'
+import { useUserSession } from '@/composables/useUserSession'
 import paypal from '@/assets/offerings/paypal.png'
 import applePay from '@/assets/offerings/apple-pay.webp'
 import closeIcon from '@/assets/offerings/close.svg'
@@ -88,7 +92,7 @@ import emblem from '@/assets/events/section-emblem.svg'
 import confirmEmblem from '@/assets/offerings/confirm-emblem.svg'
 import '@/styles/deity-offering-dialog.css'
 // paymentConfirmed 仅供后续经过服务端核验的支付结果驱动，不能在支付按钮点击时置为 true。
-const props = defineProps({ title: String, amount: Number, period: String, planLabel: String, paymentConfirmed: Boolean, kind: { type: String, default: 'lamp' }, details: { type: Object, default: null } })
+const props = defineProps({ title: String, amount: Number, period: String, planLabel: String, paymentConfirmed: Boolean, businessId: [Number, String], cycleType: Number, kind: { type: String, default: 'lamp' }, details: { type: Object, default: null } })
 const emit = defineEmits(['close'])
 const { t } = useI18n()
 const titleId = useId()
@@ -97,8 +101,11 @@ const dialog = ref(null)
 const stage = ref(props.details ? 'confirm' : 'form')
 const order = ref(props.details || {})
 // 选中的支付方式与「支付暂未开放」提示。
+const { user } = useUserSession()
 const payment = ref('paypal')
 const unavailable = ref(false)
+const paying = ref(false)
+const payError = ref('')
 const methods = [{ id: 'paypal', image: paypal, label: 'PayPal' }, { id: 'apple-pay', image: applePay, label: 'Apple Pay' }]
 // 记住打开前的焦点与页面滚动状态，关闭后原样恢复。
 let previousOverflow
@@ -115,7 +122,70 @@ onBeforeUnmount(() => {
   previousFocus?.focus({ preventScroll: true })
 })
 // 表单提交后进入确认态，并滚回弹窗顶部查看订单摘要。
-function confirm(details) { order.value = details; stage.value = 'confirm'; dialog.value.scrollTop = 0 }
+function confirm(details) { order.value = details; stage.value = 'confirm'; payError.value = ''; dialog.value.scrollTop = 0 }
+function orderNumber(data) {
+  if (typeof data === 'string' || typeof data === 'number') return String(data)
+  return data?.orderNo || data?.id || ''
+}
+function paymentUrl(data) {
+  if (typeof data === 'string') return /^https?:\/\//.test(data) ? data : ''
+  if (!data || typeof data !== 'object') return ''
+  const named = data.url || data.checkoutUrl || data.sessionUrl || data.payUrl
+  if (named) return named
+  return Object.values(data).find(value => typeof value === 'string' && /^https?:\/\//.test(value)) || ''
+}
+async function pay() {
+  if (paying.value) return
+  if (props.kind !== 'lamp' && props.kind !== 'deity') {
+    unavailable.value = true
+    return
+  }
+  if (!props.businessId) {
+    payError.value = t(props.kind === 'lamp' ? 'offerings.missingLamp' : 'offerings.worshipUnavailable')
+    return
+  }
+  paying.value = true
+  payError.value = ''
+  unavailable.value = false
+  try {
+    const member = user.value
+    const deity = props.kind === 'deity'
+    const created = await createOrder({
+      type: deity ? 2 : 1,
+      businessId: Number(props.businessId),
+      memberId: member?.id || undefined,
+      username: order.value.name,
+      mobile: member?.phone || undefined,
+      email: member?.email || undefined,
+      birthday: order.value.birth || undefined,
+      prayWish: order.value.wish || undefined,
+      amount: props.amount,
+      number: 1,
+      cycleType: deity ? props.cycleType : undefined,
+    }, { silent: true })
+    const orderNo = orderNumber(created)
+    const session = await createStripePayment({
+      orderNo,
+      amount: Number(props.amount),
+      pageUrl: window.location.href,
+    }, { silent: true })
+    const url = paymentUrl(session)
+    if (!url) {
+      payError.value = t('offerings.paymentRedirectMissing')
+      return
+    }
+    try {
+      sessionStorage.setItem('shifang-stripe-return', JSON.stringify({ title: props.title, name: order.value.name }))
+    } catch {
+      // 回跳后仍可按支付状态展示结果。
+    }
+    window.location.assign(url)
+  } catch (error) {
+    payError.value = error?.message || t('offerings.paymentFailed')
+  } finally {
+    paying.value = false
+  }
+}
 // 「再想想」：由外部传入订单时直接关闭，否则退回填写表单。
 function cancel() { if (props.details) dialog.value.close(); else stage.value = 'form' }
 // 点击对话框之外的遮罩区域时关闭。

@@ -4,8 +4,8 @@ import { request } from './http'
  * 获取点灯列表
  * @param {object} data {searchKey, status, startTime, endTime, page, pageSize}
  */
-export function getLightList(data) {
-  return request({ url: '/light/list', method: 'post', data })
+export function getLightList(data, options) {
+  return request({ url: '/light/list', method: 'post', data, ...options })
 }
 
 /**

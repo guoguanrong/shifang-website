@@ -32,7 +32,10 @@
       </div>
     </section>
     <!-- details 非空即打开下单确认弹窗，关闭时置空。 -->
-    <OfferingDialog v-if="details" kind="deity" :title="deity.title" :amount="activePlan.amount" :period="t(`offerings.${activePlan.period}`)" :plan-label="t(`offerings.${activePlan.id}`)" :details="details" @close="details = null" />
+    <OfferingDialog v-if="details" kind="deity" :title="deity.title" :amount="activePlan.amount"
+      :period="t(`offerings.${activePlan.period}`)" :plan-label="t(`offerings.${activePlan.id}`)"
+      :business-id="worship?.id" :cycle-type="activePlan.id === 'yearly' ? 1 : 2" :details="details"
+      @close="details = null" />
   </OfferingPageShell>
 </template>
 <script setup>

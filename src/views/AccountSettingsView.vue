@@ -9,10 +9,12 @@
           <input :id="`settings-${field.id}`" v-model="form[field.id]" :name="field.id" :type="field.type"
             :autocomplete="field.autocomplete" :required="field.id === 'name'" :maxlength="field.maxlength"
             :placeholder="t(`accountDetails.settings.${field.id}Placeholder`)" :aria-invalid="Boolean(errors[field.id])"
-            :aria-describedby="errors[field.id] ? `settings-${field.id}-error` : undefined" @input="notice = ''" />
-          <p v-if="errors[field.id]" :id="`settings-${field.id}-error`" class="account-field-error">{{ t(errors[field.id]) }}</p>
+            :aria-describedby="errors[field.id] ? `settings-${field.id}-error` : undefined" @input="notice = ''; submitError = ''" />
+          <p v-if="errors[field.id]" :id="`settings-${field.id}-error`" class="account-field-error">{{
+            t(errors[field.id]) }}</p>
         </div>
-        <div class="settings-field">
+        <!-- 暂时屏蔽实名认证 -->
+        <!-- <div class="settings-field">
           <p class="settings-label">{{ t('accountDetails.settings.verificationLabel') }}</p>
           <div class="settings-verification">
             <img :src="identityIcon" alt="" width="50" height="44" />
@@ -22,18 +24,24 @@
             </div>
             <CeremonialButton :label="t('accountDetails.settings.verify')" @click="router.push({ name: 'account-verification' })" />
           </div>
-        </div>
-        <CeremonialButton class="settings-save" type="submit" :label="t('accountDetails.settings.save')" />
+        </div> -->
+        <CeremonialButton class="settings-save" :disabled="saving" :label="saving ? t('accountDetails.settings.saving') : t('accountDetails.settings.save')" @click="save" />
+        <p v-if="submitError" class="account-field-error" role="alert">{{ submitError }}</p>
         <p v-if="notice" class="settings-notice" role="status">{{ t(notice) }}</p>
-        <i18n-t v-if="!isLoggedIn" keypath="accountDetails.settings.loginPrompt" tag="p" scope="global" class="settings-login">
-          <template #login><button type="button" @click="openAuthModal()">{{ t('accountDetails.settings.login') }}</button></template>
+        <i18n-t v-if="!isLoggedIn" keypath="accountDetails.settings.loginPrompt" tag="p" scope="global"
+          class="settings-login">
+          <template #login><button type="button" @click="openAuthModal()">{{ t('accountDetails.settings.login')
+              }}</button></template>
         </i18n-t>
       </form>
     </section>
-    <AccountResultDialog v-if="savedProfile" variant-class="settings-result-dialog" :title="t('accountDetails.settings.result.title')"
-      :blessing="t('accountDetails.settings.result.blessing')" :confirm-label="t('accountDetails.settings.result.confirm')" @close="savedProfile = null">
+    <AccountResultDialog v-if="savedProfile" variant-class="settings-result-dialog"
+      :title="t('accountDetails.settings.result.title')" :blessing="t('accountDetails.settings.result.blessing')"
+      :confirm-label="t('accountDetails.settings.result.confirm')" @close="savedProfile = null">
       <p>{{ t('accountDetails.settings.result.updated', { name: savedProfile.name }) }}</p>
-      <p>{{ t('accountDetails.settings.result.email', { email: savedProfile.email || t('accountDetails.settings.result.emptyEmail') }) }}</p>
+      <p>{{ t('accountDetails.settings.result.email', {
+        email: savedProfile.email ||
+          t('accountDetails.settings.result.emptyEmail') }) }}</p>
       <template #notice>{{ t(notice) }}</template>
     </AccountResultDialog>
   </AccountPageShell>
@@ -53,7 +61,7 @@ import '@/styles/account-details.css'
 
 const { t } = useI18n()
 const router = useRouter()
-const { user, isLoggedIn, updateDemoProfile } = useUserSession()
+const { user, isLoggedIn, saveMemberProfile } = useUserSession()
 const { openAuthModal } = useAuthModal()
 const fields = [
   { id: 'name', type: 'text', autocomplete: 'nickname', maxlength: 80 },
@@ -63,7 +71,9 @@ const fields = [
 const form = reactive({ name: '', phone: '', email: '' })
 const settingsForm = ref(null)
 const attempted = ref(false)
+const saving = ref(false)
 const notice = ref('')
+const submitError = ref('')
 const savedProfile = ref(null)
 const errors = computed(() => {
   if (!attempted.value) return {}
@@ -82,17 +92,25 @@ watch(user, value => {
 }, { immediate: true, flush: 'sync' })
 
 async function save() {
+  if (saving.value) return
   if (!isLoggedIn.value) {
     openAuthModal()
     return
   }
   attempted.value = true
+  submitError.value = ''
   await nextTick()
   const invalid = settingsForm.value.querySelector('[aria-invalid="true"]')
   if (invalid) return invalid.focus()
-  const result = updateDemoProfile(form)
-  if (!result.saved) return
-  notice.value = result.persisted ? 'accountDetails.settings.saved' : 'accountDetails.settings.temporary'
-  savedProfile.value = { name: user.value.name, email: user.value.email }
+  saving.value = true
+  try {
+    const profile = await saveMemberProfile(form)
+    notice.value = 'accountDetails.settings.saved'
+    savedProfile.value = { name: profile.name, email: profile.email }
+  } catch (error) {
+    submitError.value = error?.message || t('accountDetails.settings.failed')
+  } finally {
+    saving.value = false
+  }
 }
 </script>

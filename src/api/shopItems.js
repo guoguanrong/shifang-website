@@ -9,6 +9,15 @@ export function getShopItemsList(data) {
 }
 
 /**
+ * 获取某个捐赠目标下的捐赠物品
+ * @param {object} data {donateTargetId*, type*} type：1 钱，2 物品
+ * @returns {Promise<object[]>} ShopItemsVo 列表
+ */
+export function getDonateShopItems(data, options) {
+  return request({ url: '/shopItems/getDonateShopItems', method: 'post', data, ...options })
+}
+
+/**
  * 获取捐赠物品详情
  * @param {number} id 捐赠物品 id
  */
