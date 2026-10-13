@@ -3,16 +3,18 @@
     <p class="lamp-intro">{{ t('offerings.lampIntro') }}</p>
     <section class="lamp-selection">
       <OrnateSectionHeading :title="t('offerings.selectionTitle')" />
-      <div class="lamp-grid">
-        <article v-for="(lamp, index) in lamps" :key="index" class="lamp-card">
-          <RouterLink class="lamp-card-link" :to="{ name: 'lamp-detail', params: { lampId: lamp.id } }" :aria-label="lamp.title" />
+      <div v-if="loading" class="lamp-list-loading" role="status"><span /></div>
+      <EmptyData v-else-if="!lamps.length" :label="emptyLabel" />
+      <div v-else class="lamp-grid">
+        <article v-for="lamp in lamps" :key="lamp.id" class="lamp-card">
+          <RouterLink class="lamp-card-link" :to="lampTo(lamp)" :aria-label="lamp.name" />
           <img class="lamp-card-art" :src="cardArt" alt="" aria-hidden="true" />
           <img class="lamp-card-outline" :src="cardOutline" alt="" aria-hidden="true" />
-          <div class="lamp-portrait"><img class="lamp-portrait-border" :src="portraitBorder" alt="" /><img :src="lamp.image" :alt="lamp.title" width="230" height="230" /></div>
-          <span v-if="index === 1" class="lamp-recommended">{{ t('offerings.recommended') }}</span>
-          <h2>{{ lamp.title }}</h2><p>{{ lamp.description }}<br />{{ lamp.audience }}</p>
+          <div class="lamp-portrait"><img class="lamp-portrait-border" :src="portraitBorder" alt="" /><img :src="lamp.picture || fallbackImage" :alt="lamp.name" width="230" height="230" /></div>
+          <h2>{{ lamp.name }}</h2>
+          <p v-if="lamp.matchGod">{{ lamp.matchGod }}</p>
           <p class="lamp-period">{{ t('offerings.yearOffering') }}</p>
-          <CeremonialButton :label="t('offerings.offerLamp')" @click="router.push({ name: 'lamp-detail', params: { lampId: lamp.id } })" />
+          <CeremonialButton :label="t('offerings.offerLamp')" @click="router.push(lampTo(lamp))" />
         </article>
       </div>
     </section>
@@ -29,21 +31,19 @@
   </OfferingPageShell>
 </template>
 <script setup>
-import { computed } from 'vue'
+import { onMounted, ref } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { getLightList } from '@/api/light'
 import OfferingPageShell from '@/components/offerings/OfferingPageShell.vue'
 import OfferingNotices from '@/components/offerings/OfferingNotices.vue'
 import OrnateSectionHeading from '@/components/common/OrnateSectionHeading.vue'
 import CeremonialButton from '@/components/common/CeremonialButton.vue'
+import EmptyData from '@/components/common/EmptyData.vue'
 import cardArt from '@/assets/offerings/lamp-card.webp'
 import cardOutline from '@/assets/offerings/lamp-outline.svg'
 import portraitBorder from '@/assets/offerings/lamp-border.svg'
-import guangming from '@/assets/offerings/lamp-guangming.png'
-import taisui from '@/assets/offerings/lamp-taisui.png'
-import wenchang from '@/assets/offerings/lamp-wenchang.png'
-import guangmingSecond from '@/assets/offerings/lamp-guangming-second.png'
-import wenchangSecond from '@/assets/offerings/lamp-wenchang-second.png'
+import fallbackImage from '@/assets/offerings/lamp-guangming.png'
 import stepEmblem from '@/assets/offerings/step-emblem.svg'
 import meritBorder from '@/assets/offerings/merit-border.svg'
 import wisdom from '@/assets/offerings/merit-wisdom.png'
@@ -53,9 +53,44 @@ import peace from '@/assets/offerings/merit-peace.png'
 const { t, tm } = useI18n()
 const router = useRouter()
 const meritImages = [wisdom, longevity, wealth, peace]
-// 设计稿为五张卡片，后两张重复光明灯、文昌灯；保留其顺序，不擅自新增灯种。
-const lamps = computed(() => {
-  const types = tm('offerings.lamps')
-  return [0, 1, 2, 0, 2].map((type, index) => ({ ...types[type], image: [guangming, taisui, wenchang, guangmingSecond, wenchangSecond][index] }))
+const lamps = ref([])
+const loading = ref(true)
+const emptyLabel = ref('')
+
+function lampTo(lamp) {
+  return { name: 'lamp-detail', params: { lampId: String(lamp.id) } }
+}
+
+onMounted(async () => {
+  emptyLabel.value = t('offerings.lampEmpty')
+  try {
+    const result = await getLightList({ status: 1, page: 1, pageSize: 50 }, { silent: true })
+    lamps.value = result?.list || result?.records || result?.rows || []
+  } catch (error) {
+    lamps.value = []
+    if (error?.code === 1005 || error?.code === 1003) emptyLabel.value = t('offerings.lampLogin')
+  } finally {
+    loading.value = false
+  }
 })
 </script>
+<style scoped>
+.lamp-list-loading {
+  display: grid;
+  min-height: 160px;
+  place-items: center;
+}
+
+.lamp-list-loading span {
+  width: 24px;
+  height: 24px;
+  border: 2px solid rgba(141, 104, 58, .2);
+  border-top-color: #8d683a;
+  border-radius: 50%;
+  animation: lamp-list-spin .7s linear infinite;
+}
+
+@keyframes lamp-list-spin {
+  to { transform: rotate(360deg); }
+}
+</style>

@@ -7,6 +7,7 @@
   </div>
   <SiteQuickActions />
   <AuthModal />
+  <StripeReturnDialog />
 </template>
 
 <script setup>
@@ -14,6 +15,7 @@
 import { RouterView } from 'vue-router'
 import AuthModal from '@/components/auth/AuthModal.vue'
 import SiteQuickActions from '@/components/common/SiteQuickActions.vue'
+import StripeReturnDialog from '@/components/offerings/StripeReturnDialog.vue'
 </script>
 
 <style scoped>

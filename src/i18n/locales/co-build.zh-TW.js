@@ -4,7 +4,7 @@ export default {
   cta: '隨喜捐贈 廣種福田',
   hero: { eyebrow: 'Global Guardians', title: '善款捐贈 · 功德福報', subtitle: '您的每一分善舉，皆有福報相隨', quote: '「諸惡莫作，眾善奉行；積功累行，自然成真」', quoteSource: '——《太上感應篇》· 道藏太清部' },
   project: {
-    eyebrow: 'FUNDRAISING GOAL', heading: '籌款目標', title: '斗姆元君大殿', total: '$ 12,680,000', description: '建築修繕 · 重現千年莊嚴', progressLabel: '籌款進度', raisedLabel: '已籌集', raised: '$8,624,300', targetStatLabel: '籌款目標', completedStatLabel: '已籌金額', typeStatLabel: '捐贈類型',
+    eyebrow: 'FUNDRAISING GOAL', heading: '籌款目標', title: '斗姆元君大殿', total: '$ 12,680,000', description: '建築修繕 · 重現千年莊嚴', progressLabel: '籌款進度', raisedLabel: '已籌集', raised: '$8,624,300', targetStatLabel: '籌款目標', completedStatLabel: '已籌金額', typeStatLabel: '捐贈類型', empty: '暫無籌款項目',
     stats: [{ label: '已捐贈善款', value: '$8,624,300' }, { label: '已使用善款', value: '$2,624,300' }, { label: '捐贈人次', value: '14,300' }],
   },
   assurances: [{ title: '501(c)(3)', desc: '美國免稅非營利組織' }, { title: '資金流向', desc: '清晰透明可追溯' }, { title: '即時透明', desc: '雲監工隨時查看' }],

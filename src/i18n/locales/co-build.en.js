@@ -4,7 +4,7 @@ export default {
   cta: 'Donate with Joy · Sow Fields of Blessing',
   hero: { eyebrow: 'Global Guardians', title: 'Giving with Goodwill · Blessings through Merit', subtitle: 'Every act of kindness is followed by blessings', quote: '“Do no evil; practice all good. Accumulate merit, and truth reveals itself.”', quoteSource: '— Treatise on Response and Retribution · Daozang' },
   project: {
-    eyebrow: 'FUNDRAISING GOAL', heading: 'Fundraising Goal', title: 'Hall of Doumu Yuanjun', total: '$ 12,680,000', description: 'Temple restoration · Reviving a millennium of dignity', progressLabel: 'Fundraising progress', raisedLabel: 'Raised', raised: '$8,624,300', targetStatLabel: 'Fundraising goal', completedStatLabel: 'Raised amount', typeStatLabel: 'Donation type',
+    eyebrow: 'FUNDRAISING GOAL', heading: 'Fundraising Goal', title: 'Hall of Doumu Yuanjun', total: '$ 12,680,000', description: 'Temple restoration · Reviving a millennium of dignity', progressLabel: 'Fundraising progress', raisedLabel: 'Raised', raised: '$8,624,300', targetStatLabel: 'Fundraising goal', completedStatLabel: 'Raised amount', typeStatLabel: 'Donation type', empty: 'No fundraising projects yet',
     stats: [{ label: 'Donated', value: '$8,624,300' }, { label: 'Funds Used', value: '$2,624,300' }, { label: 'Contributors', value: '14,300' }],
   },
   assurances: [{ title: '501(c)(3)', desc: 'U.S. tax-exempt nonprofit organization' }, { title: 'Traceable Funds', desc: 'Clear, transparent and fully traceable' }, { title: 'Real-Time Access', desc: 'Follow restoration progress online' }],

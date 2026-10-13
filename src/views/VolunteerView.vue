@@ -50,7 +50,7 @@
           <label for="volunteer-message">{{ t('accountPages.volunteer.message') }}</label>
           <textarea id="volunteer-message" v-model="form.message" name="message" rows="4" maxlength="1000" :placeholder="t('accountPages.volunteer.messagePlaceholder')" />
         </div>
-        <CeremonialButton type="submit" :disabled="submitting" :aria-busy="submitting" :label="t('accountPages.volunteer.submit')" />
+        <CeremonialButton :disabled="submitting" :aria-busy="submitting" :label="t('accountPages.volunteer.submit')" @click="submit" />
         <p v-if="submissionError" class="volunteer-error" role="alert">{{ submissionError }}</p>
         <p class="volunteer-privacy">{{ t('accountPages.volunteer.privacy') }}</p>
       </form>
@@ -134,6 +134,13 @@ async function submit() {
       remark: form.message.trim(),
     })
     feedback.value = { role: form.role, time: form.time }
+    form.name = ''
+    form.country = '+86'
+    form.phone = ''
+    form.role = 'temple'
+    form.time = 'weekend'
+    form.message = ''
+    attempted.value = false
   } catch (error) {
     submissionError.value = error.userMessage || error.message || '申请提交失败，请稍后重试'
   } finally {

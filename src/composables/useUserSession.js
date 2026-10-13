@@ -1,6 +1,6 @@
 import { computed, readonly, ref } from 'vue'
 import { clearToken, ResultCode, TOKEN_STORAGE_KEY } from '@/api/http'
-import { getMemberInfo } from '@/api/member'
+import { getMemberInfo, updateMember } from '@/api/member'
 
 const storageKey = 'shifang-demo-session'
 
@@ -142,6 +142,24 @@ async function refreshMemberInfo({ fallbackEmail = '', signOutOnAuthError = true
   return refreshPromise
 }
 
+async function saveMemberProfile({ name, phone, email }) {
+  const id = user.value?.id
+  if (id == null || id === '') {
+    const error = new Error('missing member id')
+    error.code = 'NO_ID'
+    throw error
+  }
+  const payload = {
+    id,
+    nickname: name.trim(),
+    phone: phone.trim(),
+    email: email.trim(),
+  }
+  const data = await updateMember(payload, { silent: true })
+  const member = data && typeof data === 'object' ? { ...data, ...payload } : payload
+  return applyMember(member) || user.value
+}
+
 function updateDemoProfile({ name, phone, email }) {
   if (!user.value || !name.trim()) return { saved: false, persisted: false }
   const profile = {
@@ -170,5 +188,5 @@ if (readToken()) {
 }
 
 export function useUserSession() {
-  return { user: readonly(user), isLoggedIn, startDemoSession, updateDemoProfile, refreshMemberInfo, signOut }
+  return { user: readonly(user), isLoggedIn, startDemoSession, updateDemoProfile, saveMemberProfile, refreshMemberInfo, signOut }
 }

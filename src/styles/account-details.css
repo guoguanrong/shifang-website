@@ -8,12 +8,21 @@
 .certificate-panel h2 { margin-bottom: 12px; color: #000; font-size: 28px; }
 .certificate-panel > p { font-size: 16px; line-height: 24px; }
 .certificate-panel .certificate-example-note { margin-top: 8px; color: #85735f; font-size: 13px; }
-.certificate-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 30px 20px; margin-top: 22px; }
-.certificate-grid figure { min-width: 0; }
-.certificate-grid img { width: 100%; height: auto; aspect-ratio: 680 / 980; border-radius: 20px; }
+.certificate-grid { display: flex; flex-wrap: wrap; gap: 28px 24px; margin-top: 22px; }
+.certificate-grid figure { width: min(100%, 260px); min-width: 0; }
+.certificate-sheet { position: relative; display: block; width: 100%; padding: 0; border: 0; background: none; cursor: pointer; }
+.certificate-sheet img { width: 100%; height: auto; aspect-ratio: 680 / 980; border-radius: 12px; }
+.certificate-name, .certificate-merit, .certificate-amount, .certificate-date { position: absolute; left: 50%; max-width: 62%; color: #4a3728; font-family: var(--font-calligraphy); line-height: 1.3; text-align: center; transform: translate(-50%, -50%); }
+.certificate-name { top: 45%; font-size: 15px; }
+.certificate-merit { top: 61.6%; max-width: 52%; font-size: 12px; line-height: 1.25; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+.certificate-amount { top: 67.6%; font-size: 16px; }
+.certificate-date { top: 80.2%; max-width: 70%; color: #6b5a48; font-size: 11px; }
 .certificate-grid figcaption { margin-top: 20px; text-align: center; }
-.certificate-grid a { display: inline-block; padding: 4px 8px; color: #2b59a2; font-size: 16px; line-height: 24px; letter-spacing: 1.6px; text-decoration: underline; text-underline-offset: 3px; }
-.certificate-link-index { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.certificate-grid figcaption button { padding: 4px 8px; color: #2b59a2; font: 16px/24px var(--font-calligraphy); letter-spacing: 1.6px; text-decoration: underline; text-underline-offset: 3px; background: none; border: 0; cursor: pointer; }
+.certificate-pager { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 18px 28px; margin-top: 28px; color: #8a7764; font-size: 14px; }
+.certificate-pager button { padding: 0; color: inherit; font: inherit; background: none; border: 0; cursor: pointer; }
+.certificate-pager button:disabled { color: #c4b8aa; cursor: default; }
+.certificate-pager button:not(:disabled):hover { color: #cc3513; }
 .settings-panel { position: relative; isolation: isolate; padding: 70px 100px 60px; }
 .settings-panel::before, .settings-panel::after { position: absolute; z-index: -1; inset: 0; content: ''; pointer-events: none; background: url('@/assets/account-details/settings-frame.svg') center / 100% 100% no-repeat; }
 .settings-panel::after { inset: 6px; background-image: url('@/assets/account-details/settings-border.svg'); }
@@ -71,8 +80,8 @@ html[data-locale-layout='international'] .policy-document h2 { max-width: 100%; 
 @media (max-width: 600px) {
   .certificate-panel { padding: 22px 16px 28px; }
   .certificate-panel h2 { font-size: 24px; }
-  .certificate-grid { grid-template-columns: 1fr; gap: 26px; }
-  .certificate-grid img { border-radius: 12px; }
+  .certificate-grid { gap: 26px; }
+  .certificate-sheet img { border-radius: 12px; }
   .certificate-grid figcaption { margin-top: 10px; }
   .settings-panel { padding: 50px 22px 30px; }
   .settings-panel::before { border-radius: 20px; background: #fff; }

@@ -35,6 +35,10 @@
 .record-example-toggle { display: inline-flex; align-items: center; gap: 8px; margin-left: auto; cursor: pointer; }
 .record-example-toggle input { width: 18px; height: 18px; accent-color: #c7955f; }
 .record-example-notice { margin: 14px 0 0; color: #85735f; font-size: 13px; line-height: 1.6; }
+.record-pager { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 18px 28px; margin-top: 28px; color: #8a7764; font-size: 14px; }
+.record-pager button { padding: 0; color: inherit; font: inherit; background: none; border: 0; cursor: pointer; }
+.record-pager button:disabled { color: #c4b8aa; cursor: default; }
+.record-pager button:not(:disabled):hover { color: #cc3513; }
 .record-card { min-width: 0; margin-bottom: 20px; padding: 20px 30px 24px; border-radius: 20px; background: #fff; }
 .record-number { margin: 0 0 18px; color: #a47c52; font-size: 12px; line-height: 1.5; overflow-wrap: anywhere; }
 .record-surface { min-width: 0; padding: 20px; border-radius: 20px; background: linear-gradient(#f8f5ef, #fff); }
@@ -47,12 +51,14 @@
 .record-card-state > div { display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 10px; }
 .record-card-state strong { color: #c7955f; font-family: var(--font-ui-international); font-size: 16px; font-weight: 500; }
 .record-status { display: inline-block; padding: 4px 10px; border-radius: 20px; background: #ffe9d2; color: #2b59a2; font-size: 14px; line-height: 1.3; }
-.record-status.pending { color: #fff; background: #a6a6a6; }
-.record-status.completed { color: #696969; background: #f0eee8; }
+.record-status.pending, .record-status.unpaid { color: #fff; background: #a6a6a6; }
+.record-status.completed, .record-status.expired { color: #696969; background: #f0eee8; }
 .record-card-state time { display: block; margin-top: 8px; color: #a47c52; font-size: 12px; line-height: 1.5; }
 .record-media { position: relative; display: block; width: 100%; padding: 0; overflow: hidden; border: 0; border-radius: 20px; background: #f3f0e9; cursor: pointer; }
-.record-media > img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
-.record-card-deities .record-media > img { aspect-ratio: 2.23; }
+.record-media > img, .record-media > video { display: block; width: 100%; object-fit: contain; background: #f7f4ee; }
+.record-media > img { height: 220px; }
+.record-media > video { aspect-ratio: 16 / 9; object-fit: cover; background: #111; }
+.record-card-deities .record-media > video { aspect-ratio: 2.23; }
 .record-play { position: absolute; top: 50%; left: 50%; display: grid; place-items: center; width: 72px; height: 72px; padding-left: 5px; border-radius: 50%; color: #442713; background: #ffe2bcdd; font: 32px/1 sans-serif; transform: translate(-50%, -50%); }
 .record-media-label { position: absolute; right: 12px; bottom: 12px; padding: 4px 10px; border-radius: 20px; color: #fff; background: #0008; font: 12px/1.5 var(--font-calligraphy); }
 .record-media-pending { display: flex; align-items: center; justify-content: center; gap: 14px; min-height: 184px; padding: 24px; border: 1px dashed #dfbd93; border-radius: 20px; background: #fff; color: #b98c57; text-align: left; }
@@ -131,7 +137,7 @@
 .account-feedback-dialog::backdrop { background: #0009; }
 .account-feedback-close { position: absolute; top: 10px; right: 12px; width: 36px; height: 36px; border: 0; border-radius: 50%; color: #a77845; background: #f2e5d4; font: 24px/1 sans-serif; cursor: pointer; }
 .account-feedback-dialog h2 { margin: 0 0 20px; font-size: 26px; font-weight: 400; overflow-wrap: anywhere; }
-.account-feedback-image { display: block; max-width: 100%; max-height: 55dvh; margin: auto; border-radius: 12px; object-fit: contain; }
+.account-feedback-image { display: block; width: auto; max-width: 100%; max-height: min(82dvh, 920px); margin: auto; border-radius: 12px; object-fit: contain; background: #f7f4ee; }
 .account-feedback-dialog p { margin: 18px 0; color: #856a4d; line-height: 1.7; }
 .account-feedback-dialog .ceremonial-button { width: min(320px, 100%); min-height: 50px; height: auto; padding: 12px; font-size: 18px; }
 html[data-locale-layout='international'] :is(.account-page .offering-main, .account-feedback-dialog, .volunteer-field input, .volunteer-field select, .volunteer-field textarea) { font-family: var(--font-ui-international); }
@@ -169,7 +175,8 @@ html[data-locale-layout='international'] .account-page .ornate-heading h2 { font
   .record-card-state strong { font-size: 14px; }
   .record-status { font-size: 12px; }
   .record-media { border-radius: 12px; }
-  .record-card-deities .record-media > img { aspect-ratio: 16 / 9; }
+  .record-media > img { height: 180px; }
+  .record-card-deities .record-media > video { aspect-ratio: 16 / 9; }
   .record-play { width: 48px; height: 48px; font-size: 23px; }
   .record-media-label { right: 6px; bottom: 6px; font-size: 10px; }
   .record-media-pending { min-height: 150px; padding: 16px 12px; gap: 10px; border-radius: 12px; }

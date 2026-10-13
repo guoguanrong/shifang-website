@@ -43,8 +43,8 @@ export function signupMember(data, options) {
  * 修改会员
  * @param {object} data {id*, nickname, phone, email, password, avatar, status, ...}
  */
-export function updateMember(data) {
-  return request({ url: '/member/update', method: 'post', data })
+export function updateMember(data, options) {
+  return request({ url: '/member/update', method: 'post', data, ...options })
 }
 
 /**

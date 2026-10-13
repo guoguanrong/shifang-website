@@ -18,29 +18,30 @@
     <CoBuildSectionHeading class="fundraising-heading" :title="t('coBuild.project.heading')"
       :subtitle="t('coBuild.project.eyebrow')" />
 
-    <div class="project-list">
-      <article v-for="(goal, index) in displayGoals" :id="index === 0 ? 'donation-project' : undefined"
-        :key="goal?.id || 'fallback-project'" class="project-card">
+    <div v-if="goals.length" class="project-list">
+      <article v-for="(goal, index) in goals" :id="index === 0 ? 'donation-project' : undefined"
+        :key="goal.id" class="project-card">
         <img class="project-frame project-frame-outer" :src="projectFrameOuter" alt="" aria-hidden="true" />
         <img class="project-frame project-frame-inner" :src="projectFrameInner" alt="" aria-hidden="true" />
         <div class="project-card-inner">
           <figure class="project-photo">
             <img class="project-photo-frame" :src="projectImageFrame" alt="" aria-hidden="true" />
-            <img class="project-photo-image" :src="goal?.picture || projectTemple" :alt="projectTitle(goal)" />
+            <img v-if="goal.picture" class="project-photo-image" :src="goal.picture" :alt="goal.title || ''" />
+            <span v-else class="project-photo-empty" />
           </figure>
 
           <div class="project-copy">
-            <h2>{{ projectTitle(goal) }}</h2>
-            <strong class="project-total">{{ goal ? formatMoney(goal.targetAmount) : t('coBuild.project.total') }}</strong>
-            <p class="project-description">{{ goal?.subTitle || t('coBuild.project.description') }}</p>
+            <h2>{{ goal.title }}</h2>
+            <strong class="project-total">{{ formatMoney(goal.targetAmount) }}</strong>
+            <p v-if="goal.subTitle" class="project-description">{{ goal.subTitle }}</p>
 
             <div class="progress-track" role="progressbar" :aria-label="t('coBuild.project.progressLabel')"
-              aria-valuemin="0" aria-valuemax="100" :aria-valuenow="progressPercent(goal)">
-              <span :style="{ width: `${progressPercent(goal)}%` }" />
+              aria-valuemin="0" aria-valuemax="100" :aria-valuenow="Math.round(progressValue(goal))">
+              <span :style="{ width: `${progressWidth(goal)}%` }" />
             </div>
             <div class="progress-copy">
-              <span>{{ t('coBuild.project.raisedLabel') }} <b>{{ goal ? formatMoney(goal.completedAmount) : t('coBuild.project.raised') }}</b></span>
-              <span>{{ progressPercent(goal) }}%</span>
+              <span>{{ t('coBuild.project.raisedLabel') }} <b>{{ formatMoney(goal.completedAmount) }}</b></span>
+              <span>{{ progressLabel(goal) }}%</span>
             </div>
 
             <dl class="project-stats">
@@ -51,12 +52,13 @@
             </dl>
 
             <button class="ornate-button" type="button" @click="goToDonation(goal)">
-              <span>{{ goal ? t(`donation.types.${goalType(goal)}.title`) : t('coBuild.cta') }}</span>
+              <span>{{ t(`donation.types.${goalType(goal)}.title`) }}</span>
             </button>
           </div>
         </div>
       </article>
     </div>
+    <p v-else-if="!loading" class="project-empty">{{ t('coBuild.project.empty') }}</p>
 
     <div class="assurance-grid" :style="{ '--assurance-top': `${assuranceTop}px` }">
       <article v-for="(item, index) in assurances" :key="item.title" class="assurance-card">
@@ -77,7 +79,6 @@ import { useI18n } from 'vue-i18n'
 import CoBuildSectionHeading from './CoBuildSectionHeading.vue'
 import { getDonateTargetList } from '@/api/donateTarget'
 import quoteScroll from '@/assets/co-build/quote-scroll.webp'
-import projectTemple from '@/assets/deities/featured-deity.png'
 import projectFrameOuter from '@/assets/co-build/project-frame-outer.svg'
 import projectFrameInner from '@/assets/co-build/project-frame-inner.svg'
 import projectImageFrame from '@/assets/co-build/project-image-frame.svg'
@@ -92,11 +93,11 @@ const { t, tm, locale } = useI18n()
 const router = useRouter()
 const assurances = computed(() => tm('coBuild.assurances'))
 const goals = ref([])
-const displayGoals = computed(() => goals.value.length ? goals.value : [null])
-const heroHeight = computed(() => Math.max(1454, 604 + displayGoals.value.length * 520
-  + Math.max(0, displayGoals.value.length - 1) * 24 + 40 + 210 + 80))
-const assuranceTop = computed(() => 604 + displayGoals.value.length * 520
-  + Math.max(0, displayGoals.value.length - 1) * 24 + 40)
+const loading = ref(true)
+const heroHeight = computed(() => Math.max(1454, 604 + Math.max(goals.value.length, 1) * 520
+  + Math.max(0, goals.value.length - 1) * 24 + 40 + 210 + 80))
+const assuranceTop = computed(() => 604 + Math.max(goals.value.length, 1) * 520
+  + Math.max(0, goals.value.length - 1) * 24 + 40)
 const assuranceFrames = [assuranceFrame1, assuranceFrame2, assuranceFrame3]
 const assuranceIcons = [assuranceIcon1, assuranceIcon2, assuranceIcon3]
 
@@ -104,25 +105,31 @@ function goalType(goal) {
   return Number(goal?.type) === 2 ? 'goods' : 'money'
 }
 
-function projectTitle(goal) {
-  return goal?.title || t('coBuild.project.title')
+function progressValue(goal) {
+  const target = Number(goal?.targetAmount || 0)
+  const completed = Number(goal?.completedAmount || 0)
+  if (!target || completed <= 0) return 0
+  return Math.min(100, completed / target * 100)
 }
 
-function progressPercent(goal) {
-  if (!goal) return 68
-  const target = Number(goal.targetAmount || 0)
-  const completed = Number(goal.completedAmount || 0)
-  return target ? Math.min(100, Math.round(completed / target * 100)) : 0
+function progressLabel(goal) {
+  const value = progressValue(goal)
+  if (value > 0 && value < 1) return value.toFixed(1)
+  return String(Math.round(value))
+}
+
+function progressWidth(goal) {
+  const value = progressValue(goal)
+  if (value <= 0) return 0
+  return Math.max(value, 1)
 }
 
 function projectStats(goal) {
-  return goal
-    ? [
-      { label: t('coBuild.project.targetStatLabel'), value: formatMoney(goal.targetAmount) },
-      { label: t('coBuild.project.completedStatLabel'), value: formatMoney(goal.completedAmount) },
-      { label: t('coBuild.project.typeStatLabel'), value: t(`donation.types.${goalType(goal)}.title`) },
-    ]
-    : tm('coBuild.project.stats')
+  return [
+    { label: t('coBuild.project.targetStatLabel'), value: formatMoney(goal.targetAmount) },
+    { label: t('coBuild.project.completedStatLabel'), value: formatMoney(goal.completedAmount) },
+    { label: t('coBuild.project.typeStatLabel'), value: t(`donation.types.${goalType(goal)}.title`) },
+  ]
 }
 
 function formatMoney(value) {
@@ -130,12 +137,16 @@ function formatMoney(value) {
 }
 
 async function loadGoals() {
+  loading.value = true
   try {
-    const payload = await getDonateTargetList({ page: 1, pageSize: 100 })
+    const payload = await getDonateTargetList({ status: 1, page: 1, pageSize: 100 }, { silent: true })
     const result = payload?.data ?? payload
-    goals.value = Array.isArray(result) ? result : result?.list || result?.records || []
+    const list = Array.isArray(result) ? result : result?.list || result?.records || []
+    goals.value = list.filter(item => item.status === undefined || Number(item.status) === 1)
   } catch {
     goals.value = []
+  } finally {
+    loading.value = false
   }
 }
 
@@ -260,16 +271,28 @@ onMounted(loadGoals)
   letter-spacing: 0;
 }
 
-.project-list {
+.project-list,
+.project-empty {
   position: absolute;
   z-index: 1;
   top: 604px;
   left: 0;
-  display: flex;
   width: 100%;
+}
+
+.project-list {
+  display: flex;
   flex-direction: column;
   align-items: center;
   gap: 24px;
+}
+
+.project-empty {
+  margin: 0;
+  color: #6b5a48;
+  font-size: 16px;
+  line-height: 24px;
+  text-align: center;
 }
 
 .project-card {
@@ -323,7 +346,8 @@ onMounted(loadGoals)
   pointer-events: none;
 }
 
-.project-photo-image {
+.project-photo-image,
+.project-photo-empty {
   position: absolute;
   z-index: 1;
   top: 6px;
@@ -331,9 +355,16 @@ onMounted(loadGoals)
   width: 692px;
   height: 429px;
   border: 1px solid #f2d2af;
+}
+
+.project-photo-image {
   object-fit: cover;
-  object-position: center 36%;
+  object-position: center;
   transition: transform .45s ease;
+}
+
+.project-photo-empty {
+  background: #f6f1e8;
 }
 
 .project-card:hover .project-photo-image {
@@ -583,6 +614,7 @@ onMounted(loadGoals)
   .hero-quote,
   .fundraising-heading,
   .project-list,
+  .project-empty,
   .project-card,
   .assurance-grid {
     position: relative;
@@ -638,7 +670,8 @@ onMounted(loadGoals)
     height: 100%;
   }
 
-  .project-photo-image {
+  .project-photo-image,
+  .project-photo-empty {
     width: calc(100% - 12px);
     height: calc(100% - 12px);
   }

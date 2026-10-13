@@ -77,6 +77,7 @@ import { computed, nextTick, onBeforeUnmount, ref, useId, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { RouterLink, useRoute } from 'vue-router'
 import { useUserSession } from '@/composables/useUserSession'
+import { listSelfOrder } from '@/api/order'
 import CountUp from '@/components/common/CountUp.vue'
 import defaultAvatar from '@/assets/account/avatar.webp'
 import verifiedIcon from '@/assets/account/verified.svg'
@@ -103,10 +104,27 @@ watch(() => user.value?.avatar, () => {
   avatarBroken.value = false
 })
 const statKeys = { lampCount: 'lightCount', donationCount: 'donateCount', deityCount: 'worshipCount' }
+const orderTypes = { lampCount: 1, deityCount: 2, donationCount: 3 }
+const orderCounts = ref({})
 
 function statValue(id) {
+  const fromOrders = orderCounts.value[id]
+  if (Number.isFinite(fromOrders)) return fromOrders
   const value = Number(user.value?.[statKeys[id]])
   return Number.isFinite(value) ? value : 0
+}
+
+// 三项数字取自会员自己的订单总数：供灯 type 1，供奉 type 2，捐款 type 3。
+async function loadOrderCounts() {
+  await Promise.all(Object.entries(orderTypes).map(async ([id, type]) => {
+    try {
+      const result = await listSelfOrder({ type, page: 1, pageSize: 1 }, { silent: true })
+      const total = Number(result?.totalRow ?? result?.total ?? result?.totalCount)
+      if (Number.isFinite(total)) orderCounts.value = { ...orderCounts.value, [id]: total }
+    } catch {
+      // 未登录或接口失败时，继续显示会员资料里的数字。
+    }
+  }))
 }
 
 function onAvatarError() {
@@ -229,6 +247,7 @@ function open({ lockScroll = true } = {}, retried = false) {
     return
   }
   isOpen.value = true
+  loadOrderCounts()
   window.addEventListener('resize', updatePosition)
   window.visualViewport?.addEventListener('resize', updatePosition)
   // 悬停打开时页面仍可滚动，滚动会让卡片与头像错位，因此滚动即收起。

@@ -4,8 +4,8 @@ import { request } from './http'
  * 获取捐赠目标列表
  * @param {object} data {searchKey, status, startTime, endTime, page, pageSize}
  */
-export function getDonateTargetList(data) {
-  return request({ url: '/donateTarget/list', method: 'post', data })
+export function getDonateTargetList(data, options) {
+  return request({ url: '/donateTarget/list', method: 'post', data, ...options })
 }
 
 /**
