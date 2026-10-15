@@ -95,6 +95,7 @@ export default {
     ],
     "drawTitle": "One Lot Today · Reflect on Your Question",
     "limit": "One lot per person each day · Renewed the next day",
+    "alreadyDrawn": "You have drawn your lot today. Please come back tomorrow.",
     "instruction": "Choose a vessel, then draw a lot · Ask with sincerity · One question at a time",
     "draw": "Draw a Lot",
     "pending": "This is a preview of the lot-drawing animation. Full lot readings are being prepared; your daily allowance has not been used.",

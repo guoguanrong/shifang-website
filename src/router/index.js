@@ -164,6 +164,18 @@ const router = createRouter({
       // 道法养生页图片资源较多，使用路由级懒加载保持首页首包轻量。
       component: () => import('@/views/WellnessView.vue'),
     },
+    // 跟练视频详情：养生功法的视频正文页。
+    {
+      path: '/wellness/practice',
+      name: 'wellness-practice-detail',
+      component: () => import('@/views/WellnessPracticeDetailView.vue'),
+    },
+    // 道典精读详情：养生知识的文章正文页。
+    {
+      path: '/wellness/knowledge',
+      name: 'wellness-knowledge-detail',
+      component: () => import('@/views/WellnessKnowledgeDetailView.vue'),
+    },
     // 共建十方：公益共建与功德介绍页，导航里的「共建十方」。
     {
       path: '/co-build',

@@ -1,7 +1,7 @@
 /* Figma 4065:2 / 4065:3 share the existing 680px confirmation-dialog layout. */
 .offering-dialog.donation-dialog .offering-dialog-content { overflow: hidden; }
 .offering-dialog.donation-dialog .offering-dialog-content::before {
-  background-image: url('@/assets/donation/dialog-cloud.webp');
+  /* background-image: url('@/assets/donation/dialog-cloud.webp'); */
   background-size: 714px 325px;
   background-position: 270px 513px;
   background-repeat: no-repeat;
@@ -16,7 +16,7 @@
   content: '';
   pointer-events: none;
   opacity: .2;
-  background: url('@/assets/donation/dialog-cloud.webp') center/714px 422px no-repeat;
+  /* background: url('@/assets/donation/dialog-cloud.webp') center/714px 422px no-repeat; */
   transform: rotate(180deg);
 }
 .offering-dialog.donation-dialog .dialog-close { background-image: url('@/assets/donation/close-background.svg'); }

@@ -1,26 +1,114 @@
 /* 设置保存与实名认证共用结果弹窗；两个设计节点的装饰素材完全一致。 */
-.account-result-dialog::backdrop { background: #0009; }
-.account-result-dialog .service-dialog-content::before,
-.account-result-dialog .service-dialog-content::after { background-image: url('@/assets/verification/result/cloud.png'); }
-.account-result-dialog .service-dialog-content::before { bottom: -25px; }
-.account-result-dialog .service-dialog-close { background-image: url('@/assets/verification/result/close-bg.svg'); }
-.account-result-dialog .service-dialog-heading { height: auto; min-height: 117px; padding: 42px 24px 24px; }
-.account-result-dialog .service-dialog-heading h2 { letter-spacing: 19.2px; padding-left: 19.2px; overflow-wrap: anywhere; }
-.verification-result-preview { color: #856a4d; }
-.account-result-dialog .service-dialog-actions .ceremonial-button { isolation: isolate; padding-block: 13px; background-image: none; box-shadow: none; }
-.account-result-dialog .service-dialog-actions .ceremonial-button::before { background: url('@/assets/verification/result/texture.png') center / cover; mix-blend-mode: luminosity; opacity: .3; }
-.account-result-dialog .service-dialog-actions .ceremonial-button::after { background-image: url('@/assets/verification/result/ornament.svg'); }
-.account-result-dialog .service-dialog-actions { position: relative; isolation: isolate; }
-.account-result-dialog .service-dialog-actions::before { position: absolute; z-index: -1; bottom: -11px; left: 50%; width: 255px; height: 22px; max-width: 90%; background: url('@/assets/verification/result/shadow.svg') center / 100% 100% no-repeat; content: ''; transform: translateX(-50%); }
-html[data-locale-layout='international'] .account-result-dialog,
-html[data-locale-layout='international'] .account-result-dialog .ceremonial-button { font-family: var(--font-ui-international); }
-html[data-locale-layout='international'] .account-result-dialog .service-dialog-heading h2 { letter-spacing: 0; padding-left: 0; }
-html[data-locale-layout='international'] .account-result-dialog .service-dialog-copy { letter-spacing: 0; }
-@media (max-width: 600px) {
-  .account-result-dialog .service-dialog-close { width: 44px; height: 44px; padding: 12px; background-size: 44px 44px; }
-  .account-result-dialog .service-dialog-heading { min-height: 100px; padding: 30px 24px 18px; }
-  .account-result-dialog .service-dialog-heading h2 { letter-spacing: 3px; padding-left: 3px; }
-  .account-result-dialog .service-dialog-content { padding-bottom: 30px; }
+.account-result-dialog::backdrop {
+  background: #0009;
 }
-.settings-result-dialog .service-dialog-heading h2 { letter-spacing: 0; padding-left: 0; }
-html[data-locale-layout='international'] .account-result-dialog .service-dialog-preview { font-family: var(--font-ui-international); }
+
+.account-result-dialog .service-dialog-content::before,
+.account-result-dialog .service-dialog-content::after {
+  /* background-image: url('@/assets/verification/result/cloud.png'); */
+}
+
+.account-result-dialog .service-dialog-content::before {
+  bottom: -25px;
+}
+
+.account-result-dialog .service-dialog-close {
+  background-image: url('@/assets/verification/result/close-bg.svg');
+}
+
+.account-result-dialog .service-dialog-heading {
+  height: auto;
+  min-height: 117px;
+  padding: 42px 24px 24px;
+}
+
+.account-result-dialog .service-dialog-heading h2 {
+  letter-spacing: 19.2px;
+  padding-left: 19.2px;
+  overflow-wrap: anywhere;
+}
+
+.verification-result-preview {
+  color: #856a4d;
+}
+
+.account-result-dialog .service-dialog-actions .ceremonial-button {
+  isolation: isolate;
+  padding-block: 13px;
+  background-image: none;
+  box-shadow: none;
+}
+
+.account-result-dialog .service-dialog-actions .ceremonial-button::before {
+  background: url('@/assets/verification/result/texture.png') center / cover;
+  mix-blend-mode: luminosity;
+  opacity: .3;
+}
+
+.account-result-dialog .service-dialog-actions .ceremonial-button::after {
+  background-image: url('@/assets/verification/result/ornament.svg');
+}
+
+.account-result-dialog .service-dialog-actions {
+  position: relative;
+  isolation: isolate;
+}
+
+.account-result-dialog .service-dialog-actions::before {
+  position: absolute;
+  z-index: -1;
+  bottom: -11px;
+  left: 50%;
+  width: 255px;
+  height: 22px;
+  max-width: 90%;
+  background: url('@/assets/verification/result/shadow.svg') center / 100% 100% no-repeat;
+  content: '';
+  transform: translateX(-50%);
+}
+
+html[data-locale-layout='international'] .account-result-dialog,
+html[data-locale-layout='international'] .account-result-dialog .ceremonial-button {
+  font-family: var(--font-ui-international);
+}
+
+html[data-locale-layout='international'] .account-result-dialog .service-dialog-heading h2 {
+  letter-spacing: 0;
+  padding-left: 0;
+}
+
+html[data-locale-layout='international'] .account-result-dialog .service-dialog-copy {
+  letter-spacing: 0;
+}
+
+@media (max-width: 600px) {
+  .account-result-dialog .service-dialog-close {
+    width: 44px;
+    height: 44px;
+    padding: 12px;
+    background-size: 44px 44px;
+  }
+
+  .account-result-dialog .service-dialog-heading {
+    min-height: 100px;
+    padding: 30px 24px 18px;
+  }
+
+  .account-result-dialog .service-dialog-heading h2 {
+    letter-spacing: 3px;
+    padding-left: 3px;
+  }
+
+  .account-result-dialog .service-dialog-content {
+    padding-bottom: 30px;
+  }
+}
+
+.settings-result-dialog .service-dialog-heading h2 {
+  letter-spacing: 0;
+  padding-left: 0;
+}
+
+html[data-locale-layout='international'] .account-result-dialog .service-dialog-preview {
+  font-family: var(--font-ui-international);
+}

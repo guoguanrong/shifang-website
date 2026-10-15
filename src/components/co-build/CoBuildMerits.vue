@@ -2,15 +2,13 @@
   <!-- 共建功德：四张卡片，每张由印章（汉字 + 罗马音）与说明文案组成。 -->
   <section class="merits-section">
     <!-- 背景太极水印，纯装饰不参与交互。 -->
-    <img class="taichi-watermark" :src="taichi" alt="" aria-hidden="true" />
     <CoBuildSectionHeading :title="t('coBuild.merits.title')" :subtitle="t('coBuild.merits.subtitle')" />
 
     <div class="merits-grid">
       <article v-for="(item, index) in merits" :key="item.title" class="merit-card">
+        <!-- 印章整体为图片：图内已含梅花底、书法字与拼音角标，按当前语言取图。 -->
         <div class="merit-seal">
-          <img :src="virtueEmblems[index]" alt="" aria-hidden="true" />
-          <span>{{ item.char }}</span>
-          <small>{{ item.roman }}</small>
+          <img class="merit-seal-img" :src="meritSeals[index]" :alt="item.title" />
         </div>
         <div class="merit-copy">
           <h3>{{ item.title }}</h3>
@@ -26,15 +24,35 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import CoBuildSectionHeading from './CoBuildSectionHeading.vue'
 import taichi from '@/assets/culture/taichi.webp'
-import virtue1 from '@/assets/co-build/virtue-1.svg'
-import virtue2 from '@/assets/co-build/virtue-2.svg'
-import virtue3 from '@/assets/co-build/virtue-3.svg'
-import virtue4 from '@/assets/co-build/virtue-4.svg'
+import meritZengZhCN from '@/assets/co-build/merits/merit-zeng-zh-CN.png'
+import meritZengZhTW from '@/assets/co-build/merits/merit-zeng-zh-TW.png'
+import meritZengEn from '@/assets/co-build/merits/merit-zeng-en.png'
+import meritYinZhCN from '@/assets/co-build/merits/merit-yin-zh-CN.png'
+import meritYinZhTW from '@/assets/co-build/merits/merit-yin-zh-TW.png'
+import meritYinEn from '@/assets/co-build/merits/merit-yin-en.png'
+import meritYunZhCN from '@/assets/co-build/merits/merit-yun-zh-CN.png'
+import meritYunZhTW from '@/assets/co-build/merits/merit-yun-zh-TW.png'
+import meritYunEn from '@/assets/co-build/merits/merit-yun-en.png'
+import meritBaoZhCN from '@/assets/co-build/merits/merit-bao-zh-CN.png'
+import meritBaoZhTW from '@/assets/co-build/merits/merit-bao-zh-TW.png'
+import meritBaoEn from '@/assets/co-build/merits/merit-bao-en.png'
 
-const { t, tm } = useI18n()
-// 功德条目取自语言包，与四枚印章图案按索引一一对应。
+const { t, tm, locale } = useI18n()
+// 功德条目取自语言包，与四枚印章图按索引一一对应。
 const merits = computed(() => tm('coBuild.merits.items'))
-const virtueEmblems = [virtue1, virtue2, virtue3, virtue4]
+
+// 印章为整图（图内含梅花底、书法字与拼音角标），按当前语言取图。
+const MERIT_SEAL_KEYS = ['zeng', 'yin', 'yun', 'bao']
+const MERIT_SEALS = {
+  zeng: { 'zh-CN': meritZengZhCN, 'zh-TW': meritZengZhTW, en: meritZengEn },
+  yin: { 'zh-CN': meritYinZhCN, 'zh-TW': meritYinZhTW, en: meritYinEn },
+  yun: { 'zh-CN': meritYunZhCN, 'zh-TW': meritYunZhTW, en: meritYunEn },
+  bao: { 'zh-CN': meritBaoZhCN, 'zh-TW': meritBaoZhTW, en: meritBaoEn },
+}
+const meritSeals = computed(() => tm('coBuild.merits.items').map((item, index) => {
+  const set = MERIT_SEALS[MERIT_SEAL_KEYS[index]] || {}
+  return set[locale.value] || set['zh-CN'] || ''
+}))
 </script>
 
 <style scoped>
@@ -42,7 +60,7 @@ const virtueEmblems = [virtue1, virtue2, virtue3, virtue4]
   position: relative;
   overflow: hidden;
   padding: 0 20px 80px;
-  background: #f3f0e9;
+  background: #f8f5ed;
 }
 
 /* 超大太极水印：极低透明度，且不拦截鼠标事件。 */
@@ -90,32 +108,11 @@ const virtueEmblems = [virtue1, virtue2, virtue3, virtue4]
   height: 138px;
 }
 
-.merit-seal>img {
-  position: absolute;
-  inset: 0;
+/* 印章为整图（图内含梅花底、书法字与拼音角标）。 */
+.merit-seal-img {
+  display: block;
   width: 138px;
   height: 138px;
-}
-
-.merit-seal span {
-  position: absolute;
-  top: 9px;
-  left: 29px;
-  color: #111;
-  font-family: var(--font-calligraphy);
-  font-size: 80px;
-  line-height: 96px;
-}
-
-.merit-seal small {
-  position: absolute;
-  right: 17px;
-  bottom: 14px;
-  color: #cc3513;
-  font-family: Georgia, serif;
-  font-size: 16px;
-  line-height: 20px;
-  text-transform: uppercase;
 }
 
 .merit-copy {
@@ -187,22 +184,9 @@ const virtueEmblems = [virtue1, virtue2, virtue3, virtue4]
   }
 
   .merit-seal,
-  .merit-seal>img {
+  .merit-seal-img {
     width: 108px;
     height: 108px;
-  }
-
-  .merit-seal span {
-    top: 9px;
-    left: 24px;
-    font-size: 60px;
-    line-height: 72px;
-  }
-
-  .merit-seal small {
-    right: 11px;
-    bottom: 10px;
-    font-size: 12px;
   }
 
   .merit-copy {

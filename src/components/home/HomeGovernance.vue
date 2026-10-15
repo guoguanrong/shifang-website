@@ -23,7 +23,7 @@
   </section>
 
   <!-- 资金监管：展示实时查看与资金流向两项透明机制。 -->
-  <section id="supervision" class="supervision-section" aria-labelledby="supervision-title">
+  <!-- <section id="supervision" class="supervision-section" aria-labelledby="supervision-title">
     <div class="supervision-content">
       <HomeSectionHeading
         id="supervision-title"
@@ -41,7 +41,7 @@
         </article>
       </div>
     </div>
-  </section>
+  </section> -->
 </template>
 
 <script setup>
@@ -55,7 +55,7 @@ import organizationSupervision from '@/assets/cuts/org-supervision.png'
 import organizationAdvisers from '@/assets/cuts/org-advisers.png'
 import organizationPartners from '@/assets/cuts/org-partners.png'
 import organizationVolunteers from '@/assets/cuts/org-board.png'
-import supervisionScroll from '@/assets/cuts/supervision-scroll-figma.png'
+import supervisionScroll from '@/assets/cuts/supervision-scroll-figma.webp'
 import supervisionCard from '@/assets/cuts/supervision-card-figma.svg'
 import supervisionCloud from '@/assets/cuts/supervision-cloud-figma.svg'
 import supervisionFunds from '@/assets/cuts/supervision-funds-figma.svg'

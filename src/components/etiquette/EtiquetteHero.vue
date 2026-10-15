@@ -39,7 +39,7 @@ const introParts = computed(() => tm('etiquette.hero.intro'))
   position: relative;
   height: 542px;
   overflow: hidden;
-  background: #f3f0e9;
+  background: #f8f5ed;
 }
 
 .hero-heading {

@@ -35,5 +35,5 @@ async function setLocale(nextLocale) {
 </script>
 
 <style scoped>
-.wellness-page { min-width: 320px; overflow-x: clip; color: #222; background: #f3f0e9; }
+.wellness-page { min-width: 320px; overflow-x: clip; color: #222; background: #f8f5ed; }
 </style>

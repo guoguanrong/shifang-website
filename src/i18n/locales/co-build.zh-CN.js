@@ -21,6 +21,9 @@ export default {
     targetStatLabel: '筹款目标',
     completedStatLabel: '已筹金额',
     typeStatLabel: '捐赠类型',
+    statRaised: '已收善款',
+    statTarget: '目标金额',
+    statDonors: '善捐人次',
     empty: '暂无筹款项目',
     stats: [
       { label: '已捐赠善款', value: '$8,624,300' },
@@ -82,7 +85,10 @@ export default {
   honor: {
     title: '功德名录',
     subtitle: '每批展示60位善信 · 含捐款与捐物 · 自动轮播',
+    anonymousName: '匿名善信',
+    anonymousInitial: '匿',
     blessing: '⋯ 功德无量  福生无量 ⋯',
+    empty: '暂无数据',
     donors: [
       { initial: '匿', name: '匿名善信', gift: '青砖500块', anonymous: true },
       { initial: '张', name: '张师兄', gift: '青砖500块' },

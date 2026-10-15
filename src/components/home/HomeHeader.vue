@@ -65,7 +65,10 @@
         </select>
       </label>
       <AccountMenu v-if="isLoggedIn" @open="menuOpen = false; aboutMenuOpen = false" @logout="focusLogin" />
-      <button v-else class="login-button" type="button" :style="loginButtonStyle" @click="openAuthModal('login')">{{ t('nav.login') }}</button>
+      <button v-else class="login-button" type="button" @click="openAuthModal('login')">
+        <img class="login-button-text" :src="loginButtonText" alt="" aria-hidden="true" />
+        <span class="sr-only">{{ t('nav.login') }}</span>
+      </button>
     </div>
   </header>
 </template>
@@ -78,7 +81,7 @@ import { localeOptions } from '@/i18n'
 import { useAuthModal } from '@/composables/useAuthModal'
 import { useUserSession } from '@/composables/useUserSession'
 import AccountMenu from '@/components/auth/AccountMenu.vue'
-import loginButtonBg from '@/assets/cuts/login-button-bg.png'
+import loginButtonText from '@/assets/cuts/login-button-text.png'
 import navigationDecoration from '@/assets/images/Group 138.png'
 
 defineEmits(['navigate', 'select-locale'])
@@ -97,8 +100,6 @@ async function focusLogin() {
   await nextTick()
   headerRef.value?.querySelector('.login-button')?.focus()
 }
-// 将打包后的按钮背景图通过 CSS 变量传给 .login-button。
-const loginButtonStyle = { '--login-button-bg': `url("${loginButtonBg}")` }
 // 导航装饰线使用设计稿切图，交给伪元素统一控制悬停与当前页状态。
 const navigationStyle = { '--navigation-decoration': `url("${navigationDecoration}")` }
 
@@ -110,7 +111,8 @@ const aboutMenuItems = computed(() => [
   { label: t('templePlan.title'), target: 'temple-plan' },
   { label: t('mission.title'), target: 'mission' },
   { label: t('organization.title'), target: 'organization' },
-  { label: t('supervision.title'), target: 'supervision' },
+  // 资金监管：页面区块暂未上线，菜单入口同步隐藏（HomeGovernance.vue 内代码已注释保留）。
+  // { label: t('supervision.title'), target: 'supervision' },
   { label: t('seasonal.title'), target: 'seasonal' },
   { label: t('testimonials.title'), target: 'testimonials' },
   { label: t('messages.title'), target: 'messages' },
@@ -222,6 +224,7 @@ async function navigateTo(sectionId) {
   justify-content: center;
   gap: 40px;
   overflow: visible;
+  font-family: 'emoji';
 }
 
 button {
@@ -340,7 +343,7 @@ button {
 .desktop-nav .about-dropdown button:hover,
 .desktop-nav .about-dropdown button:focus-visible {
   color: #1d4e6e;
-  background: #f3f0e9;
+  background: #f8f5ed;
   outline: 0;
 }
 
@@ -395,22 +398,14 @@ button {
   border: 0;
 }
 
-/* 背景图原始比例为 560x128（约 4.4:1），按钮尺寸尽量贴近以避免拉伸变形。 */
+/* 背景切图已移除：按钮由“登录”文字切图撑起，尺寸与旁边的语言选择框对齐。 */
 .login-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 136px;
-  height: 40px;
-  padding: 0 1.6rem;
-  color: #fff;
-  background-color: #cc3513;
-  background-image: var(--login-button-bg);
-  background-position: center;
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
+  padding: 0;
   border: 0;
-  border-radius: 999px;
+  background: none;
   cursor: pointer;
   transition: filter .18s ease, transform .18s ease;
 }
@@ -427,6 +422,14 @@ button {
 .login-button:focus-visible {
   outline: 2px solid #f2d2af;
   outline-offset: 2px;
+}
+
+/* 文字切图（200x92 透明底）等比缩放，高度与旁边的语言选择框一致。 */
+.login-button-text {
+      display: block;
+    width: auto;
+    height: 48px;
+    margin-top: 10px;
 }
 
 .menu-toggle { display: none; }
@@ -454,12 +457,6 @@ button {
   .header-actions {
     gap: 14px;
     margin-left: 38px;
-  }
-
-  .login-button {
-    min-width: 100px;
-    width: 100px;
-    padding-inline: 12px;
   }
 }
 
@@ -504,7 +501,7 @@ button {
     overscroll-behavior: contain;
     background: #1d4e6e;
     box-shadow: 0 10px 20px rgba(0,0,0,.18);
-  } .desktop-nav.is-open { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); align-content: start; } .desktop-nav button { min-height: 40px; text-align: left; } .about-nav-item { grid-column: 1 / -1; } .desktop-nav .about-trigger { width: 100%; padding-inline: 0; justify-content: space-between; } .about-dropdown { position: static; display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); width: 100%; margin-top: 5px; } .header-actions { order: 2; display: flex; gap: 7px; margin-left: auto; } .login-button { display: inline-flex; width: auto; min-width: 62px; min-height: 32px; padding: 5px 10px; font-size: 12px; } .language-select select { min-width: 0; max-width: 104px; padding-block: 6px; font-size: 13px; }
+  } .desktop-nav.is-open { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); align-content: start; } .desktop-nav button { min-height: 40px; text-align: left; } .about-nav-item { grid-column: 1 / -1; } .desktop-nav .about-trigger { width: 100%; padding-inline: 0; justify-content: space-between; } .about-dropdown { position: static; display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); width: 100%; margin-top: 5px; } .header-actions { order: 2; display: flex; gap: 7px; margin-left: auto; } .language-select select { min-width: 0; max-width: 104px; padding-block: 6px; font-size: 13px; }
 
   /* 移动端使用整行点击区域，不显示只为桌面端设计的横向装饰切图。 */
   .desktop-nav > button::after,
@@ -515,6 +512,5 @@ button {
   .site-header { padding-inline: 12px; }
   .brand { font-size: 21px; }
   .language-select select { max-width: 96px; font-size: 12px; }
-  .login-button { min-width: 54px; padding-inline: 7px; }
 }
 </style>

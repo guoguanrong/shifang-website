@@ -64,8 +64,8 @@ import DonationDialog from '@/components/co-build/DonationDialog.vue'
 import { getDonateTargetList } from '@/api/donateTarget'
 import { getDonateShopItems } from '@/api/shopItems'
 import headingArt from '@/assets/donation/heading.svg'
-import moneyArt from '@/assets/donation/money.png'
-import goodsArt from '@/assets/donation/goods.png'
+import moneyArt from '@/assets/donation/money.webp'
+import goodsArt from '@/assets/donation/goods.webp'
 import '@/styles/donation.css'
 
 const { t, locale } = useI18n()

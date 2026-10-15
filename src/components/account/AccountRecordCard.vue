@@ -37,7 +37,6 @@
         <div v-if="record.plan || record.planText"><dt>{{ t('accountPages.records.plan') }}</dt><dd>{{ record.planText || t(`accountPages.records.${record.plan}`) }}</dd></div>
         <div v-if="devotee"><dt>{{ t('accountPages.records.devotee') }}</dt><dd>{{ devotee }}</dd></div>
         <div v-if="record.birth"><dt>{{ t('accountPages.records.birth') }}</dt><dd>{{ record.birth }}</dd></div>
-        <div v-if="record.email"><dt>{{ t('accountPages.records.email') }}</dt><dd>{{ record.email }}</dd></div>
         <div v-if="wish" class="record-wish"><dt>{{ t('accountPages.records.wish') }}</dt><dd>{{ wish }}</dd></div>
       </dl>
     </div>

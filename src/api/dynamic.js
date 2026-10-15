@@ -12,9 +12,10 @@ export function getDynamicList(data, options = {}) {
 /**
  * 获取动态详情
  * @param {number} id 动态 id
+ * @param {object} options 请求附加选项（如 { silent: true } 静默失败）
  */
-export function getDynamicById(id) {
-  return request({ url: `/dynamic/get/${id}` })
+export function getDynamicById(id, options = {}) {
+  return request({ url: `/dynamic/get/${id}`, ...options })
 }
 
 /**

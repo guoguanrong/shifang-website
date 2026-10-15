@@ -90,6 +90,14 @@ const chartSeriesData = computed(() =>
   })),
 )
 
+// 容器宽高就绪后才初始化；宽或高为 0 时 ECharts 会抛 "invalid dom"。
+function ensureChart() {
+  if (chartInstance || !chartEl.value) return
+  if (chartEl.value.offsetWidth === 0 || chartEl.value.offsetHeight === 0) return
+  chartInstance = echarts.init(chartEl.value)
+  renderChart()
+}
+
 function renderChart() {
   chartInstance?.setOption({
     tooltip: { trigger: 'item', formatter: '{b}：{c}%' },
@@ -108,11 +116,17 @@ function renderChart() {
 }
 
 onMounted(() => {
-  chartInstance = echarts.init(chartEl.value)
-  renderChart()
-  // 窄屏下面板尺寸会变，用 ResizeObserver 让画布跟着重绘。
-  chartResizeObserver = new ResizeObserver(() => chartInstance?.resize())
-  chartResizeObserver.observe(chartEl.value)
+  ensureChart()
+  // 窄屏下面板尺寸会变，用 ResizeObserver 让画布跟着重绘；
+  // 初始尺寸为 0（如父级尚未完成布局）时，首次回调里再补初始化。
+  chartResizeObserver = new ResizeObserver(() => {
+    if (!chartInstance) {
+      ensureChart()
+      return
+    }
+    chartInstance.resize()
+  })
+  if (chartEl.value) chartResizeObserver.observe(chartEl.value)
 })
 
 // 切换语言后文案变化，重新写入数据即可，不必重建实例。
@@ -144,7 +158,7 @@ onBeforeUnmount(() => {
   position: absolute;
   inset: 0;
   content: '';
-  background: url('@/assets/cloud-build/red-texture.png') top left / 512px 512px repeat;
+  background: url('@/assets/cloud-build/red-texture.webp') top left / 512px 512px repeat;
   mix-blend-mode: luminosity;
   opacity: .05;
 }
@@ -370,7 +384,7 @@ onBeforeUnmount(() => {
 .chart-legend li.is-highlighted {
   height: 30px;
   margin-bottom: 7px;
-  background: #f3f0e9;
+  background: #f8f5ed;
   border-radius: 1000px;
 }
 
@@ -520,6 +534,8 @@ onBeforeUnmount(() => {
     top: auto;
     left: auto;
     flex: 0 0 262px;
+    /* 画布为 absolute 填充，父级必须有确定高度，否则 ECharts 初始化报 invalid dom。 */
+    height: 262px;
   }
 
   .chart-legend {

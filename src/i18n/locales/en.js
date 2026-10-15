@@ -198,7 +198,7 @@ export default {
     joinTitle: 'Participate',
     join: ['Become a Guardian', 'Cloud Co-Creation'],
     aboutTitle: 'About',
-    about: ['About Us', 'Temple Planning', 'Mission & Vision', 'Organization', 'Fund Supervision', 'Latest News', 'Milestones'],
+    about: ['About Us', 'Temple Planning', 'Mission & Vision', 'Organization', 'Latest News', 'Milestones'],
     android: 'Android',
     ios: 'iOS',
     wechat: 'WeChat Support',

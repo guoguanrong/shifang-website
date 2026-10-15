@@ -21,7 +21,7 @@ const { t } = useI18n()
   position: absolute;
   inset: 0 0 auto;
   height: 567px;
-  background: #f3f0e9;
+  background: #f8f5ed;
 }
 
 .hero-copy {

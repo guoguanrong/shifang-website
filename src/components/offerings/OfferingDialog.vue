@@ -58,12 +58,12 @@
                 <dd>{{ order.wish }}</dd>
               </div>
             </dl>
-            <p class="payment-caption">{{ t(kind === 'deity' ? 'offerings.deityPaymentPrompt' : 'offerings.paymentPrompt') }}</p>
+            <!-- <p class="payment-caption">{{ t(kind === 'deity' ? 'offerings.deityPaymentPrompt' : 'offerings.paymentPrompt') }}</p>
             <div class="payment-options" role="group" :aria-label="t('offerings.paymentMethod')">
               <button v-for="method in methods" :key="method.id" :class="method.id" type="button"
                 :aria-pressed="payment === method.id" @click="payment = method.id"><img :src="method.image"
                   :alt="method.label" /><span v-if="kind === 'deity' && method.id === 'paypal'" class="payment-recommended">{{ t('offerings.paymentRecommended') }}</span></button>
-            </div>
+            </div> -->
             <div class="dialog-actions">
               <CeremonialButton :label="paying ? t('offerings.paying') : `${t('offerings.pay')}  $${amount}`" :disabled="paying" @click="pay" /><button
                 class="dialog-cancel" type="button" :disabled="paying" @click="cancel">{{ t('offerings.reconsider') }}</button>

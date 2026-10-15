@@ -104,7 +104,7 @@ const stageImages = [bowHands, bowGuide, null, finishHands]
   position: relative;
   padding: 0 24px 80px;
   overflow: hidden;
-  background: #f3f0e9;
+  background: #f8f5ed;
 }
 
 .wide-ritual-card,
@@ -379,7 +379,7 @@ const stageImages = [bowHands, bowGuide, null, finishHands]
 
 .ceremony-branches {
   top: 157px;
-  right: -100px;
+  right: 0;
   width: 594px;
   transform: scaleX(-1);
 }

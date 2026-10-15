@@ -46,7 +46,7 @@ const processPhotos = [process1, process2, process3]
 .process-section {
   padding: 0 0 80px;
   overflow: hidden;
-  background: #f3f0e9;
+  background: #f8f5ed;
 }
 
 .process-stage {

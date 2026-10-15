@@ -6,7 +6,6 @@
     <!-- 没有反馈层时展示表单，否则整块替换为成功/错误提示。 -->
     <template v-if="!feedback">
       <header class="auth-panel__header">
-        <span aria-hidden="true" />
         <h1 :id="titleId">{{ t(isRegister ? 'portal.auth.registerTitle' : 'portal.auth.loginTitle') }}</h1>
         <p>{{ t(isRegister ? 'portal.auth.registerSubtitle' : 'portal.auth.loginSubtitle') }}</p>
       </header>
@@ -63,7 +62,7 @@
       <footer class="auth-panel__footer">
         <p>
           {{ isRegister ? t('portal.auth.loginPrompt') : t('portal.auth.agreementPrefix') }}
-          <button v-if="!isRegister" type="button">{{ t('portal.auth.agreement') }}</button>
+          <button v-if="!isRegister" type="button" @click="policyVisible = true">{{ t('portal.auth.agreement') }}</button>
           <button v-else type="button" @click="$emit('switch-mode', 'login')">{{ t('portal.auth.loginLink') }}</button>
         </p>
         <p v-if="!isRegister">
@@ -80,6 +79,25 @@
       <p>{{ feedback.description }}</p>
       <button type="button" @click="handleFeedbackAction">{{ feedback.action }}</button>
     </div>
+
+    <!-- 隐私政策弹窗：Teleport 到 body，内容按语言包 portal.auth.policy 渲染。 -->
+    <Teleport to="body">
+      <Transition name="auth-policy">
+        <div v-if="policyVisible" class="auth-policy-mask" @click.self="policyVisible = false">
+          <div class="auth-policy" role="dialog" aria-modal="true" :aria-label="t('portal.auth.policy.title')">
+            <button class="auth-policy__close" type="button" :aria-label="t('portal.common.close')"
+              @click="policyVisible = false">×</button>
+            <h2>{{ t('portal.auth.policy.title') }}</h2>
+            <div class="auth-policy__body">
+              <section v-for="section in tm('portal.auth.policy.sections')" :key="section.title">
+                <h3>{{ section.title }}</h3>
+                <p>{{ section.text }}</p>
+              </section>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
   </section>
 </template>
 
@@ -99,7 +117,7 @@ import { setToken } from '@/api/http'
 const props = defineProps({ mode: { type: String, required: true, validator: (value) => ['login', 'register'].includes(value) } })
 const emit = defineEmits(['close', 'switch-mode'])
 
-const { t } = useI18n()
+const { t, tm } = useI18n()
 const { refreshMemberInfo, startDemoSession } = useUserSession()
 // 当前是注册还是登录，决定标题、字段与校验项。
 const isRegister = computed(() => props.mode === 'register')
@@ -107,13 +125,15 @@ const isRegister = computed(() => props.mode === 'register')
 const titleId = computed(() => `auth-${props.mode}-title`)
 // 反馈层内容：null 表示展示表单，否则展示成功/错误结果。
 const feedback = ref(null)
+// 隐私政策弹窗显隐。
+const policyVisible = ref(false)
 // 表单内的行内提示，例如「验证码已发送」。
 const inlineNotice = ref('')
 // 登录请求进行中，避免重复提交。
 const submitting = ref(false)
 const sendingSms = ref(false)
-// 短信验证码会话标识：发送手机验证码时由后端返回，注册时一并回传。
-const smsSessionInfo = ref('')
+// 是否已发送短信验证码：发送接口以 code===1000 表示成功（不再返回数据），本地仅作标记供表单校验。
+const smsSent = ref(false)
 const recaptchaContainer = ref(null)
 let recaptchaVerifier = null
 // 邮箱与手机验证码的剩余倒计时秒数，0 表示可以重新发送。
@@ -121,19 +141,19 @@ const emailCountdown = ref(0)
 const phoneCountdown = ref(0)
 // 收集所有倒计时计时器，卸载时统一清理，避免内存泄漏。
 const timers = new Set()
-const form = reactive({ email: '', emailCode: '', country: '+86', phone: '', phoneCode: '' })
+const form = reactive({ email: '', emailCode: '', country: '+1', phone: '', phoneCode: '' })
 // 注册时可选择的国际区号；名称与区号文案在语言包 portal.auth.country* 中维护。
 const countryOptions = [
-  { value: '+86', labelKey: 'portal.auth.countryChina' },
+  // { value: '+86', labelKey: 'portal.auth.countryChina' },
   { value: '+1', labelKey: 'portal.auth.countryUSA' },
-  { value: '+44', labelKey: 'portal.auth.countryUK' },
-  { value: '+61', labelKey: 'portal.auth.countryAustralia' },
-  { value: '+852', labelKey: 'portal.auth.countryHongKong' },
-  { value: '+853', labelKey: 'portal.auth.countryMacao' },
-  { value: '+886', labelKey: 'portal.auth.countryTaiwan' },
-  { value: '+65', labelKey: 'portal.auth.countrySingapore' },
-  { value: '+81', labelKey: 'portal.auth.countryJapan' },
-  { value: '+82', labelKey: 'portal.auth.countryKorea' },
+  // { value: '+44', labelKey: 'portal.auth.countryUK' },
+  // { value: '+61', labelKey: 'portal.auth.countryAustralia' },
+  // { value: '+852', labelKey: 'portal.auth.countryHongKong' },
+  // { value: '+853', labelKey: 'portal.auth.countryMacao' },
+  // { value: '+886', labelKey: 'portal.auth.countryTaiwan' },
+  // { value: '+65', labelKey: 'portal.auth.countrySingapore' },
+  // { value: '+81', labelKey: 'portal.auth.countryJapan' },
+  // { value: '+82', labelKey: 'portal.auth.countryKorea' },
 ]
 
 // 依次校验邮箱格式、邮箱验证码；注册时还要校验手机号与短信验证码。
@@ -142,7 +162,7 @@ function validationMessage() {
   if (!form.emailCode) return t('portal.auth.missingCode')
   if (isRegister.value && !/^\d{6,15}$/.test(form.phone)) return t('portal.auth.missingPhone')
   if (isRegister.value && !form.phoneCode) return t('portal.auth.missingPhoneCode')
-  if (isRegister.value && !smsSessionInfo.value) return t('portal.auth.requestSmsFirst')
+  if (isRegister.value && !smsSent.value) return t('portal.auth.requestSmsFirst')
   return ''
 }
 
@@ -203,7 +223,6 @@ async function submit() {
         emailCode: form.emailCode,
         phone: form.country + form.phone,
         smsCode: form.phoneCode,
-        sessionInfo: smsSessionInfo.value,
         uvid: await ensureUvid(),
       },
       { silent: true },
@@ -272,7 +291,7 @@ async function sendCode(kind) {
   if (kind === 'phone') {
     if (sendingSms.value) return
     sendingSms.value = true
-    smsSessionInfo.value = ''
+    smsSent.value = false
     form.phoneCode = ''
 
     let recaptchaToken
@@ -292,12 +311,12 @@ async function sendCode(kind) {
     }
 
     try {
-      const smsResult = await sendSmsCode(
+      // 接口仅以 code===1000 表示发送成功（data 为空）；await 不抛错即成功。
+      await sendSmsCode(
         { phoneNumber: form.country + form.phone, recaptchaToken },
         { silent: true },
       )
-      if (!smsResult?.sessionInfo) throw new Error(t('portal.auth.smsSessionMissing'))
-      smsSessionInfo.value = smsResult.sessionInfo
+      smsSent.value = true
     } catch (requestError) {
       showError(requestError.message || t('portal.auth.recaptchaFailed'))
       return
@@ -326,7 +345,7 @@ watch(() => props.mode, () => {
 })
 
 watch(() => `${form.country}${form.phone}`, () => {
-  smsSessionInfo.value = ''
+  smsSent.value = false
   form.phoneCode = ''
 })
 
@@ -542,5 +561,93 @@ onBeforeUnmount(() => {
   .auth-field__compound > button { padding-inline: 8px; font-size: 12px; }
   .auth-panel__submit { min-height: 48px; height: auto; padding: 10px 14px; font-size: 17px; line-height: 1.4; letter-spacing: 1px; }
   .auth-panel__footer { flex-direction: column; gap: 7px; align-items: center; margin-top: 18px; text-align: center; }
+}
+
+/* 隐私政策弹窗：深色遮罩 + 白色圆角卡片，正文按设计稿居中排版。 */
+.auth-policy-mask {
+  position: fixed;
+  z-index: 3000;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, .78);
+}
+
+.auth-policy {
+  position: relative;
+  width: min(560px, 92vw);
+  padding: 36px 44px 40px;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, .4);
+}
+
+.auth-policy__close {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  width: 28px;
+  height: 28px;
+  color: #9a9a9a;
+  font-size: 20px;
+  line-height: 26px;
+  background: none;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: color .15s ease, background-color .15s ease;
+}
+
+.auth-policy__close:hover {
+  color: #333;
+  background: #f0ede8;
+}
+
+.auth-policy h2 {
+  margin: 0 0 22px;
+  color: #111;
+  font-family: var(--font-calligraphy);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-align: center;
+}
+
+.auth-policy__body {
+  max-height: calc(82vh - 150px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.auth-policy__body section + section {
+  margin-top: 20px;
+}
+
+.auth-policy__body h3 {
+  margin: 0 0 8px;
+  color: #111;
+  font-size: 15px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.auth-policy__body p {
+  margin: 0;
+  color: #3c3c3c;
+  font-size: 14px;
+  line-height: 1.9;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.auth-policy-enter-active,
+.auth-policy-leave-active {
+  transition: opacity .2s ease;
+}
+
+.auth-policy-enter-from,
+.auth-policy-leave-to {
+  opacity: 0;
 }
 </style>

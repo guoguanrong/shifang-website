@@ -22,6 +22,16 @@
     </section>
     <section class="account-paper volunteer-application">
       <OrnateSectionHeading :title="t('accountPages.volunteer.applicationTitle')" />
+      <!-- 已提交过申请：显示审核状态，表单同步回填申请内容。 -->
+      <div v-if="selfInfo" class="volunteer-status" :class="`is-status-${Number(selfInfo.status) || 1}`" role="status">
+        <p class="volunteer-status-title">{{ statusText }}</p>
+        <p v-if="Number(selfInfo.status) === 3 && selfInfo.refuseReason" class="volunteer-status-detail">
+          {{ t('accountPages.volunteer.refuseReasonLabel') }}：{{ selfInfo.refuseReason }}
+        </p>
+        <p v-if="selfInfo.createTime" class="volunteer-status-detail">
+          {{ t('accountPages.volunteer.appliedAt') }}：{{ selfInfo.createTime }}
+        </p>
+      </div>
       <form ref="applicationForm" class="volunteer-form" novalidate @submit.prevent="submit">
         <div class="volunteer-field">
           <label for="volunteer-name">{{ t('accountPages.volunteer.name') }}</label>
@@ -60,13 +70,14 @@
 </template>
 
 <script setup>
-import { computed, nextTick, reactive, ref } from 'vue'
+import { computed, nextTick, onMounted, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import AccountPageShell from '@/components/account/AccountPageShell.vue'
 import VolunteerApplicationDialog from '@/components/account/VolunteerApplicationDialog.vue'
 import OrnateSectionHeading from '@/components/common/OrnateSectionHeading.vue'
 import CeremonialButton from '@/components/common/CeremonialButton.vue'
-import { saveVolunteer } from '@/api/volunteer'
+import { getVolunteerSelfInfo, saveVolunteer } from '@/api/volunteer'
+import { useUserSession } from '@/composables/useUserSession'
 import templeBenefit from '@/assets/account-pages/volunteer-temple.webp'
 import fellowshipBenefit from '@/assets/account-pages/volunteer-fellowship.webp'
 import meritBenefit from '@/assets/account-pages/volunteer-merit.webp'
@@ -76,6 +87,7 @@ import mediaRole from '@/assets/account-pages/role-media.webp'
 import onlineRole from '@/assets/account-pages/role-online.webp'
 
 const { t } = useI18n()
+const { isLoggedIn } = useUserSession()
 const benefits = [{ id: 'temple', image: templeBenefit }, { id: 'fellowship', image: fellowshipBenefit }, { id: 'merit', image: meritBenefit }]
 const roles = [{ id: 'temple', image: templeRole }, { id: 'ceremony', image: ceremonyRole }, { id: 'media', image: mediaRole }, { id: 'online', image: onlineRole }]
 const countries = [{ id: 'china', code: '+86' }, { id: 'hongKong', code: '+852' }, { id: 'taiwan', code: '+886' }, { id: 'northAmerica', code: '+1' }]
@@ -105,6 +117,47 @@ const errors = computed(() => {
   const phone = form.phone.replace(/[\s-]/g, '')
   if (!(form.country === '+86' ? /^1\d{10}$/ : /^\d{6,15}$/).test(phone)) result.phone = 'accountPages.volunteer.phoneError'
   return result
+})
+
+// 义工申请自助信息：仅此接口要求登录态——登录用户进入页面时查询自己的申请，未登录不请求。
+const selfInfo = ref(null)
+
+async function loadSelfInfo() {
+  try {
+    const info = await getVolunteerSelfInfo({ silent: true })
+    if (!info || info.id === undefined || info.id === null) return
+    selfInfo.value = info
+
+    // 回填表单：手机号按国家码前缀拆分；岗位/时段存的是中文值，需反查表单 id。
+    if (info.username) form.name = info.username
+    const phone = String(info.phone || '')
+    const country = countries.find((item) => phone.startsWith(item.code))
+    if (country) {
+      form.country = country.code
+      form.phone = phone.slice(country.code.length)
+    } else if (phone) {
+      form.phone = phone
+    }
+    const roleKey = Object.keys(roleValues).find((key) => roleValues[key] === info.applyPost)
+    if (roleKey) form.role = roleKey
+    const timeKey = Object.keys(timeValues).find((key) => timeValues[key] === info.serviceTime)
+    if (timeKey) form.time = timeKey
+    if (info.remark) form.message = info.remark
+  } catch {
+    // 查询失败（含登录过期）保持空表单，不打断申请流程。
+  }
+}
+
+onMounted(() => {
+  if (isLoggedIn.value) loadSelfInfo()
+})
+
+// 审核状态文案：1 待审核 / 2 审核通过 / 3 未通过。
+const statusText = computed(() => {
+  const status = Number(selfInfo.value?.status)
+  if (status === 2) return t('accountPages.volunteer.statusApproved')
+  if (status === 3) return t('accountPages.volunteer.statusRefused')
+  return t('accountPages.volunteer.statusPending')
 })
 
 async function chooseRole(role) {

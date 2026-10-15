@@ -41,7 +41,7 @@ export default {
   practice: {
     eyebrow: 'Exercise Videos', title: '運動養生 · 跟練視頻', subtitle: '名師示範，循序漸進，足不出戶亦可修煉', action: '開始跟練', more: '查看更多',
     loading: '正在載入跟練影片…', loadingMore: '正在載入…', loadError: '跟練影片載入失敗', retry: '重試', empty: '暫無跟練影片',
-    beginner: '入門', advanced: '進階', durationUnit: '分鐘', videoLoadFailed: '影片暫時無法播放，請稍後重試。', closePlayer: '關閉影片',
+    beginner: '入門', advanced: '進階', durationUnit: '分鐘', videoLoadFailed: '影片暫時無法播放，請稍後重試。', closePlayer: '關閉影片', infoTitle: '功法脈絡',
     items: [
       { title: '八段錦 · 完整跟練版', desc: '國家體育總局標準版，道長親自示範。八式動作詳解，配合呼吸吐納，每日一遍，氣血通暢。', tags: ['入門', '25分鐘', '晨練'] },
       { title: '金剛功 · 剛猛築基', desc: '道家秘傳金剛功，以剛猛之勢疏通經脈。張至順道長傳承版本，適合有一定基礎者習練。強身健體，祛病延年。', tags: ['入門', '25分鐘', '晨練'] },

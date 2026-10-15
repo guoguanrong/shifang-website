@@ -36,7 +36,7 @@ const items = computed(() => tm('wellness.rhythm.items'))
 </script>
 
 <style scoped>
-.rhythm-section { position: relative; min-height: 402px; padding: 0 24px 80px; font-family: var(--font-calligraphy); background: #f3f0e9; }
+.rhythm-section { position: relative; min-height: 402px; padding: 0 24px 80px; font-family: var(--font-calligraphy); background: #f8f5ed; }
 .rhythm-heading { position: relative; min-height: 122px; padding-top: 43px; text-align: center; }
 .rhythm-heading img { position: absolute; top: 0; left: 50%; width: 138px; height: 138px; transform: translateX(-50%); pointer-events: none; }
 .rhythm-heading h2 { position: relative; margin: 0; color: #333; font-family: var(--font-calligraphy); font-size: 32px; font-weight: 400; line-height: 42px; }

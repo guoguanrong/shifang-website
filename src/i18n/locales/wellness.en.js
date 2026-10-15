@@ -43,7 +43,7 @@ export default {
   practice: {
     eyebrow: 'Exercise Videos', title: 'Movement Practice · Follow-Along Videos', subtitle: 'Expert demonstrations and a steady path you can practise anywhere', action: 'Start Practice', more: 'View More',
     loading: 'Loading practice videos…', loadingMore: 'Loading…', loadError: 'Could not load practice videos', retry: 'Retry', empty: 'No practice videos available',
-    beginner: 'Beginner', advanced: 'Advanced', durationUnit: 'min', videoLoadFailed: 'This video is temporarily unavailable. Please try again later.', closePlayer: 'Close video',
+    beginner: 'Beginner', advanced: 'Advanced', durationUnit: 'min', videoLoadFailed: 'This video is temporarily unavailable. Please try again later.', closePlayer: 'Close video', infoTitle: 'Practice Guide',
     items: [
       { title: 'Eight Brocades · Full Practice', desc: 'A standard eight-form sequence demonstrated step by step, coordinated with breathing for a smooth daily practice.', tags: ['Beginner', '25 min', 'Morning'] },
       { title: 'Jingang Gong · Strong Foundation', desc: 'A vigorous Taoist sequence transmitted by Master Zhang Zhishun, suited to practitioners with some experience.', tags: ['Beginner', '25 min', 'Morning'] },

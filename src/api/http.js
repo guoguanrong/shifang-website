@@ -73,12 +73,12 @@ export function clearToken() {
   window.localStorage.removeItem(TOKEN_STORAGE_KEY)
 }
 
-// 当前界面语言映射为 Accept-Language：默认中文，英文传 en。
+// 当前界面语言映射为 Accept-Language：中文简体传 zh-CN，英文传 en-US。
 function getAcceptLanguage() {
   const locale = i18n.global.locale?.value ?? i18n.global.locale
 
   if (locale === 'en') {
-    return 'en'
+    return 'en-US'
   }
 
   // 其余语言按默认中文处理（zh-TW 保留繁体标识，后端可按需区分）。
@@ -152,13 +152,16 @@ export async function request(config) {
   }
 
   const body = response?.data
-  // 兼容 code / resCode 两种字段命名（数值或字符串）。
+  // 兼容 code（数值枚举，1000 成功）/ resCode（字符串枚举，"OK" 成功）两种字段命名。
   const rawCode = body?.code ?? body?.resCode
 
   if (rawCode !== undefined && rawCode !== null) {
-    const code = Number(rawCode)
+    // 字符串枚举（如 resCode: "OK"）无法转数值，按 "OK" 判定成功；数值码按 1000 判定。
+    const isStringCode = typeof rawCode === 'string' && Number.isNaN(Number(rawCode))
+    const code = isStringCode ? rawCode : Number(rawCode)
+    const isSuccess = isStringCode ? rawCode === 'OK' : code === ResultCode.OK
 
-    if (code !== ResultCode.OK) {
+    if (!isSuccess) {
       const message = body?.msg || getResultMessage(code)
 
       if (!silent) {

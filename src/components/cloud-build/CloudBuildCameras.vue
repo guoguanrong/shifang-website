@@ -81,7 +81,7 @@ onUnmounted(() => document.removeEventListener('keydown', onDialogKeydown))
   height: 849px;
   padding-top: 1px;
   overflow: hidden;
-  background: #f3f0e9;
+  background: #f8f5ed;
 }
 
 .camera-heading {

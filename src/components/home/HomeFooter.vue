@@ -50,7 +50,8 @@ const route = useRoute()
 const router = useRouter()
 // 菜单显示文案来自语言包，目标数组负责定义实际跳转位置。
 const exploreTargets = ['culture', 'deities', 'etiquette', 'blessings', 'events']
-const aboutTargets = ['about', 'temple-plan', 'mission', 'organization', 'supervision', 'news', 'milestones']
+// 与语言包 footer.about 数组按下标一一对应；资金监管暂未上线，两处需同步增删。
+const aboutTargets = ['about', 'temple-plan', 'mission', 'organization', 'news', 'milestones']
 const joinTargets = ['co-build', 'cloud-build']
 const exploreItems = computed(() => tm('footer.explore'))
 const joinItems = computed(() => tm('footer.join'))
@@ -96,7 +97,7 @@ async function navigate(sectionId) {
   position: absolute;
   z-index: -1;
   inset: 0;
-  background: url('@/assets/footer/background.png') center / cover no-repeat;
+  background: url('@/assets/footer/background.webp') center / cover no-repeat;
   mix-blend-mode: luminosity;
   opacity: .1;
   pointer-events: none;

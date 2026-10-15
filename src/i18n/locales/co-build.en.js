@@ -4,7 +4,7 @@ export default {
   cta: 'Donate with Joy · Sow Fields of Blessing',
   hero: { eyebrow: 'Global Guardians', title: 'Giving with Goodwill · Blessings through Merit', subtitle: 'Every act of kindness is followed by blessings', quote: '“Do no evil; practice all good. Accumulate merit, and truth reveals itself.”', quoteSource: '— Treatise on Response and Retribution · Daozang' },
   project: {
-    eyebrow: 'FUNDRAISING GOAL', heading: 'Fundraising Goal', title: 'Hall of Doumu Yuanjun', total: '$ 12,680,000', description: 'Temple restoration · Reviving a millennium of dignity', progressLabel: 'Fundraising progress', raisedLabel: 'Raised', raised: '$8,624,300', targetStatLabel: 'Fundraising goal', completedStatLabel: 'Raised amount', typeStatLabel: 'Donation type', empty: 'No fundraising projects yet',
+    eyebrow: 'FUNDRAISING GOAL', heading: 'Fundraising Goal', title: 'Hall of Doumu Yuanjun', total: '$ 12,680,000', description: 'Temple restoration · Reviving a millennium of dignity', progressLabel: 'Fundraising progress', raisedLabel: 'Raised', raised: '$8,624,300', targetStatLabel: 'Fundraising goal', completedStatLabel: 'Raised amount', typeStatLabel: 'Donation type', statRaised: 'Funds raised', statTarget: 'Goal', statDonors: 'Donors', empty: 'No fundraising projects yet',
     stats: [{ label: 'Donated', value: '$8,624,300' }, { label: 'Funds Used', value: '$2,624,300' }, { label: 'Contributors', value: '14,300' }],
   },
   assurances: [{ title: '501(c)(3)', desc: 'U.S. tax-exempt nonprofit organization' }, { title: 'Traceable Funds', desc: 'Clear, transparent and fully traceable' }, { title: 'Real-Time Access', desc: 'Follow restoration progress online' }],
@@ -48,7 +48,7 @@ export default {
     trustTitle: 'We Honor Every Measure of Your Trust', trustText: 'ShiFang Hall 501(c)(3) nonprofit · Live restoration updates · Transparent use of funds',
   },
   honor: {
-    title: 'Register of Merit', subtitle: '60 benefactors per cycle · Monetary and in-kind gifts · Automatic rotation', blessing: '⋯ Boundless Merit · Boundless Blessing ⋯',
+    title: 'Register of Merit', subtitle: '60 benefactors per cycle · Monetary and in-kind gifts · Automatic rotation', anonymousName: 'Anonymous', anonymousInitial: 'A', blessing: '⋯ Boundless Merit · Boundless Blessing ⋯', empty: 'No data yet',
     donors: [
       { initial: 'A', name: 'Anonymous', gift: '500 bricks', anonymous: true }, { initial: 'Z', name: 'Mr. Zhang', gift: '500 bricks' }, { initial: 'A', name: 'Anonymous', gift: '$5,000', anonymous: true }, { initial: 'W', name: 'Mr. Wang', gift: '$12,000' }, { initial: 'C', name: 'Ms. Chen', gift: '500 bricks' }, { initial: 'L', name: 'Mr. Luo', gift: '$5,000' }, { initial: 'A', name: 'Anonymous', gift: '300 tiles', anonymous: true }, { initial: 'L', name: 'Mr. Li', gift: '$8,000' }, { initial: 'Z', name: 'Ms. Zhao', gift: '500 bricks' }, { initial: 'Z', name: 'Mr. Zhou', gift: '$12,000' }, { initial: 'A', name: 'Anonymous', gift: '$5,000', anonymous: true }, { initial: 'S', name: 'Mr. Sun', gift: '500 bricks' },
     ],

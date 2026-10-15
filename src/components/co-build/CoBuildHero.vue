@@ -124,12 +124,18 @@ function progressWidth(goal) {
   return Math.max(value, 1)
 }
 
+// 统计条：已收善款 / 目标金额 / 善捐人次（接口未公布捐赠人数时按 0 展示）。
 function projectStats(goal) {
   return [
-    { label: t('coBuild.project.targetStatLabel'), value: formatMoney(goal.targetAmount) },
-    { label: t('coBuild.project.completedStatLabel'), value: formatMoney(goal.completedAmount) },
-    { label: t('coBuild.project.typeStatLabel'), value: t(`donation.types.${goalType(goal)}.title`) },
+    { label: t('coBuild.project.statRaised'), value: formatMoney(goal.completedAmount) },
+    { label: t('coBuild.project.statTarget'), value: formatMoney(goal.targetAmount) },
+    { label: t('coBuild.project.statDonors'), value: formatCount(goal.donateUserCount) },
   ]
+}
+
+function formatCount(value) {
+  const count = Number(value || 0)
+  return Number.isFinite(count) && count > 0 ? count.toLocaleString('en-US') : '0'
 }
 
 function formatMoney(value) {
@@ -170,7 +176,7 @@ onMounted(loadGoals)
   position: relative;
   height: max(1454px, var(--hero-height, 1454px));
   overflow: hidden;
-  background: #f3f0e9;
+  background: #f8f5ed;
 }
 
 .hero-heading {
@@ -199,6 +205,11 @@ onMounted(loadGoals)
   font-weight: 400;
   line-height: 48px;
   letter-spacing: 2px;
+}
+
+:global(html[lang='en'] .co-build-hero .hero-heading h1) {
+  font-size: clamp(12px, 3.9vw, 28px);
+  white-space: nowrap;
 }
 
 .hero-heading span {
@@ -458,8 +469,9 @@ onMounted(loadGoals)
   margin: 10px 0 0;
   color: #cc3513;
   font-family: Arial, sans-serif;
-  font-size: 18px;
-  line-height: 22px;
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 26px;
 }
 
 .ornate-button {

@@ -67,7 +67,7 @@ const setLocale = (locale) => setAppLocale(locale)
   isolation: isolate;
   position: relative;
   padding: 24px max(24px, calc((100vw - 1440px) / 2)) 60px;
-  background: #f3f0e9;
+  background: #f8f5ed;
 }
 
 .community-detail-breadcrumb {

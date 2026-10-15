@@ -1,17 +1,24 @@
 <template>
   <!-- 神明供奉页：供奉对象由地址栏 ?deity= 决定，方案选择与下单表单都在本页完成。 -->
-  <OfferingPageShell :title="t('offerings.deityTitle')" :eyebrow="t('offerings.deityEyebrow')" :subtitle="t('offerings.deitySubtitle')" :section="t('deityDetail.section')" section-to="/deities">
+  <OfferingPageShell :title="t('offerings.deityTitle')" :eyebrow="t('offerings.deityEyebrow')"
+    :subtitle="t('offerings.deitySubtitle')" :section="t('deityDetail.section')" section-to="/deities">
     <!-- 神龛示意区：神像、供桌、烛台、香炉与名牌都是展示素材。 -->
     <section class="shrine-display offering-paper">
-      <div class="shrine-deity-heading"><img :src="shrineEmblem" alt="" /><p>{{ t('offerings.deityLabel') }}</p><h2>{{ deity.title }}</h2></div>
-      <h3 class="shrine-example-heading"><img :src="headingLeft" alt="" /><span>{{ t('offerings.shrineTitle') }}</span><img :src="headingRight" alt="" /></h3>
-      <div class="shrine-photo"><img :src="shrine" :alt="t('offerings.shrineAlt')" /></div>
+      <div class="shrine-deity-heading"><img :src="shrineEmblem" alt="" />
+        <p>{{ t('offerings.deityLabel') }}</p>
+        <h2>{{ deity.title }}</h2>
+      </div>
+      <h3 class="shrine-example-heading"><img :src="headingLeft" alt="" /><span>{{ t('offerings.shrineTitle')
+          }}</span><img :src="headingRight" alt="" /></h3>
+      <!-- <div class="shrine-photo"><img :src="shrine" :alt="t('offerings.shrineAlt')" /></div> -->
       <div class="shrine-altar">
         <img class="altar-table" :src="altar" alt="" />
-        <img class="altar-candle left" :src="candle" alt="" /><img class="altar-censer" :src="censer" alt="" /><img class="altar-candle right" :src="candle" alt="" />
+        <img class="altar-candle left" :src="candle" alt="" /><img class="altar-censer" :src="censer" alt="" /><img
+          class="altar-candle right" :src="candle" alt="" />
         <p class="altar-nameplate">{{ t('offerings.nameplate') }}</p>
       </div>
-      <p class="shrine-caption"><span class="offering-notice-icon" aria-hidden="true"><img :src="noticeIcon" alt="" /></span><span>{{ deity.title }} · {{ t('offerings.shrineCaption') }}</span></p>
+      <p class="shrine-caption"><span class="offering-notice-icon" aria-hidden="true"><img :src="noticeIcon"
+            alt="" /></span><span>{{ deity.title }} · {{ t('offerings.shrineCaption') }}</span></p>
     </section>
     <!-- 供奉方案与下单表单：选中的方案决定金额、周期与弹窗文案。 -->
     <section class="deity-offering-order offering-paper">
@@ -22,13 +29,18 @@
       </p>
       <div v-else class="deity-order-inner">
         <div class="offering-plans" role="group" :aria-label="t('offerings.plansTitle')">
-          <button v-for="plan in plans" :key="plan.id" class="offering-plan" :class="plan.id" type="button" :aria-pressed="selectedPlan === plan.id" @click="selectedPlan = plan.id">
-            <img :src="plan.image" alt="" /><span v-if="plan.id === 'yearly' && yearlySavings > 0" class="plan-saving">{{ t('offerings.saving', { amount: formatPrice(yearlySavings) }) }}</span>
-            <span class="plan-title">{{ t(`offerings.${plan.id}`) }}</span><span class="plan-description">{{ t(`offerings.${plan.id}Text`) }}</span>
-            <span class="plan-price">${{ formatPrice(plan.amount) }}<small> / {{ t(`offerings.${plan.period}`) }}</small></span>
+          <button v-for="plan in plans" :key="plan.id" class="offering-plan" :class="plan.id" type="button"
+            :aria-pressed="selectedPlan === plan.id" @click="selectedPlan = plan.id">
+            <img :src="plan.image" alt="" /><span v-if="plan.id === 'yearly' && yearlySavings > 0"
+              class="plan-saving">{{ t('offerings.saving', { amount: formatPrice(yearlySavings) }) }}</span>
+            <span class="plan-title">{{ t(`offerings.${plan.id}`) }}</span><span class="plan-description">{{
+              t(`offerings.${plan.id}Text`) }}</span>
+            <span class="plan-price">${{ formatPrice(plan.amount) }}<small> / {{ t(`offerings.${plan.period}`)
+                }}</small></span>
           </button>
         </div>
-        <OfferingOrderForm kind="deity" :amount="activePlan.amount" :period="t(`offerings.${activePlan.period}`)" @submit="details = $event" />
+        <OfferingOrderForm kind="deity" :amount="activePlan.amount" :period="t(`offerings.${activePlan.period}`)"
+          @submit="details = $event" />
       </div>
     </section>
     <!-- details 非空即打开下单确认弹窗，关闭时置空。 -->
@@ -47,15 +59,15 @@ import OfferingOrderForm from '@/components/offerings/OfferingOrderForm.vue'
 import OfferingDialog from '@/components/offerings/OfferingDialog.vue'
 import OrnateSectionHeading from '@/components/common/OrnateSectionHeading.vue'
 import shrine from '@/assets/offerings/shrine.webp'
-import altar from '@/assets/offerings/altar.png'
+import altar from '@/assets/offerings/altar.webp'
 import candle from '@/assets/offerings/candle.svg'
 import censer from '@/assets/offerings/censer.svg'
 import shrineEmblem from '@/assets/offerings/shrine-emblem.svg'
 import headingLeft from '@/assets/offerings/heading-left.svg'
 import headingRight from '@/assets/offerings/heading-right.svg'
 import noticeIcon from '@/assets/offerings/notice-icon.svg'
-import monthly from '@/assets/offerings/monthly.png'
-import yearly from '@/assets/offerings/yearly.png'
+import monthly from '@/assets/offerings/monthly.webp'
+import yearly from '@/assets/offerings/yearly.webp'
 import { getWorshipByGodName } from '@/api/worship'
 import { deityGodNames } from '@/data/deityWorship'
 const { t, tm } = useI18n()

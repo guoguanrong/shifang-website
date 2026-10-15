@@ -42,7 +42,7 @@ const paragraphs = computed(() => tm('wellness.hero.paragraphs'))
   padding: 119px 24px 78px;
   overflow: hidden;
   font-family: var(--font-calligraphy);
-  background: #f3f0e9;
+  background: #f8f5ed;
 }
 
 .hero-heading {
@@ -161,7 +161,7 @@ const paragraphs = computed(() => tm('wellness.hero.paragraphs'))
   z-index: -1;
   inset: 0 auto 0 0;
   width: 100vw;
-  background: url('@/assets/wellness/design/bagua-texture.png') top left / 512px;
+  background: url('@/assets/wellness/design/bagua-texture.webp') top left / 512px;
   mix-blend-mode: luminosity;
   opacity: .05;
   mask-image: linear-gradient(transparent, #000);

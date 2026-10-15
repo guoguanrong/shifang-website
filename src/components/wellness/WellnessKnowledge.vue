@@ -12,9 +12,9 @@
         :key="item.id || `${item.title}-${index}`"
         role="button"
         tabindex="0"
-        @click="openArticle(item)"
-        @keydown.enter="openArticle(item)"
-        @keydown.space.prevent="openArticle(item)"
+        @click="goDetail(item)"
+        @keydown.enter="goDetail(item)"
+        @keydown.space.prevent="goDetail(item)"
       >
         <!-- 卡片下半部采用设计稿的半透明白色渐变，确保文字在照片上清晰可读。 -->
         <img :src="item.cover || articleImages[index % articleImages.length]" alt="" />
@@ -35,28 +35,14 @@
       {{ isLoading ? t('wellness.knowledge.loadingMore') : t('wellness.knowledge.more') }}<span aria-hidden="true">›</span>
     </button>
     <WellnessQuote class="closing-quote" closing :quote="t('wellness.closing.quote')" :source="t('wellness.closing.quoteSource')" />
-
-    <dialog ref="articleDialog" class="knowledge-dialog" @close="handleDialogClose">
-      <div v-if="selectedArticle" class="knowledge-detail">
-        <button class="knowledge-close" type="button" :aria-label="t('wellness.knowledge.close')" @click="closeArticle">×</button>
-        <img v-if="selectedArticle.cover" class="knowledge-detail-cover" :src="selectedArticle.cover" alt="" />
-        <h2>{{ selectedArticle.title }}</h2>
-        <p class="knowledge-detail-intro">{{ selectedArticle.intro }}</p>
-        <small>{{ formatReadCount(selectedArticle.readNum) }} {{ t('wellness.knowledge.reads') }}</small>
-        <p v-if="detailLoading" class="knowledge-message">{{ t('wellness.knowledge.detailLoading') }}</p>
-        <p v-if="detailError" class="knowledge-message">{{ t('wellness.knowledge.detailError') }}</p>
-        <div v-if="detailSections.length" class="knowledge-detail-sections">
-          <p v-for="(section, index) in detailSections" :key="index">{{ section }}</p>
-        </div>
-      </div>
-    </dialog>
   </section>
 </template>
 
 <script setup>
-import { computed, nextTick, onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { getDaodianById, getDaodianList } from '@/api/daodian'
+import { useRouter } from 'vue-router'
+import { getDaodianList } from '@/api/daodian'
 import massage from '@/assets/wellness/article-massage.webp'
 import meditation from '@/assets/wellness/article-meditation.webp'
 import neijing from '@/assets/wellness/article-neijing.webp'
@@ -68,6 +54,7 @@ import WellnessSectionHeading from './WellnessSectionHeading.vue'
 
 const PAGE_SIZE = 6
 const { t } = useI18n()
+const router = useRouter()
 const items = ref([])
 const currentPage = ref(1)
 const totalPages = ref(1)
@@ -75,12 +62,7 @@ const isLoading = ref(false)
 const loadError = ref(false)
 const failedPage = ref(1)
 const failedAppend = ref(false)
-const articleDialog = ref(null)
-const selectedArticle = ref(null)
-const detailLoading = ref(false)
-const detailError = ref(false)
 const hasMore = computed(() => currentPage.value < totalPages.value)
-let detailRequestId = 0
 const articleImages = [neijing, qianjin, sleep, massage, tea, meditation]
 
 function getPage(payload) {
@@ -132,59 +114,19 @@ function formatReadCount(value) {
   return Number(value || 0).toLocaleString()
 }
 
-function collectInfoText(value) {
-  if (Array.isArray(value)) return value.flatMap(collectInfoText)
-  if (typeof value === 'string') {
-    const text = value.trim()
-    if (!text) return []
-    try {
-      const parsed = JSON.parse(text)
-      if (Array.isArray(parsed) || (parsed && typeof parsed === 'object')) return collectInfoText(parsed)
-    } catch {
-      return [text]
-    }
-    return [text]
-  }
-  if (value && typeof value === 'object') return Object.values(value).flatMap(collectInfoText)
-  return []
-}
-
-const detailSections = computed(() => collectInfoText(selectedArticle.value?.infoArr))
-
-async function openArticle(item) {
-  const requestId = ++detailRequestId
-  selectedArticle.value = { ...item }
-  detailLoading.value = true
-  detailError.value = false
-  await nextTick()
-  if (!articleDialog.value?.open) articleDialog.value?.showModal()
-  try {
-    const detail = item.id ? await getDaodianById(item.id) : item
-    if (requestId === detailRequestId && detail) selectedArticle.value = { ...item, ...detail }
-  } catch {
-    if (requestId === detailRequestId) detailError.value = true
-  } finally {
-    if (requestId === detailRequestId) detailLoading.value = false
-  }
-}
-
-function closeArticle() {
-  if (articleDialog.value?.open) articleDialog.value.close()
-  else handleDialogClose()
-}
-
-function handleDialogClose() {
-  detailRequestId += 1
-  selectedArticle.value = null
-  detailLoading.value = false
-  detailError.value = false
+// 点击卡片：跳转到道典精读详情页（由详情页加载文章内容）。
+function goDetail(item) {
+  router.push({
+    name: 'wellness-knowledge-detail',
+    query: item?.id != null ? { id: String(item.id) } : {},
+  })
 }
 
 onMounted(() => loadPage(1))
 </script>
 
 <style scoped>
-.knowledge-section { min-height: 1051px; height: auto; padding-bottom: 34px; background: #f3f0e9; }
+.knowledge-section { min-height: 1051px; height: auto; padding-bottom: 34px; background: #f8f5ed; }
 .knowledge-grid { display: grid; grid-template-columns: repeat(3, 446.67px); gap: 30px 50px; width: 1440px; margin: 37px auto 0; }
 .knowledge-grid article { position: relative; height: 280px; overflow: hidden; background: #fff; border-radius: 12px; cursor: pointer; transition: box-shadow .25s ease, transform .25s ease; }
 .knowledge-grid article:focus-visible { outline: 3px solid #cc3513; outline-offset: 3px; }
@@ -200,16 +142,6 @@ onMounted(() => loadPage(1))
 .knowledge-message { display: flex; align-items: center; justify-content: center; gap: 12px; margin: 30px auto; color: #62584e; font-size: 14px; text-align: center; }
 .knowledge-message button { padding: 0; color: #a33219; background: none; border: 0; cursor: pointer; text-decoration: underline; }
 .closing-quote { margin: 34px auto 0; }
-.knowledge-dialog { width: min(800px, calc(100vw - 32px)); max-width: none; max-height: calc(100vh - 32px); padding: 0; overflow: auto; color: #333; background: #fff; border: 0; border-radius: 12px; box-shadow: 0 20px 70px rgba(0,0,0,.35); }
-.knowledge-dialog::backdrop { background: rgba(0,0,0,.68); }
-.knowledge-detail { position: relative; padding: 30px; }
-.knowledge-detail-cover { display: block; width: 100%; max-height: 300px; margin-bottom: 24px; object-fit: cover; border-radius: 8px; }
-.knowledge-detail h2 { margin: 0 46px 12px 0; font-family: var(--font-calligraphy); font-size: 24px; font-weight: 400; }
-.knowledge-detail-intro { margin: 0 0 8px; color: #62584e; line-height: 1.8; white-space: pre-wrap; }
-.knowledge-detail > small { display: block; color: #9e9e9e; font-size: 12px; }
-.knowledge-detail-sections { margin-top: 22px; padding-top: 16px; border-top: 1px solid #eee5da; }
-.knowledge-detail-sections p { margin: 0 0 14px; line-height: 1.9; white-space: pre-wrap; }
-.knowledge-close { position: absolute; z-index: 1; top: 18px; right: 18px; width: 36px; height: 36px; color: #51483f; font-size: 28px; line-height: 1; background: #f3f0e9; border: 0; border-radius: 50%; cursor: pointer; }
 @media (hover: hover) and (pointer: fine) { .knowledge-grid article:hover { box-shadow: 0 16px 35px rgba(35,57,70,.15); transform: translateY(-6px); }.knowledge-grid article:hover > img { transform: scale(1.045); }.more-button:hover { filter: brightness(1.08); transform: translateY(-2px); } }
 
 @media (max-width: 1439px) { .knowledge-section { height: auto; padding-bottom: 60px; }.knowledge-grid { grid-template-columns: repeat(2, minmax(0, 380px)); justify-content: center; width: calc(100% - 40px); } }

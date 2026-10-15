@@ -15,9 +15,12 @@
     <section class="talisman-benefits offering-paper">
       <OrnateSectionHeading :art="heading" :title="t('blessingDetails.talisman.benefitsTitle')" />
       <div class="talisman-benefit-grid">
-        <article v-for="(benefit, index) in tm('blessingDetails.talisman.benefits')" :key="benefit.title" class="talisman-benefit offering-paper">
-          <div class="talisman-benefit-icon"><img :class="`benefit-icon-${index}`" :src="icons[index]" alt="" aria-hidden="true" /></div>
-          <h3>{{ benefit.title }}</h3><p>{{ benefit.text }}</p>
+        <article v-for="(benefit, index) in tm('blessingDetails.talisman.benefits')" :key="benefit.title"
+          class="talisman-benefit offering-paper">
+          <div class="talisman-benefit-icon"><img :class="`benefit-icon-${index}`" :src="icons[index]" alt=""
+              aria-hidden="true" /></div>
+          <h3>{{ benefit.title }}</h3>
+          <p>{{ benefit.text }}</p>
         </article>
       </div>
     </section>
@@ -26,17 +29,21 @@
       <OrnateSectionHeading :art="heading" :title="t('blessingDetails.talisman.stepsTitle')" />
       <ol>
         <li v-for="(step, index) in tm('blessingDetails.talisman.steps')" :key="step.title">
-          <div class="talisman-step-symbol"><img :src="stepArt" alt="" aria-hidden="true" /><span aria-hidden="true">{{ symbols[index] }}</span><small aria-hidden="true">{{ roman[index] }}</small></div>
-          <h3>{{ step.title }}</h3><p>{{ step.text }}</p>
+          <div class="talisman-step-symbol"><img :src="stepArt" alt="" aria-hidden="true" /><span aria-hidden="true">{{
+            stepSymbols[index] }}</span><small aria-hidden="true">{{ stepRomans[index] }}</small></div>
+          <h3>{{ step.title }}</h3>
+          <p>{{ step.text }}</p>
         </li>
       </ol>
     </section>
-    <OfferingNotices :art="heading" :title="t('blessingDetails.talisman.noticesTitle')" :items="tm('blessingDetails.talisman.notices')" />
+    <OfferingNotices :art="heading" :title="t('blessingDetails.talisman.noticesTitle')"
+      :items="tm('blessingDetails.talisman.notices')" />
     <BlessingServiceAction kind="talisman" :label="t('blessingDetails.talisman.action')" />
   </OfferingPageShell>
 </template>
 
 <script setup>
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import OfferingPageShell from '@/components/offerings/OfferingPageShell.vue'
 import OfferingNotices from '@/components/offerings/OfferingNotices.vue'
@@ -50,10 +57,11 @@ import protection from '@/assets/blessing-details/protection.png'
 import consecration from '@/assets/blessing-details/consecration.png'
 import '@/styles/blessing-details.css'
 
-const { t, tm } = useI18n()
+const { t, tm, locale } = useI18n()
 // 功效图标，顺序与语言包 benefits 一致。
 const icons = [scriptIcon, protection, consecration]
-// 步骤序号：中文数字与罗马音，仅作装饰。
-const symbols = ['壹', '贰', '叁']
-const roman = ['YI', 'ER', 'SAN']
+// 步骤序号随语言切换：中文用「壹贰叁 + 罗马音」，其他语言用阿拉伯数字 + 英文序数词，仅作装饰。
+const isInternational = computed(() => !locale.value.toLowerCase().startsWith('zh'))
+const stepSymbols = computed(() => (isInternational.value ? ['1', '2', '3'] : ['壹', '贰', '叁']))
+const stepRomans = computed(() => (isInternational.value ? ['ONE', 'TWO', 'THREE'] : ['YI', 'ER', 'SAN']))
 </script>

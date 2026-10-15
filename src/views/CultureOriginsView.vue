@@ -12,7 +12,8 @@
         <div class="intro-landscape" />
         <div class="intro-ribbon" />
       </div>
-      <div class="hero-calligraphy" role="img" :aria-label="t('culture.hero.title')" />
+      <!-- 首屏标题改为真实文字（渐变字效果），随语言包切换，兼容多语言。 -->
+      <h1 class="hero-calligraphy">{{ t('culture.hero.title') }}</h1>
       <div class="intro-slogan">
         <span v-for="line in tm('culture.hero.lines')" :key="line">{{ line }}</span>
       </div>
@@ -39,8 +40,9 @@
       <CultureHeading :eyebrow="t('culture.core.eyebrow')" :title="t('culture.core.title')"
         :subtitle="t('culture.core.subtitle')" />
       <div class="core-grid culture-container">
-        <article v-for="item in tm('culture.core.items')" :key="item.en" class="core-item">
-          <div class="core-emblem"><strong>{{ item.char }}</strong><span>{{ item.en }}</span></div>
+        <article v-for="(item, index) in tm('culture.core.items')" :key="item.en" class="core-item">
+          <!-- 徽章整体为图片：图内已含书法字与拼音角标，按当前语言取图。 -->
+          <img class="core-emblem-img" :src="coreEmblemImages[index]" :alt="`${item.char} ${item.en}`" />
           <p>{{ item.desc }}</p>
         </article>
       </div>
@@ -57,7 +59,8 @@
           @pointerenter="activateBook('scriptures', index)" @click="activateBook('scriptures', index)"
           @focus="activateBook('scriptures', index)" @blur="resumeBookAutoplay">
           <div class="book-cover">
-            <div class="book-seal">{{ book.char }}</div>
+            <!-- 印章为图片：图内已含书法字，按当前语言取图。 -->
+            <img class="book-seal-img" :src="getSealImage('scriptures', index)" :alt="book.title" />
             <div class="book-line" />
             <div class="book-label">{{ book.title }}</div>
             <i />
@@ -82,7 +85,8 @@
           @pointerenter="activateBook('canon', index)" @click="activateBook('canon', index)"
           @focus="activateBook('canon', index)" @blur="resumeBookAutoplay">
           <div class="book-cover">
-            <div class="book-seal">{{ book.char }}</div>
+            <!-- 印章为图片：图内已含书法字，按当前语言取图。 -->
+            <img class="book-seal-img" :src="getSealImage('canon', index)" :alt="book.title" />
             <div class="book-line" />
             <div class="book-label">{{ book.title }}</div>
             <i />
@@ -147,6 +151,19 @@ import festivalMeditation from '@/assets/culture/festival-meditation.svg'
 import festivalPardon from '@/assets/culture/festival-pardon.svg'
 import festivalWater from '@/assets/culture/festival-water.svg'
 import festivalBook from '@/assets/culture/festival-book.png'
+// 五个核心概念的徽章整体替换为图片（图内已含书法字与拼音角标），按当前语言取图。
+import coreDaoZhCN from '@/assets/culture/core/core-dao-zh-CN.png'
+import coreDaoEn from '@/assets/culture/core/core-dao-en.png'
+import coreDeZhCN from '@/assets/culture/core/core-de-zh-CN.png'
+import coreDeEn from '@/assets/culture/core/core-de-en.png'
+import coreYinyangZhCN from '@/assets/culture/core/core-yinyang-zh-CN.png'
+import coreYinyangEn from '@/assets/culture/core/core-yinyang-en.png'
+import coreYinyangZhTW from '@/assets/culture/core/core-yinyang-zh-TW.png'
+import coreWuxingZhCN from '@/assets/culture/core/core-wuxing-zh-CN.png'
+import coreWuxingEn from '@/assets/culture/core/core-wuxing-en.png'
+import coreWuweiZhCN from '@/assets/culture/core/core-wuwei-zh-CN.png'
+import coreWuweiEn from '@/assets/culture/core/core-wuwei-en.png'
+import coreWuweiZhTW from '@/assets/culture/core/core-wuwei-zh-TW.png'
 
 const { t, tm, locale } = useI18n()
 // 将导入名映射为模板使用的简短变量名。
@@ -154,6 +171,38 @@ const taichi = taichiImage
 // 图片数组顺序分别对应语言包中的 daily.items 和 festivals.items。
 const dailyImages = [dailyWellness, dailyConduct, dailyEcology]
 const festivalIcons = [festivalLantern, festivalLotus, festivalMeditation, festivalPardon, festivalWater, festivalBook]
+
+// 核心概念徽章：概念 key 与语言包 culture.core.items 的顺序一一对应。
+// 「道」「德」「五行」简繁字形相同，繁体复用简体图；阴阳、无为有独立繁体图。
+const CORE_EMBLEM_KEYS = ['dao', 'de', 'yinyang', 'wuxing', 'wuwei']
+const CORE_EMBLEMS = {
+  dao: { 'zh-CN': coreDaoZhCN, 'zh-TW': coreDaoZhCN, en: coreDaoEn },
+  de: { 'zh-CN': coreDeZhCN, 'zh-TW': coreDeZhCN, en: coreDeEn },
+  yinyang: { 'zh-CN': coreYinyangZhCN, 'zh-TW': coreYinyangZhTW, en: coreYinyangEn },
+  wuxing: { 'zh-CN': coreWuxingZhCN, 'zh-TW': coreWuxingZhCN, en: coreWuxingEn },
+  wuwei: { 'zh-CN': coreWuweiZhCN, 'zh-TW': coreWuweiZhTW, en: coreWuweiEn },
+}
+// 按当前语言返回五个概念的徽章图片地址。
+const coreEmblemImages = computed(() => tm('culture.core.items').map((item, index) => {
+  const set = CORE_EMBLEMS[CORE_EMBLEM_KEYS[index]] || {}
+  return set[locale.value] || set['zh-CN'] || ''
+}))
+
+// 书封印章图：scriptures/canon 两组各按书目顺序取印章字（简体书法 / 繁体书法 / 拼音三版）。
+// 简繁同形的字（易度清藏要古）只提供简体文件，繁体界面回退使用。
+const SEAL_SETS = {
+  scriptures: ['jing', 'zhuang', 'yi', 'huang', 'du', 'qing'],
+  canon: ['cang', 'xu', 'yun', 'yao', 'gu', 'qian'],
+}
+const sealModules = import.meta.glob('@/assets/culture/seals/*.png', { eager: true, query: '?url', import: 'default' })
+const localeFileKey = { 'zh-CN': 'zh-CN', 'zh-TW': 'zh-TW', en: 'en' }
+
+function getSealImage(setKey, index) {
+  const sealName = SEAL_SETS[setKey][index]
+  const base = `/src/assets/culture/seals/seal-${sealName}`
+  const key = localeFileKey[locale.value] || 'zh-CN'
+  return sealModules[`${base}-${key}.png`] || sealModules[`${base}-zh-CN.png`] || ''
+}
 
 // 页面级交互状态：国际化布局及两组书目当前展开项。
 const isInternational = computed(() => !locale.value.toLowerCase().startsWith('zh'))
@@ -342,7 +391,7 @@ onBeforeUnmount(() => {
   left: calc(50% - 1088px);
   width: 522px;
   height: 998px;
-  background: url('@/assets/culture/design/edge-texture.png') center / 100% 100% no-repeat;
+  background: url('@/assets/culture/design/edge-texture.webp') center / 100% 100% no-repeat;
   opacity: .2;
 }
 
@@ -377,7 +426,7 @@ onBeforeUnmount(() => {
   position: absolute;
   inset: 0;
   content: '';
-  background: url('@/assets/culture/design/intro-landscape.png') center bottom / 100% 100% no-repeat;
+  background: url('@/assets/culture/design/intro-landscape.webp') center bottom / 100% 100% no-repeat;
   opacity: .5;
 }
 
@@ -401,20 +450,32 @@ onBeforeUnmount(() => {
   opacity: .6;
 }
 
+/* 首屏标题：真实文字 + 金箔渐变（background-clip: text），替代原书法切图。 */
 .hero-calligraphy {
   position: absolute;
-  top: 195px;
+  top: 105px;
   left: calc(50% - 620px);
+  display: flex;
+  align-items: center;
   width: 725px;
-  height: 136px;
+  min-height: 136px;
+  margin: 0;
+  color: transparent;
+  font-family: var(--font-calligraphy);
+  font-size: clamp(40px, 5vw, 72px);
+  font-weight: 400;
+  line-height: 1.25;
+  letter-spacing: .06em;
+  white-space: pre-wrap;
   background: linear-gradient(96.398deg, #c29f79 8.076%, #d5ac77 30.943%, #dab98d 50.601%, #d0a266 71.06%, #b98b50 89.113%);
-  mask: url('@/assets/culture/design/calligraphy-mask.png') center / 100% 100% no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
 }
 
 .intro-slogan {
   position: absolute;
-  top: 358px;
-  left: calc(50% - 552px);
+  top: 288px;
+  left: calc(50% - 622px);
   display: grid;
   color: #171717;
   font-family: var(--font-calligraphy);
@@ -552,7 +613,7 @@ onBeforeUnmount(() => {
   inset: 0;
   pointer-events: none;
   content: '';
-  background: url('@/assets/culture/design/panel-texture.png') left top / 512px 512px repeat;
+  background: url('@/assets/culture/design/panel-texture.webp') left top / 512px 512px repeat;
   mix-blend-mode: luminosity;
   mask-image: linear-gradient(transparent, #000);
   opacity: .05;
@@ -610,32 +671,13 @@ onBeforeUnmount(() => {
   text-align: center;
 }
 
-.core-emblem {
-  position: relative;
-  display: grid;
-  align-content: center;
-  justify-items: center;
+/* 徽章整体为图片（梅花形底 + 书法字 + 拼音角标），尺寸沿用原徽章占位。 */
+.core-emblem-img {
+  display: block;
   width: 138px;
   height: 138px;
   margin: 0 auto 34px;
-  background: url('@/assets/culture/core-emblem.svg') center / contain no-repeat;
-}
-
-.core-emblem strong {
-  font-family: var(--font-calligraphy);
-  font-size: 58px;
-  font-weight: 400;
-  line-height: .95;
-}
-
-.core-emblem span {
-  color: #cc3513;
-  font-family: var(--font-dyming-a);
-  font-size: 15px;
-  font-weight: 700;
-  line-height: 1;
-  text-transform: uppercase;
-  white-space: pre-line;
+  object-fit: contain;
 }
 
 .core-item p {
@@ -694,7 +736,7 @@ onBeforeUnmount(() => {
   position: absolute;
   inset: 0;
   content: '';
-  background: url('@/assets/culture/design/book-pattern.png') center / cover;
+  background: url('@/assets/culture/design/book-pattern.webp') center / cover;
   mix-blend-mode: luminosity;
   opacity: .2;
 }
@@ -711,21 +753,15 @@ onBeforeUnmount(() => {
   background: linear-gradient(135deg, #3a4072, #262c59);
 }
 
-.book-seal {
+/* 书封印章为图片（圆形白底 + 书法字/拼音），位置沿用原印章占位。 */
+.book-seal-img {
   position: absolute;
   z-index: 1;
   top: 29px;
   left: 50%;
-  display: grid;
   width: 76px;
   height: 76px;
-  place-items: center;
-  color: #111;
-  font-family: var(--font-calligraphy);
-  font-size: 51px;
-  background: #fff;
-  border: 2px solid #1c3043;
-  border-radius: 45% 45% 48% 48%;
+  object-fit: contain;
   transform: translateX(-50%);
 }
 
@@ -944,7 +980,7 @@ onBeforeUnmount(() => {
   left: 35.37%;
   width: 100%;
   height: 1440px;
-  background: url('@/assets/culture/design/festival-cloud-bottom.png') center / 100% 100% no-repeat;
+  background: url('@/assets/culture/design/festival-cloud-bottom.webp') center / 100% 100% no-repeat;
   mix-blend-mode: luminosity;
   opacity: .1;
 }
@@ -1049,12 +1085,15 @@ onBeforeUnmount(() => {
   }
 }
 
+/* 国际布局标题正常显示（原为隐藏切图）：改用衬线字体并缩小字号适配长标题。 */
 .is-international .hero-calligraphy {
-  display: none;
+  font-family: Georgia, serif;
+  font-size: clamp(28px, 2.6vw, 38px);
+  letter-spacing: 0;
 }
 
 .is-international .intro-slogan {
-  top: 210px;
+  top: 268px;
   width: 560px;
   font-family: Georgia, serif;
   font-size: 29px;
@@ -1102,7 +1141,6 @@ onBeforeUnmount(() => {
   font-size: 20px;
 }
 
-.is-international .core-emblem strong,
 .is-international .book-label,
 .is-international .daily-card h3,
 .is-international .festival-card h3 {
@@ -1115,10 +1153,20 @@ onBeforeUnmount(() => {
 }
 
 .is-international .book-label {
-  font-size: 18px;
   /* 英文同样采用竖排，拉丁字母按词组旋转，效果与原型中的 Blessing 标签一致。 */
   writing-mode: vertical-rl;
   text-orientation: mixed;
+  /* 长书名自适应：沿书脊线居中锚定并限高，避免从固定 top 起排冲出封面。
+     书脊线两端固定（top 111 / bottom 31），线中心恒为封面 50% + 40px；
+     限高 = 封面高 - 142px（正好不超过书脊线两端），超长时以省略收尾。 */
+  top: calc(50% + 40px);
+  bottom: auto;
+  min-height: 0;
+  max-height: calc(100% - 142px);
+  padding: 10px 8px;
+  font-size: 13px;
+  transform: translate(-50%, -50%);
+  overflow: hidden;
 }
 
 .is-international .book-description {
@@ -1181,9 +1229,9 @@ onBeforeUnmount(() => {
   .hero-calligraphy {
     display: block;
     width: min(720px, 88%);
-    height: auto;
-    aspect-ratio: 725 / 136;
+    min-height: 0;
     margin: 10px auto 28px;
+    text-align: center;
   }
 
   .intro-slogan {
@@ -1434,7 +1482,7 @@ onBeforeUnmount(() => {
     width: 100%;
   }
 
-  .core-emblem {
+  .core-emblem-img {
     margin-bottom: 20px;
     transform: scale(.9);
   }

@@ -8,15 +8,14 @@
             period }}</small></strong></div>
     <label>{{ t('offerings.name') }}<input v-model="name" name="devoteeName" autocomplete="name" required maxlength="30"
         :placeholder="t('offerings.namePlaceholder')" /></label>
-    <!-- 生辰仅点灯需要，且不允选择未来日期。 -->
+    <!-- 生辰仅点灯需要，且不允选择未来日期；右侧日历图标为自定义切图。 -->
     <label v-if="kind === 'lamp'">{{ t('offerings.birth') }}<input v-model="birth" name="birthDate" type="date" required
-        :max="today" /></label>
+        class="birth-input" :max="today" /></label>
     <label>{{ t('offerings.wish') }}<textarea v-model="wish" name="wish" rows="3" maxlength="300"
         :placeholder="t('offerings.wishPlaceholder')" /></label>
     <div class="order-submit">
-      <CeremonialButton
-        :label="submitLabel || t(kind === 'lamp' ? 'offerings.submitLamp' : 'offerings.submitDeity')"
-        @click="requestSubmit" />
+      <CeremonialButton type="submit"
+        :label="submitLabel || t(kind === 'lamp' ? 'offerings.submitLamp' : 'offerings.submitDeity')" />
     </div>
     <p v-if="kind === 'deity'" class="order-explanation centered">{{ t('offerings.deityPromise') }}</p>
   </form>
@@ -37,9 +36,6 @@ const wish = ref(props.initialDetails.wish || '')
 const now = new Date()
 const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
 // 借助原生表单校验：姓名去空格后为空时给出自定义提示，输入后即清除提示。
-function requestSubmit(event) {
-  event.currentTarget.closest('form')?.requestSubmit()
-}
 function submit(event) {
   const input = event.target.elements.devoteeName
   input.setCustomValidity(name.value.trim() ? '' : t('offerings.nameRequired'))

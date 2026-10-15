@@ -28,7 +28,7 @@ const reasons = computed(() => tm('coBuild.reasons.items'))
 <style scoped>
 .reasons-section {
   padding: 0 20px 40px;
-  background: #f3f0e9;
+  background: #f8f5ed;
 }
 
 /* 三列固定宽度卡片，居中排布。 */

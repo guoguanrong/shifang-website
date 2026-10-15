@@ -34,5 +34,5 @@ async function setLocale(nextLocale) {
 </script>
 
 <style scoped>
-.co-build-page { min-width: 320px; overflow-x: clip; color: #333; background: #f3f0e9; }
+.co-build-page { min-width: 320px; overflow-x: clip; color: #333; background: #f8f5ed; }
 </style>

@@ -340,11 +340,11 @@ html[data-locale-layout='international'] .supervision-grid p {
 }
 
 /* Community cards */
-html[data-locale-layout='international'] .seasonal-card > div {
+html[data-locale-layout='international'] .seasonal-section .seasonal-card > div {
   padding: 0;
 }
 
-html[data-locale-layout='international'] .seasonal-card strong {
+html[data-locale-layout='international'] .seasonal-section .seasonal-card strong {
   top: 70px;
   width: 74px;
   height: 74px;
@@ -354,7 +354,7 @@ html[data-locale-layout='international'] .seasonal-card strong {
   text-align: center;
 }
 
-html[data-locale-layout='international'] .seasonal-card h3 {
+html[data-locale-layout='international'] .seasonal-section .seasonal-card h3 {
   top: 155px;
   width: 180px;
   height: auto;
@@ -367,7 +367,7 @@ html[data-locale-layout='international'] .seasonal-card h3 {
   white-space: normal;
 }
 
-html[data-locale-layout='international'] .seasonal-card p {
+html[data-locale-layout='international'] .seasonal-section .seasonal-card p {
   top: 202px;
   left: 32px;
   display: -webkit-box;
@@ -381,7 +381,7 @@ html[data-locale-layout='international'] .seasonal-card p {
   -webkit-line-clamp: 9;
 }
 
-html[data-locale-layout='international'] .seasonal-card button {
+html[data-locale-layout='international'] .seasonal-section .seasonal-card button {
   top: 351px;
   width: 164px;
   padding: 0 8px;
@@ -389,7 +389,7 @@ html[data-locale-layout='international'] .seasonal-card button {
   font-size: 12px;
   line-height: 1.2;
 }
-html[data-locale-layout='international'] .seasonal-card:nth-child(2) p {
+html[data-locale-layout='international'] .seasonal-section .seasonal-card:nth-child(2) p {
   top: 202px;
 }
 html[data-locale-layout='international'] .testimonials-grid article {
@@ -816,5 +816,53 @@ html[data-locale-layout='international'] .milestones-section h3 {
 
   html[data-locale-layout='international'] .supervision-grid {
     grid-template-columns: minmax(0, 340px);
+  }
+}
+
+/* 手机端（≤1180px）菜单以中文样式为准：撤销 international 对菜单面板、
+   列数与字体的定制，仅保留品牌字号等非菜单调整。 */
+@media (max-width: 1180px) {
+  html[data-locale-layout='international'] .desktop-nav {
+    max-height: calc(100vh - 64px);
+    max-height: calc(100dvh - 64px);
+    padding: 10px 20px 16px;
+    gap: 4px 16px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  html[data-locale-layout='international'] .desktop-nav.is-open,
+  html[data-locale-layout='international'] .about-dropdown {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  html[data-locale-layout='international'] .desktop-nav > button,
+  html[data-locale-layout='international'] .desktop-nav .about-trigger,
+  html[data-locale-layout='international'] .desktop-nav .about-dropdown button {
+    font-family: inherit;
+    font-weight: 400;
+  }
+
+  html[data-locale-layout='international'] .desktop-nav > button {
+    min-height: 40px;
+    font-size: inherit;
+    line-height: inherit;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  html[data-locale-layout='international'] .desktop-nav .about-trigger {
+    width: 100%;
+    min-height: 40px;
+    padding-inline: 0;
+    justify-content: space-between;
+  }
+
+  html[data-locale-layout='international'] .desktop-nav .about-dropdown button {
+    min-height: 38px;
+    padding: 9px 18px;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
   }
 }

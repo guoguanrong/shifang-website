@@ -48,7 +48,7 @@ defineProps({
   align-self: center;
   height: 94px;
   margin-left: -11px;
-  padding: 12px 14px 10px 49px;
+  padding: 22px 14px 10px 49px;
   background: rgba(255, 255, 255, .92);
   border-radius: 0 18px 18px 0;
 }

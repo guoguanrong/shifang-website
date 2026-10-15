@@ -11,9 +11,10 @@ export function getDaodianList(data) {
 /**
  * 获取道典精读详情
  * @param {number} id 道典精读 id
+ * @param {object} options 请求附加选项（如 { silent: true } 静默失败）
  */
-export function getDaodianById(id) {
-  return request({ url: `/daodian/get/${id}` })
+export function getDaodianById(id, options = {}) {
+  return request({ url: `/daodian/get/${id}`, ...options })
 }
 
 /**

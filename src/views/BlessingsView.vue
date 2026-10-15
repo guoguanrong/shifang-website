@@ -28,7 +28,7 @@ const setLocale = (locale) => setAppLocale(locale)
   min-width: 320px;
   overflow-x: clip;
   color: #333;
-  background: #f3f0e9;
+  background: #f8f5ed;
 }
 
 .blessings-stage {
@@ -37,7 +37,7 @@ const setLocale = (locale) => setAppLocale(locale)
   max-width: 1440px;
   height: 1585px;
   margin-inline: auto;
-  background: #f3f0e9;
+  background: #f8f5ed;
 }
 
 .blessing-quote {

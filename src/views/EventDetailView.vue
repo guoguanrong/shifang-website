@@ -233,7 +233,7 @@ const setLocale = (next) => setAppLocale(next)
   min-width: 320px;
   overflow-x: clip;
   color: #333;
-  background: #f3f0e9;
+  background: #f8f5ed;
 }
 
 .event-detail-page :deep(.site-header) {

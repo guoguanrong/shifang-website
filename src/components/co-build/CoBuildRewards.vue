@@ -40,7 +40,7 @@ const rewardIcons = [reward1, reward2, reward3, reward4, reward5, reward6, rewar
 <style scoped>
 .rewards-section {
   padding: 80px 20px;
-  background: #f3f0e9;
+  background: #f8f5ed;
 }
 
 .rewards-grid {

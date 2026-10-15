@@ -54,7 +54,7 @@
 .record-status.pending, .record-status.unpaid { color: #fff; background: #a6a6a6; }
 .record-status.completed, .record-status.expired { color: #696969; background: #f0eee8; }
 .record-card-state time { display: block; margin-top: 8px; color: #a47c52; font-size: 12px; line-height: 1.5; }
-.record-media { position: relative; display: block; width: 100%; padding: 0; overflow: hidden; border: 0; border-radius: 20px; background: #f3f0e9; cursor: pointer; }
+.record-media { position: relative; display: block; width: 100%; padding: 0; overflow: hidden; border: 0; border-radius: 20px; background: #f8f5ed; cursor: pointer; }
 .record-media > img, .record-media > video { display: block; width: 100%; object-fit: contain; background: #f7f4ee; }
 .record-media > img { height: 220px; }
 .record-media > video { aspect-ratio: 16 / 9; object-fit: cover; background: #111; }
@@ -100,6 +100,21 @@
 }
 .volunteer-application { padding: 24px 50px 60px; background: #fff; }
 .volunteer-form { width: min(100%, 1240px); margin: auto; }
+/* 义工申请审核状态横幅：待审核金 / 通过绿 / 未通过红。 */
+.volunteer-status {
+  width: min(100%, 1240px);
+  margin: 0 auto 28px;
+  padding: 18px 28px;
+  border: 1px solid #d8b38d;
+  border-left: 5px solid #c9a063;
+  border-radius: 14px;
+  background: #fdf8f0;
+}
+.volunteer-status-title { margin: 0; font-size: 18px; font-weight: 600; }
+.volunteer-status-detail { margin: 6px 0 0; color: #6b5a45; font-size: 14px; }
+.volunteer-status.is-status-2 { border-left-color: #4c8c5c; background: #f2f9f3; }
+.volunteer-status.is-status-3 { border-left-color: #b5482f; background: #fdf3f0; }
+.volunteer-status.is-status-3 .volunteer-status-title { color: #a03e28; }
 .volunteer-field { min-width: 0; margin-bottom: 24px; }
 .volunteer-field > label { display: block; margin-bottom: 10px; font-size: 16px; }
 .volunteer-field input, .volunteer-field select, .volunteer-field textarea { display: block; width: 100%; min-width: 0; min-height: 56px; padding: 14px 22px; border: 1px solid #d8b38d; border-radius: 30px; color: #333; background: #fff; font: 16px/1.5 var(--font-calligraphy); }
@@ -142,6 +157,10 @@
 .account-feedback-dialog .ceremonial-button { width: min(320px, 100%); min-height: 50px; height: auto; padding: 12px; font-size: 18px; }
 html[data-locale-layout='international'] :is(.account-page .offering-main, .account-feedback-dialog, .volunteer-field input, .volunteer-field select, .volunteer-field textarea) { font-family: var(--font-ui-international); }
 html[data-locale-layout='international'] .account-page .ornate-heading h2 { font-family: var(--font-ui-international); letter-spacing: 0; }
+/* 英文文案比中文长：压缩字号并加宽文字区，白色渐变同步外扩，避免描述压到配图上。 */
+html[data-locale-layout='international'] .volunteer-role { gap: 10px; font-family: var(--font-ui-international); background: linear-gradient(90deg, #fff 32%, #ffffffde 52%, #ffffff00 85%), var(--role-image) right center / auto 100% no-repeat; }
+html[data-locale-layout='international'] .volunteer-role > span:first-child { font-size: 22px; letter-spacing: 0; }
+html[data-locale-layout='international'] .volunteer-role > span:last-child { max-width: 62%; font-size: 14px; line-height: 1.55; }
 @media (max-width: 900px) {
   .volunteer-introduction, .volunteer-application { padding-inline: 28px; }
   .volunteer-roles { margin-inline: 8px; }

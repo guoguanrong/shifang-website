@@ -25,6 +25,15 @@ export function saveVolunteer(data) {
 }
 
 /**
+ * 查询当前登录用户的义工申请信息（需登录态，无入参）
+ * @returns {Promise<object|null>} VolunteerVo{id, username, phone, applyPost, serviceTime, remark,
+ *   status(1待审核 2审核通过 3拒绝), refuseReason, createTime}
+ */
+export function getVolunteerSelfInfo(options) {
+  return request({ url: '/volunteer/selfInfo', method: 'get', ...options })
+}
+
+/**
  * 修改义工
  * @param {object} data {id*, username, phone, applyPost, serviceTime, remark, status, refuseReason}
  */

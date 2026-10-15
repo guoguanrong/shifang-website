@@ -61,7 +61,7 @@ const glyphs = [yi, er, san, si]
 
 .opportunities::before {
   opacity: .05;
-  background: url('@/assets/events/red-texture.png') left top / 512px 512px repeat;
+  background: url('@/assets/events/red-texture.webp') left top / 512px 512px repeat;
   mix-blend-mode: luminosity;
 }
 

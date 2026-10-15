@@ -1,6 +1,6 @@
 /* 书法体只作用于正文区域：写在页面根节点上会级联进公共页头，导致导航字体随页面变化。 */
 /* 善款明细页：复用社区详情外壳，这里只覆盖字体、背景与留白。 */
-.fund-details-page .community-detail-main { font-family:var(--font-calligraphy); background:#f3f0e9; padding-bottom:100px; }
+.fund-details-page .community-detail-main { font-family:var(--font-calligraphy); background:#f8f5ed; padding-bottom:100px; }
 .fund-details-page .community-detail-heading { margin-bottom:68px; }
 .fund-details-page .community-detail-heading > p { font:24px/1.2 var(--font-calligraphy); }
 .fund-details-page .community-detail-heading h1 { font-size:42px; }

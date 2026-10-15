@@ -13,7 +13,7 @@
 .lamp-detail-order { margin-bottom:40px; padding:30px 30px 60px; }
 .lamp-detail-order::before { background-image:url('@/assets/offerings/order-panel.svg'); }
 .lamp-detail-order::after { background-image:url('@/assets/offerings/order-outline.svg'); }
-.lamp-material-package { padding:30px 70px; border-radius:20px; background:#f3f0e9; }
+.lamp-material-package { padding:30px 70px; border-radius:20px; background:#f8f5ed; }
 .lamp-material-package dl { display:flex; flex-direction:column; gap:20px; margin-bottom:20px; }
 .lamp-material-package dl > div { display:flex; justify-content:space-between; gap:24px; font-size:16px; line-height:24px; }
 .lamp-material-package dt { color:#696969; }

@@ -11,9 +11,10 @@ export function getSportWellnessList(data) {
 /**
  * 获取跟练视频详情
  * @param {number} id 跟练视频 id
+ * @param {object} options 请求附加选项（如 { silent: true } 静默失败）
  */
-export function getSportWellnessById(id) {
-  return request({ url: `/sportWellness/get/${id}` })
+export function getSportWellnessById(id, options = {}) {
+  return request({ url: `/sportWellness/get/${id}`, ...options })
 }
 
 /**

@@ -38,7 +38,7 @@ import AccountPageShell from '@/components/account/AccountPageShell.vue'
 import EmptyData from '@/components/common/EmptyData.vue'
 import { listSelfOrder } from '@/api/order'
 import { ResultCode } from '@/api/http'
-import template from '@/assets/account-details/certificate-template.png'
+import template from '@/assets/account-details/certificate-template.webp'
 import '@/styles/account-details.css'
 
 const { t } = useI18n()

@@ -8,7 +8,7 @@
   min-width: 320px;
   overflow-x: clip;
   color: #333;
-  background: #f3f0e9;
+  background: #f8f5ed;
 }
 
 /* 书法体只作用于正文区域：写在页面根节点上会级联进公共页头，导致导航字体随页面变化。 */
@@ -341,39 +341,39 @@
   font-size: 16px;
 }
 
+/* 国际布局：序号改用阿拉伯数字与英文序数词，书法字体缺拉丁字形，标题正文转衬线体。 */
+html[data-locale-layout='international'] .step-symbol span {
+  font-family: Georgia, serif;
+  font-size: 52px;
+  line-height: 1;
+}
+
+html[data-locale-layout='international'] .lamp-steps h3 {
+  font-family: Georgia, serif;
+  font-size: 21px;
+  line-height: 1.3;
+  letter-spacing: 0;
+}
+
+html[data-locale-layout='international'] .lamp-steps p {
+  font-family: Georgia, serif;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: 0;
+}
+
 .lamp-merits {
   margin: 80px 0 90px;
   padding: 0 100px;
 }
 
+/* 功德章为整图（图内已含花瓣底、颜色与书法字），按当前语言切换。 */
 .merit-symbol {
-  position: relative;
-  display: grid;
-  place-items: center;
+  display: block;
   width: 154px;
   height: 154px;
   margin: auto;
-}
-
-.merit-border {
-  position: absolute;
-  inset: 0;
-  width: 154px;
-  height: 154px;
-}
-
-.merit-leaf {
-  position: absolute;
-  width: 138.436px;
-  height: 138.436px;
   object-fit: contain;
-}
-
-.merit-symbol span {
-  position: relative;
-  color: #fff;
-  font-size: 80px;
-  line-height: 1;
 }
 
 .merit-quote {
@@ -604,7 +604,7 @@
 }
 
 .deity-offering-order::after {
-  background-image: url('@/assets/offerings/deity-order-outline.svg');
+  /* background-image: url('@/assets/offerings/deity-order-outline.svg'); */
 }
 
 .offering-plans {
@@ -750,6 +750,27 @@
   border-radius: 999px;
 }
 
+/* 生辰日期输入：隐藏浏览器原生日历图标，右侧叠加站点配色切图；
+   原生 picker-indicator 设为透明并覆盖在图标区域，点击弹出日历的行为保持不变。 */
+.offering-order-form .birth-input {
+  position: relative;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url('@/assets/offerings/calendar-icon.png');
+  background-repeat: no-repeat;
+  background-position: right 22px center;
+  background-size: 22px 22px;
+}
+
+.offering-order-form .birth-input::-webkit-calendar-picker-indicator {
+  position: absolute;
+  right: 13px;
+  width: 40px;
+  height: 40px;
+  opacity: 0;
+  cursor: pointer;
+}
+
 .offering-order-form textarea {
   min-height: 120px;
   resize: vertical;
@@ -809,7 +830,7 @@
   content: '';
   pointer-events: none;
   opacity: .18;
-  background: url('@/assets/offerings/dialog-cloud.webp') right bottom/100% auto no-repeat;
+  /* background: url('@/assets/offerings/dialog-cloud.webp') right bottom/100% auto no-repeat; */
 }
 
 .offering-dialog h2 {

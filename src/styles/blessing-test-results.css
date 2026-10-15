@@ -1,75 +1,351 @@
 /* 祈福测算结果弹窗样式；result-five / result-lots / result-zodiac / result-notice 各自微调。 */
-.blessing-result-dialog .result-dialog-content { min-height: 410px; }
+.blessing-result-dialog .result-dialog-content {
+  min-height: 410px;
+}
+
 .blessing-result-dialog .service-dialog-content::before,
-.blessing-result-dialog .service-dialog-content::after { background-image: url('@/assets/blessing-tests/result-clouds.webp'); }
-.blessing-result-dialog .service-dialog-close { background-image: url('@/assets/blessing-tests/result-close-circle.svg'); }
-.blessing-result-dialog .service-dialog-heading h2 { padding: 0 20px; font-size: 32px; letter-spacing: 3.2px; overflow-wrap: anywhere; }
-.blessing-result-dialog .service-dialog-copy { min-height: 72px; }
-.blessing-result-dialog .service-dialog-blessing { min-height: 48px; margin-top: 9px; white-space: pre-line; }
-.blessing-result-dialog.result-five .service-dialog-blessing { display: grid; align-items: end; }
-.blessing-result-dialog .service-dialog-actions { margin-top: 20px; }
-.blessing-result-dialog .service-dialog-actions .ceremonial-button { background-image: none; }
-.blessing-result-dialog .service-dialog-actions .ceremonial-button::before { background: linear-gradient(#cc3513b3, #cc3513b3), url('@/assets/blessing-tests/result-button-texture.png') center/100% 100% no-repeat; background-blend-mode: normal, luminosity; }
-.blessing-result-dialog .service-dialog-actions .ceremonial-button::after { background-image: url('@/assets/blessing-tests/result-button-ornament.svg'); }
-.blessing-result-dialog .service-dialog-preview { margin-top: 18px; }
-.blessing-result-dialog.result-notice .result-dialog-content { min-height: 340px; }
-.blessing-result-dialog.result-notice .service-dialog-copy { min-height: 60px; max-width: 479px; color: #333; }
-.blessing-result-dialog.result-notice .service-dialog-actions .ceremonial-button { width: min(100%, 200px); }
-.blessing-result-dialog.result-notice .service-dialog-actions .ceremonial-button::after { background-image: url('@/assets/blessing-tests/result-small-button-ornament.svg'); }
-.blessing-result-dialog.result-zodiac .result-dialog-content { min-height: 800px; padding-top: 30px; }
-.result-zodiac .service-dialog-heading h2 { letter-spacing: 12px; padding-left: 12px; }
-.result-star-eyebrow { position: absolute; top: 86px; left: 0; width: 100%; color: #cc3513; font-size: 14px; }
-.result-zodiac .service-dialog-content::before { height: 329px; background-size: 714px 329px; }
-.result-zodiac .service-dialog-content::after { height: 328px; background-size: 714px 328px; opacity: .1; }
-.star-result { text-align: center; color: #c7955f; font-size: 16px; line-height: 24px; letter-spacing: 1.6px; }
-.star-birthday { margin: 14px 0 20px; }
-.star-name { margin-bottom: 28px; }
-.star-name span { color: #cc3513; font-size: 14px; word-spacing: 22px; }
-.star-name h3 { margin: 8px 0 0; color: #333; font: 48px/1.2 var(--font-calligraphy); letter-spacing: 4.8px; }
+.blessing-result-dialog .service-dialog-content::after {
+  /* background-image: url('@/assets/blessing-tests/result-clouds.webp'); */
+}
+
+.blessing-result-dialog .service-dialog-close {
+  background-image: url('@/assets/blessing-tests/result-close-circle.svg');
+}
+
+.blessing-result-dialog .service-dialog-heading h2 {
+  padding: 0 20px;
+  font-size: 32px;
+  letter-spacing: 3.2px;
+  overflow-wrap: anywhere;
+}
+
+.blessing-result-dialog .service-dialog-copy {
+  min-height: 72px;
+}
+
+.blessing-result-dialog .service-dialog-blessing {
+  min-height: 48px;
+  margin-top: 9px;
+  white-space: pre-line;
+}
+
+.blessing-result-dialog.result-five .service-dialog-blessing {
+  display: grid;
+  align-items: end;
+}
+
+.blessing-result-dialog .service-dialog-actions {
+  margin-top: 20px;
+}
+
+.blessing-result-dialog .service-dialog-actions .ceremonial-button {
+  background-image: none;
+}
+
+.blessing-result-dialog .service-dialog-actions .ceremonial-button::before {
+  background: linear-gradient(#cc3513b3, #cc3513b3), url('@/assets/blessing-tests/result-button-texture.png') center/100% 100% no-repeat;
+  background-blend-mode: normal, luminosity;
+}
+
+.blessing-result-dialog .service-dialog-actions .ceremonial-button::after {
+  background-image: url('@/assets/blessing-tests/result-button-ornament.svg');
+}
+
+.blessing-result-dialog .service-dialog-preview {
+  margin-top: 18px;
+}
+
+.blessing-result-dialog.result-notice .result-dialog-content {
+  min-height: 340px;
+}
+
+.blessing-result-dialog.result-notice .service-dialog-copy {
+  min-height: 60px;
+  max-width: 479px;
+  color: #333;
+}
+
+.blessing-result-dialog.result-notice .service-dialog-actions .ceremonial-button {
+  width: min(100%, 200px);
+}
+
+.blessing-result-dialog.result-notice .service-dialog-actions .ceremonial-button::after {
+  background-image: url('@/assets/blessing-tests/result-small-button-ornament.svg');
+}
+
+.blessing-result-dialog.result-zodiac .result-dialog-content {
+  min-height: 800px;
+  padding-top: 30px;
+}
+
+.result-zodiac .service-dialog-heading h2 {
+  letter-spacing: 12px;
+  padding-left: 12px;
+}
+
+.result-star-eyebrow {
+  position: absolute;
+  top: 86px;
+  left: 0;
+  width: 100%;
+  color: #cc3513;
+  font-size: 14px;
+}
+
+.result-zodiac .service-dialog-content::before {
+  height: 329px;
+  background-size: 714px 329px;
+}
+
+.result-zodiac .service-dialog-content::after {
+  height: 328px;
+  background-size: 714px 328px;
+  opacity: .1;
+}
+
+.star-result {
+  text-align: center;
+  color: #c7955f;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 1.6px;
+}
+
+.star-birthday {
+  margin: 14px 0 20px;
+}
+
+.star-name {
+  margin-bottom: 28px;
+}
+
+.star-name span {
+  color: #cc3513;
+  font-size: 14px;
+  word-spacing: 22px;
+}
+
+.star-name h3 {
+  margin: 8px 0 0;
+  color: #333;
+  font: 48px/1.2 var(--font-calligraphy);
+  letter-spacing: 4.8px;
+}
+
 /* 守护星宿条：描边与填充两层底图叠出金色卡片。 */
-.star-guardian { position: relative; isolation: isolate; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0 6px; width: min(100%, 400px); min-height: 60px; margin: 0 auto 30px; padding: 12px 20px; color: #fff; letter-spacing: 0; }
-.star-guardian::before, .star-guardian::after { position: absolute; z-index: -1; content: ''; pointer-events: none; background: center/100% 100% no-repeat; }
-.star-guardian::before { inset: -1px; background-image: url('@/assets/blessing-tests/result-star-outline.svg'); }
-.star-guardian::after { inset: 2px; background-image: url('@/assets/blessing-tests/result-star-fill.png'); }
-.star-guardian strong { color: #f2d2af; font-size: 18px; font-weight: 400; }
+.star-guardian {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0 6px;
+  width: min(100%, 400px);
+  min-height: 60px;
+  margin: 0 auto 30px;
+  padding: 12px 20px;
+  color: #fff;
+  letter-spacing: 0;
+}
+
+.star-guardian::before,
+.star-guardian::after {
+  position: absolute;
+  z-index: -1;
+  content: '';
+  pointer-events: none;
+  background: center/100% 100% no-repeat;
+}
+
+.star-guardian::before {
+  inset: -1px;
+  background-image: url('@/assets/blessing-tests/result-star-outline.svg');
+}
+
+.star-guardian::after {
+  inset: 2px;
+  background-image: url('@/assets/blessing-tests/result-star-fill.png');
+}
+
+.star-guardian strong {
+  color: #f2d2af;
+  font-size: 18px;
+  font-weight: 400;
+}
+
 /* 三列生辰信息，列之间用旋转的小竖线分隔。 */
-.star-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); width: min(100%, 402px); min-height: 90px; margin: 0 auto 22px; padding: 20px 8px; border-radius: 20px; background: linear-gradient(#fff, #fff0); }
-.star-facts > div { position: relative; padding: 0 8px; }
-.star-facts > div + div::before { position: absolute; content: ''; top: 10px; left: 0; width: 29.5px; height: .5px; transform: rotate(90deg); transform-origin: top left; background: url('@/assets/blessing-tests/result-divider.svg') center/29.5px .5px no-repeat; }
-.star-facts dt, .star-facts dd { margin: 0; overflow-wrap: anywhere; }
-.star-result h4 { width: fit-content; min-width: min(100%, 220px); max-width: 100%; padding: 4px 12px; margin: 0 auto 10px; background: linear-gradient(90deg, #f2d2af00, #f2d2af66, #f2d2af00); font-size: 18px; font-weight: 400; line-height: 28px; }
-.star-detail { margin: 0 0 18px; color: #333; font-size: 16px; line-height: 32px; }
-.result-zodiac .service-dialog-actions { margin-top: 10px; }
+.star-facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  width: min(100%, 402px);
+  min-height: 90px;
+  margin: 0 auto 22px;
+  padding: 20px 8px;
+  border-radius: 20px;
+  background: linear-gradient(#fff, #fff0);
+}
+
+.star-facts>div {
+  position: relative;
+  padding: 0 8px;
+}
+
+.star-facts>div+div::before {
+  position: absolute;
+  content: '';
+  top: 10px;
+  left: 0;
+  width: 29.5px;
+  height: .5px;
+  transform: rotate(90deg);
+  transform-origin: top left;
+  background: url('@/assets/blessing-tests/result-divider.svg') center/29.5px .5px no-repeat;
+}
+
+.star-facts dt,
+.star-facts dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.star-result h4 {
+  width: fit-content;
+  min-width: min(100%, 220px);
+  max-width: 100%;
+  padding: 4px 12px;
+  margin: 0 auto 10px;
+  background: linear-gradient(90deg, #f2d2af00, #f2d2af66, #f2d2af00);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 28px;
+}
+
+.star-detail {
+  margin: 0 0 18px;
+  color: #333;
+  font-size: 16px;
+  line-height: 32px;
+}
+
+.result-zodiac .service-dialog-actions {
+  margin-top: 10px;
+}
+
 html[data-locale-layout='international'] .blessing-result-dialog,
 html[data-locale-layout='international'] .blessing-result-dialog .ceremonial-button,
 html[data-locale-layout='international'] .blessing-result-dialog .service-dialog-preview,
-html[data-locale-layout='international'] .star-name h3 { font-family: var(--font-ui-international); }
-html[data-locale-layout='international'] .blessing-result-dialog .service-dialog-heading h2 { letter-spacing: 0; padding-left: 0; }
+html[data-locale-layout='international'] .star-name h3 {
+  font-family: var(--font-ui-international);
+}
+
+html[data-locale-layout='international'] .blessing-result-dialog .service-dialog-heading h2 {
+  letter-spacing: 0;
+  padding-left: 0;
+}
+
 html[data-locale-layout='international'] .star-result,
 html[data-locale-layout='international'] .blessing-result-dialog .service-dialog-copy,
-html[data-locale-layout='international'] .blessing-result-dialog .service-dialog-blessing { letter-spacing: 0; }
+html[data-locale-layout='international'] .blessing-result-dialog .service-dialog-blessing {
+  letter-spacing: 0;
+}
+
 /* 手机：弹窗高度随视口收缩，字号与留白同步压缩。 */
 @media (max-width: 600px) {
-  .blessing-result-dialog { max-height: calc(100dvh - 40px); }
+  .blessing-result-dialog {
+    max-height: calc(100dvh - 40px);
+  }
+
   .blessing-result-dialog .result-dialog-content,
   .blessing-result-dialog.result-notice .result-dialog-content,
-  .blessing-result-dialog.result-zodiac .result-dialog-content { min-height: 0; padding: 18px 20px 20px; }
-  .blessing-result-dialog .service-dialog-heading { height: auto; min-height: 100px; padding: 26px 0 18px; }
-  .blessing-result-dialog .service-dialog-heading h2 { padding: 0; font-size: 23px; letter-spacing: 1px; }
-  .blessing-result-dialog .service-dialog-heading img { width: 100px; height: 100px; }
+  .blessing-result-dialog.result-zodiac .result-dialog-content {
+    min-height: 0;
+    padding: 18px 20px 20px;
+  }
+
+  .blessing-result-dialog .service-dialog-heading {
+    height: auto;
+    min-height: 100px;
+    padding: 26px 0 18px;
+  }
+
+  .blessing-result-dialog .service-dialog-heading h2 {
+    padding: 0;
+    font-size: 23px;
+    letter-spacing: 1px;
+  }
+
+  .blessing-result-dialog .service-dialog-heading img {
+    width: 100px;
+    height: 100px;
+  }
+
   .blessing-result-dialog .service-dialog-copy,
-  .blessing-result-dialog.result-notice .service-dialog-copy { min-height: 0; }
-  .blessing-result-dialog .service-dialog-blessing { min-height: 0; margin-top: 18px; }
-  .blessing-result-dialog .service-dialog-actions { margin-top: 18px; }
-  .result-zodiac .service-dialog-heading { padding-bottom: 34px; }
-  .result-star-eyebrow { top: auto; bottom: 12px; }
-  .star-result { font-size: 15px; line-height: 23px; }
-  .star-birthday { margin: 10px 0 16px; }
-  .star-name { margin-bottom: 20px; }
-  .star-name h3 { font-size: 32px; letter-spacing: 2px; }
-  .star-guardian { margin-bottom: 22px; font-size: 14px; }
-  .star-facts { min-height: 76px; margin-bottom: 18px; padding-block: 14px; letter-spacing: 0; font-size: 14px; }
-  .star-facts > div { padding-inline: 4px; }
-  .star-result h4 { font-size: 16px; }
-  .star-detail { margin-bottom: 14px; font-size: 15px; line-height: 24px; letter-spacing: 0; }
+  .blessing-result-dialog.result-notice .service-dialog-copy {
+    min-height: 0;
+  }
+
+  .blessing-result-dialog .service-dialog-blessing {
+    min-height: 0;
+    margin-top: 18px;
+  }
+
+  .blessing-result-dialog .service-dialog-actions {
+    margin-top: 18px;
+  }
+
+  .result-zodiac .service-dialog-heading {
+    padding-bottom: 34px;
+  }
+
+  .result-star-eyebrow {
+    top: auto;
+    bottom: 12px;
+  }
+
+  .star-result {
+    font-size: 15px;
+    line-height: 23px;
+  }
+
+  .star-birthday {
+    margin: 10px 0 16px;
+  }
+
+  .star-name {
+    margin-bottom: 20px;
+  }
+
+  .star-name h3 {
+    font-size: 32px;
+    letter-spacing: 2px;
+  }
+
+  .star-guardian {
+    margin-bottom: 22px;
+    font-size: 14px;
+  }
+
+  .star-facts {
+    min-height: 76px;
+    margin-bottom: 18px;
+    padding-block: 14px;
+    letter-spacing: 0;
+    font-size: 14px;
+  }
+
+  .star-facts>div {
+    padding-inline: 4px;
+  }
+
+  .star-result h4 {
+    font-size: 16px;
+  }
+
+  .star-detail {
+    margin-bottom: 14px;
+    font-size: 15px;
+    line-height: 24px;
+    letter-spacing: 0;
+  }
 }

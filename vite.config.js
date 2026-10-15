@@ -21,10 +21,10 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 5173,
-    // 开发环境跨域代理：/api 转发到测试服；后端接口本身带 /api 前缀，因此不做 rewrite。
+    // 开发环境跨域代理：/api 转发到 api2 网关；后端接口本身带 /api 前缀，因此不做 rewrite。
     proxy: {
       '/api': {
-        target: 'http://1.94.147.242:9999',
+        target: 'https://api2.shifangtemple.org',
         changeOrigin: true,
       },
     },

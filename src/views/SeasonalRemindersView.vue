@@ -16,7 +16,7 @@
           <img class="seasonal-card-image" :src="images[index]" alt="" aria-hidden="true" />
           <img class="seasonal-card-fade" :src="fade" alt="" aria-hidden="true" />
           <img class="seasonal-card-outline" :src="outline" alt="" aria-hidden="true" />
-          <div class="seasonal-card-copy">
+          <div class="seasonal-card-copy" :class="{ 'is-english': locale === 'en' }">
             <h3>{{ season.title }}</h3>
             <p>{{ season.text }}</p>
           </div>
@@ -36,15 +36,15 @@ import OfferingNotices from '@/components/offerings/OfferingNotices.vue'
 import OrnateSectionHeading from '@/components/common/OrnateSectionHeading.vue'
 import BlessingServiceAction from '@/components/blessings/BlessingServiceAction.vue'
 import heading from '@/assets/blessing-details/heading.svg'
-import spring from '@/assets/blessing-details/spring.png'
-import summer from '@/assets/blessing-details/summer.png'
-import autumn from '@/assets/blessing-details/autumn.png'
-import winter from '@/assets/blessing-details/winter.png'
+import spring from '@/assets/blessing-details/spring.webp'
+import summer from '@/assets/blessing-details/summer.webp'
+import autumn from '@/assets/blessing-details/autumn.webp'
+import winter from '@/assets/blessing-details/winter.webp'
 import fade from '@/assets/blessing-details/season-fade.svg'
 import outline from '@/assets/blessing-details/season-outline.svg'
 import '@/styles/blessing-details.css'
 
-const { t, tm } = useI18n()
+const { t, tm, locale } = useI18n()
 // 四季配图，顺序与语言包 seasons 保持一致。
 const images = [spring, summer, autumn, winter]
 </script>

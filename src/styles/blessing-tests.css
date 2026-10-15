@@ -71,19 +71,25 @@
 .zodiac-panel { margin-top: 40px; padding: 30px 70px 22px; }
 .zodiac-panel::before { background-image: url('@/assets/blessing-tests/zodiac-panel.svg'); }
 .zodiac-panel::after { background-image: url('@/assets/blessing-tests/zodiac-outline.svg'); }
-.birthday-form { padding: 26px 30px 30px; border-radius: 20px; background: #f3f0e9; }
+.birthday-form { padding: 26px 30px 30px; border-radius: 20px; background: #f8f5ed; }
 .birthday-form > p:first-child { margin: 0 0 30px; }
 .birthday-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
 .birth-wheel { --card-art: url('@/assets/blessing-tests/date-card.svg'); --card-outline: url('@/assets/blessing-tests/date-outline.svg'); padding: 28px 35px 36px; min-height: 300px; }
-.birth-wheel label { display: block; margin-bottom: 22px; font-size: 28px; }
-/* 生辰滚轮：用多行原生 select 模拟滚轮，选中项高亮。 */
-.birth-wheel select { width: 100%; height: 182px; padding: 0; border: 0; border-inline: 1px solid #f1e3d3; border-radius: 0; background: transparent; color: #c7955f; font: 24px/1.5 var(--font-calligraphy); text-align: center; scrollbar-width: thin; scrollbar-color: #dfc6a8 transparent; cursor: pointer; }
-.birth-wheel option { padding: 13px 4px; min-height: 60px; color: #b47a43; }
-.birth-wheel option:checked { color: #333; background: linear-gradient(90deg, transparent, #f4f1ea, transparent); }
+.birth-wheel-label { display: block; margin-bottom: 14px; padding-bottom: 12px; color: #4a3524; font-size: 22px; border-bottom: 1px solid #ecd9bd; }
+/* 生辰滚轮：自绘三行窗口，选中项居中，带浅金渐变高亮条。 */
+.birth-wheel-list { list-style: none; margin: 0; padding: 0; }
+.birth-wheel-row { display: grid; min-height: 60px; place-items: center; }
+.birth-wheel-row button { width: 100%; padding: 10px 6px; color: #b47a43; font: 19px/1.3 var(--font-calligraphy); background: transparent; border: 0; border-radius: 10px; cursor: pointer; transition: color .18s ease, background-color .18s ease; }
+.birth-wheel-row button.is-active {
+  color: #3c2a17;
+  font-size: 24px;
+  font-weight: 600;
+  background: linear-gradient(90deg, rgba(244, 241, 234, 0), #f4f1ea 18%, #f4f1ea 82%, rgba(244, 241, 234, 0));
+}
 .birthday-form .birthday-summary { margin: 30px 0 26px; font-size: 28px; color: #b47a43; }
 .birthday-form .birthday-note { margin: 28px 0 0; font-size: 16px; }
 .test-art-card[aria-pressed='true'] { filter: drop-shadow(0 4px 5px #c29f7966); }
-.blessing-test-page button:focus-visible, .birth-wheel select:focus-visible { outline: 2px solid #1d4e6e; outline-offset: 4px; }
+.blessing-test-page button:focus-visible, .birth-wheel-row button:focus-visible { outline: 2px solid #1d4e6e; outline-offset: 4px; }
 @media (hover: hover) and (pointer: fine) {
   button.test-art-card:hover { filter: drop-shadow(0 6px 6px #c29f7966); }
   .test-choice:hover { background: #fae8d2; }
@@ -104,7 +110,7 @@
 html[data-locale-layout='international'] .blessing-test-page .offering-main,
 html[data-locale-layout='international'] .blessing-test-page .ornate-heading h2,
 html[data-locale-layout='international'] .blessing-test-page .ceremonial-button,
-html[data-locale-layout='international'] .birth-wheel select { font-family: var(--font-ui-international); }
+html[data-locale-layout='international'] .birth-wheel-row button { font-family: var(--font-ui-international); }
 html[data-locale-layout='international'] .blessing-test-page .test-art-card p { line-height: 1.5; letter-spacing: 0; }
 html[data-locale-layout='international'] .blessing-test-page .ornate-heading h2 { letter-spacing: 0; }
 html[data-locale-layout='international'] .blessing-test-page .test-art-card h3 { font-size: 25px; }
@@ -143,8 +149,9 @@ html[data-locale-layout='international'] .blessing-test-page .test-art-card h3 {
   .birthday-grid { gap: 8px; }
   .birth-wheel { min-height: 220px; padding: 24px 8px 16px; }
   .birth-wheel label { font-size: 20px; margin-bottom: 14px; }
-  .birth-wheel select { height: 144px; font-size: 17px; }
-  .birth-wheel option { min-height: 48px; padding: 12px 0; }
+  .birth-wheel-row { min-height: 48px; }
+  .birth-wheel-row button { font-size: 16px; padding: 8px 6px; }
+  .birth-wheel-row button.is-active { font-size: 19px; }
   .birthday-form .birthday-summary { font-size: 21px; }
   .zodiac-panel { padding-inline: 16px; }
 }
@@ -158,6 +165,5 @@ html[data-locale-layout='international'] .blessing-test-page .test-art-card h3 {
   .animal-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .birthday-grid { grid-template-columns: 1fr; gap: 16px; }
   .birth-wheel { max-width: 340px; width: 100%; margin: auto; }
-  .birth-wheel select { max-width: 230px; font-size: 22px; }
   .blessing-test-page .ceremonial-button { font-size: 20px; }
 }

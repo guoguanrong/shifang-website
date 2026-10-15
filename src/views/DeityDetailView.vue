@@ -131,7 +131,7 @@ const detail = computed(() => {
 .deity-detail-page {
   min-width: 320px;
   color: #333;
-  background: #f3f0e9;
+  background: #f8f5ed;
 }
 
 /* 书法体只作用于正文区域：写在页面根节点上会级联进公共页头，导致导航字体随页面变化。 */
@@ -379,7 +379,7 @@ const detail = computed(() => {
   margin-block: 3px;
   padding: 16px 8px;
   border-radius: 0 18px 18px 0;
-  background: #f3f0e9;
+  background: #f8f5ed;
 }
 
 .detail-audience li {
@@ -575,13 +575,16 @@ const detail = computed(() => {
   font-family: var(--font-serif-cn);
 }
 
-:global(html[data-locale-layout='international'] .detail-summary),
-:global(html[data-locale-layout='international'] .detail-copy) {
+:global(html[data-locale-layout='international'] .detail-summary) {
   letter-spacing: 0;
   line-height: 1.75;
   text-align: left;
 }
-
+:global(html[data-locale-layout='international'] .detail-copy){
+  letter-spacing: 0;
+  line-height: 1.75;
+  text-align: center;
+}
 :global(html[data-locale-layout='international'] .detail-facts dt) {
   font-size: 12px;
 }

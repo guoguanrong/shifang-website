@@ -19,6 +19,18 @@ export default {
     countryHongKong: '中國香港 +852', countryMacao: '中國澳門 +853', countryTaiwan: '中國台灣 +886',
     countrySingapore: '新加坡 +65', countryJapan: '日本 +81', countryKorea: '韓國 +82', sendCode: '發送驗證碼', sendingCode: '正在發送…', resendCode: '{seconds}秒後重發',
     login: '登 入', register: '註 冊 並 登 入', agreementPrefix: '登入即表示同意', agreement: '隱私政策',
+    policy: {
+      title: '隱私政策',
+      sections: [
+        { title: '1. 資訊收集', text: '十方殿（ShiFang Hall）可能在善捐及相關活動中收集以下資訊：姓名；聯絡方式（電子郵件、電話）；通訊地址；善捐款項及紀錄；祈願相關資訊（由第三方支付機構處理）。我們僅收集為完善善捐及合規義務所必要的資訊。' },
+        { title: '2. 資訊使用', text: '所收集的資訊僅用於以下目的：處理善捐及開立善捐憑證；提供善捐確認及溝通；滿足法律、稅務及合規要求；改善組織服務與溝通體驗。我們不會將善捐人資訊用於任何商業行銷目的。' },
+        { title: '3. 資訊保護', text: '十方殿採取合理的技術與管理措施保護善捐人資訊，包括：資料加密與存取控制；限制內部人員存取權限；定期審查資料安全措施。' },
+        { title: '4. 資訊共享', text: '我們不會出售、出租或交換善捐人個人資訊。僅在以下情況下可能揭露資訊：法律法規要求；政府監管機構合法請求；款項處理所需的第三方服務機構（如支付平台）。' },
+        { title: '5. 第三方服務', text: '善捐款項可能透過第三方平台處理（如支付閘道或銀行）。該平台將按照其自身隱私政策處理相關款項資訊，建議善捐人查閱其條款。' },
+        { title: '6. 善捐人權利', text: '善捐人有權：查詢或更正其個人資訊；請求刪除其個人資料（在法律允許範圍內）；選擇退出後續溝通。如需行使上述權利，請聯絡我們：shifangtemple.info@gmail.com' },
+        { title: '7. 資料保留', text: '我們僅在實現上述目的或法律要求的期限內保留善捐人資訊。' },
+      ],
+    },
     forgot: '忘記有帳號？', registerPrompt: '還沒有帳號？', registerLink: '帳號註冊', loginPrompt: '已有帳號？', loginLink: '返回登入',
     successTitle: '登入功德已成', registerSuccessTitle: '註冊功德已成', successDescription: '道緣已結，願祈願皆有迴響，善念常伴。',
     successAction: '福生無量天尊', errorTitle: '溫 馨 提 示', invalidEmail: '請輸入有效的郵箱地址。',

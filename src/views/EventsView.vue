@@ -79,7 +79,7 @@ const setLocale = (locale) => setAppLocale(locale)
   min-width: 320px;
   overflow-x: clip;
   color: #333;
-  background: #f3f0e9;
+  background: #f8f5ed;
 }
 
 .events-stage {
@@ -88,7 +88,7 @@ const setLocale = (locale) => setAppLocale(locale)
   padding-bottom: 60px;
   isolation: isolate;
   margin-inline: auto;
-  background: #f3f0e9;
+  background: #f8f5ed;
 }
 
 .events-page :deep(.site-header) {

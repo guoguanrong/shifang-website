@@ -1,42 +1,101 @@
 <template>
-  <!-- 新闻详情页：外壳提供返回入口与标题，正文段落全部取自语言包。 -->
+  <!-- 动态详情页：正文按列表页携带的 ?id= 从动态接口加载。 -->
   <CommunityDetailShell
     :section="t('portal.pages.newsDetail.section')"
     :section-to="{ name: 'news' }"
     :eyebrow="t('portal.pages.newsDetail.eyebrow')"
-    :title="t('portal.pages.newsDetail.title')"
+    :title="detailItem?.title || t('portal.pages.newsDetail.title')"
   >
-    <!-- 顶部元信息：日期为占位值，阅读量同样来自语言包。 -->
-    <template #meta>
-      <time datetime="2026-04-08">{{ t('portal.pages.newsDetail.date') }}</time>
-      <span>{{ t('portal.pages.newsDetail.views') }}</span>
+    <!-- 顶部元信息：发布日期与阅读量取接口真实值。 -->
+    <template v-if="detailItem" #meta>
+      <time v-if="detailDate" :datetime="detailDate">{{ detailDateLabel }}</time>
+      <span>{{ formatReads(detailItem.readNum) }} {{ t('portal.pages.newsDetail.views') }}</span>
     </template>
 
-    <article class="detail-surface news-detail-surface">
-      <div class="detail-media"><img :src="heroImage" :alt="t('portal.pages.newsDetail.title')" /></div>
+    <article v-if="detailItem" class="detail-surface news-detail-surface">
+      <div class="detail-media"><img :src="coverImage" :alt="detailItem.title || t('portal.pages.newsDetail.title')" /></div>
       <div class="detail-body">
-        <p v-for="paragraph in paragraphs" :key="paragraph" class="detail-copy">{{ paragraph }}</p>
-        <div class="detail-quote">
+        <p v-for="(paragraph, index) in paragraphs" :key="index" class="detail-copy">{{ paragraph }}</p>
+        <div v-if="detailItem.wishes" class="detail-quote">
           <span class="detail-quote__label" aria-hidden="true">{{ t('portal.pages.detail.quoteLabel') }}</span>
-          <p>{{ t('portal.pages.newsDetail.quote') }}</p>
+          <p>{{ detailItem.wishes }}</p>
         </div>
       </div>
     </article>
+    <!-- 无 id、动态不存在或加载失败时展示空态，不回退静态演示内容。 -->
+    <p v-else class="detail-empty" role="status">{{ t('news.empty') }}</p>
   </CommunityDetailShell>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
+import { getDynamicById } from '@/api/dynamic'
 import CommunityDetailShell from '@/components/community/CommunityDetailShell.vue'
-import heroImage from '@/assets/images/news-card-1.webp'
+import heroImageFallback from '@/assets/images/news-card-1.webp'
 
-const { t, tm } = useI18n()
-// 正文段落由语言包提供，切换语言即切换全文。
-const paragraphs = computed(() => tm('portal.pages.newsDetail.paragraphs'))
+const { t } = useI18n()
+const route = useRoute()
+
+// 动态详情（DynamicVo）：与列表页同源接口，按路由 ?id= 加载。
+const detailItem = ref(null)
+
+// 解析 cover：后端返回 JSON 数组字符串（多图）或单个 URL。
+function parseNewsImages(value) {
+  let imageList = []
+
+  if (Array.isArray(value)) {
+    imageList = value
+  } else if (typeof value === 'string' && value.trim()) {
+    try {
+      const parsed = JSON.parse(value)
+      imageList = Array.isArray(parsed) ? parsed : [parsed]
+    } catch {
+      imageList = [value]
+    }
+  }
+
+  return imageList.map((image) => typeof image === 'string' ? image : image?.url).filter(Boolean)
+}
+
+// 阅读量：未公布（null）显示 '—'，否则千分位展示。
+function formatReads(reads) {
+  return reads === null || reads === undefined ? '—' : Number(reads).toLocaleString('en-US')
+}
+
+async function loadDetail(id) {
+  detailItem.value = null
+  if (!id) return
+
+  try {
+    const item = await getDynamicById(id, { silent: true })
+    detailItem.value = item || null
+  } catch {
+    detailItem.value = null
+  }
+}
+
+watch(() => route.query.id, loadDetail, { immediate: true })
+
+const coverImage = computed(() => parseNewsImages(detailItem.value?.cover)[0] || heroImageFallback)
+const detailDate = computed(() => (detailItem.value?.createTime || '').slice(0, 10))
+const detailDateLabel = computed(() => detailDate.value.replaceAll('-', '.'))
+// 正文：content 按空行/换行拆段。
+const paragraphs = computed(() => {
+  const source = String(detailItem.value?.content || '')
+  return source.split(/\r?\n+/).map((part) => part.trim()).filter(Boolean)
+})
 </script>
 
 <style scoped>
 /* 微调头图裁切焦点，避免关键画面被裁掉。 */
 .news-detail-surface .detail-media img { object-position: center 39%; }
+
+.detail-empty {
+  margin: 0;
+  color: #8b7a63;
+  font-size: 15px;
+  text-align: center;
+}
 </style>

@@ -155,11 +155,7 @@ section[id],
     transform: translateY(3px);
   }
 
-  .temple-card:hover,
-  .mission-grid article:hover,
   .organization-grid article:hover,
-  .supervision-grid article:hover,
-  .seasonal-card:hover,
   .testimonials-grid article:hover,
   .figma-message-card:hover,
   .news-grid article:hover {

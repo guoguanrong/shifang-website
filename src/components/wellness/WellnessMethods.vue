@@ -43,7 +43,7 @@ const methodImages = [methodGuidance, methodMeditation, methodDiet, methodSeason
 </script>
 
 <style scoped>
-.methods-section { height: 1153px; background: #f3f0e9; }
+.methods-section { height: 1153px; background: #f8f5ed; }
 .methods-grid { display: grid; grid-template-columns: repeat(3, 466.67px); grid-template-rows: 431px 451px; gap: 30px 20px; width: 1440px; margin: 59px auto 0; }
 .method-card { position: relative; text-align: center; transition: filter .25s ease, transform .25s ease; }
 .frame { position: absolute; pointer-events: none; }

@@ -3,7 +3,6 @@
     <HomeHeader @select-locale="setLocale" />
     <main class="cloud-build-main">
       <CloudBuildHero />
-      <CloudBuildTransparency />
       <CloudBuildCameras />
     </main>
     <HomeFooter />
@@ -15,7 +14,6 @@ import { useI18n } from 'vue-i18n'
 import { setAppLocale } from '@/i18n'
 import CloudBuildCameras from '@/components/cloud-build/CloudBuildCameras.vue'
 import CloudBuildHero from '@/components/cloud-build/CloudBuildHero.vue'
-import CloudBuildTransparency from '@/components/cloud-build/CloudBuildTransparency.vue'
 import HomeFooter from '@/components/home/HomeFooter.vue'
 import HomeHeader from '@/components/home/HomeHeader.vue'
 
@@ -31,7 +29,7 @@ async function setLocale(nextLocale) {
   min-width: 320px;
   overflow-x: clip;
   color: #333;
-  background: #f3f0e9;
+  background: #f8f5ed;
 }
 
 .cloud-build-main {
@@ -43,7 +41,7 @@ async function setLocale(nextLocale) {
 /* 设计稿头部叠有一层极浅的宣纸纹理，仅在本页补齐，不改变其他已完成页面。 */
 .cloud-build-page :deep(.site-header) {
   background-color: rgba(29, 78, 110, .97);
-  background-image: linear-gradient(rgba(29, 78, 110, .9), rgba(29, 78, 110, .9)), url('@/assets/cloud-build/header-texture.png');
+  background-image: linear-gradient(rgba(29, 78, 110, .9), rgba(29, 78, 110, .9)), url('@/assets/cloud-build/header-texture.webp');
   background-position: center;
   background-size: cover;
 }

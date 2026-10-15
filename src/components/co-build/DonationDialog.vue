@@ -36,14 +36,14 @@
             <div><dt>{{ t('donation.dialog.phone') }}</dt><dd>{{ order.phone ? `${order.country} ${order.phone}` : t('donation.dialog.notProvided') }}</dd></div>
             <div><dt>{{ t('donation.dialog.email') }}</dt><dd>{{ order.email || t('donation.dialog.notProvided') }}</dd></div>
           </dl>
-          <p class="payment-caption">{{ t('donation.dialog.choosePayment') }}</p>
+          <!-- <p class="payment-caption">{{ t('donation.dialog.choosePayment') }}</p>
           <div class="payment-options" role="group" :aria-label="t('offerings.paymentMethod')">
             <button v-for="method in methods" :key="method.id" type="button" :class="method.id"
               :aria-pressed="payment === method.id" @click="payment = method.id">
               <img :src="method.image" :alt="method.label" />
               <span v-if="method.id === 'paypal'" class="payment-recommended">{{ t('offerings.paymentRecommended') }}</span>
             </button>
-          </div>
+          </div> -->
           <div class="dialog-actions">
             <CeremonialButton :label="paying ? t('offerings.paying') : `${t('offerings.pay')} ${amountLabel}`" :disabled="paying" @click="pay" />
             <button class="dialog-cancel" type="button" :disabled="paying" @click="dialog.close()">{{ t('offerings.reconsider') }}</button>

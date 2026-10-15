@@ -62,5 +62,6 @@ export default {
   "chooseYear": "請選擇年份",
   "chooseMonth": "請選擇月份",
   "chooseDay": "請選擇日期",
-  "chooseBirthday": "請滾動選擇您的農曆生辰"
+  "chooseBirthday": "請滾動選擇您的農曆生辰",
+  "loading": "正在為您推算，請稍候…"
 }

@@ -31,7 +31,7 @@ const { t } = useI18n()
   position: relative;
   height: 485px;
   overflow: visible;
-  background: #f3f0e9;
+  background: #f8f5ed;
 }
 
 .hero-heading {

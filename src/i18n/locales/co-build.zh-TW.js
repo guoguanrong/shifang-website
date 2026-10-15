@@ -4,7 +4,7 @@ export default {
   cta: '隨喜捐贈 廣種福田',
   hero: { eyebrow: 'Global Guardians', title: '善款捐贈 · 功德福報', subtitle: '您的每一分善舉，皆有福報相隨', quote: '「諸惡莫作，眾善奉行；積功累行，自然成真」', quoteSource: '——《太上感應篇》· 道藏太清部' },
   project: {
-    eyebrow: 'FUNDRAISING GOAL', heading: '籌款目標', title: '斗姆元君大殿', total: '$ 12,680,000', description: '建築修繕 · 重現千年莊嚴', progressLabel: '籌款進度', raisedLabel: '已籌集', raised: '$8,624,300', targetStatLabel: '籌款目標', completedStatLabel: '已籌金額', typeStatLabel: '捐贈類型', empty: '暫無籌款項目',
+    eyebrow: 'FUNDRAISING GOAL', heading: '籌款目標', title: '斗姆元君大殿', total: '$ 12,680,000', description: '建築修繕 · 重現千年莊嚴', progressLabel: '籌款進度', raisedLabel: '已籌集', raised: '$8,624,300', targetStatLabel: '籌款目標', completedStatLabel: '已籌金額', typeStatLabel: '捐贈類型', statRaised: '已收善款', statTarget: '目標金額', statDonors: '善捐人次', empty: '暫無籌款項目',
     stats: [{ label: '已捐贈善款', value: '$8,624,300' }, { label: '已使用善款', value: '$2,624,300' }, { label: '捐贈人次', value: '14,300' }],
   },
   assurances: [{ title: '501(c)(3)', desc: '美國免稅非營利組織' }, { title: '資金流向', desc: '清晰透明可追溯' }, { title: '即時透明', desc: '雲監工隨時查看' }],
@@ -48,7 +48,7 @@ export default {
     trustTitle: '您的每一分信任，我們都不辜負', trustText: '十方殿501(c)(3)非營利組織 · 雲監工即時直播 · 資金流向明細可查',
   },
   honor: {
-    title: '功德名錄', subtitle: '每批展示60位善信 · 含捐款與捐物 · 自動輪播', blessing: '⋯ 功德無量  福生無量 ⋯',
+    title: '功德名錄', subtitle: '每批展示60位善信 · 含捐款與捐物 · 自動輪播', anonymousName: '匿名善信', anonymousInitial: '匿', blessing: '⋯ 功德無量  福生無量 ⋯', empty: '暫無數據',
     donors: [
       { initial: '匿', name: '匿名善信', gift: '青磚500塊', anonymous: true }, { initial: '張', name: '張師兄', gift: '青磚500塊' }, { initial: '匿', name: '匿名善信', gift: '$5,000', anonymous: true }, { initial: '王', name: '王總', gift: '$12,000' }, { initial: '陳', name: '陳女士', gift: '青磚500塊' }, { initial: '羅', name: '羅先生', gift: '$5,000' }, { initial: '匿', name: '匿名善信', gift: '香瓦300片', anonymous: true }, { initial: '李', name: '李師兄', gift: '$8,000' }, { initial: '趙', name: '趙女士', gift: '青磚500塊' }, { initial: '周', name: '周先生', gift: '$12,000' }, { initial: '匿', name: '匿名善信', gift: '$5,000', anonymous: true }, { initial: '孫', name: '孫師兄', gift: '青磚500塊' },
     ],

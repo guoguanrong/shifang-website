@@ -2,10 +2,11 @@
   <section class="honor-section">
     <CoBuildSectionHeading :title="t('coBuild.honor.title')" :subtitle="t('coBuild.honor.subtitle')" />
 
-    <!-- 两份相同名录首尾衔接，实现无空白的纵向自动轮播。 -->
-    <div class="honor-window" :aria-label="t('coBuild.honor.title')">
-      <div class="honor-marquee">
-        <div v-for="copyIndex in 2" :key="copyIndex" class="honor-list" :aria-hidden="copyIndex === 2">
+    <!-- 名录充足时以两份相同列表首尾衔接实现无空白自动轮播；不足一屏时只渲染一份并停用动画；无真实数据时显示暂无数据提示。 -->
+    <div class="honor-window" :class="{ 'is-static': !canMarquee }" :aria-label="t('coBuild.honor.title')">
+      <div v-if="donors.length" class="honor-marquee">
+        <div v-for="copyIndex in canMarquee ? 2 : 1" :key="copyIndex" class="honor-list"
+          :aria-hidden="canMarquee && copyIndex === 2">
           <article v-for="(donor, index) in donors" :key="`${copyIndex}-${index}`">
             <span class="donor-avatar" :class="{ anonymous: donor.anonymous }">
               <img :src="donor.anonymous ? anonymousSeal : personSeal" alt="" aria-hidden="true" />
@@ -16,6 +17,7 @@
           </article>
         </div>
       </div>
+      <p v-else class="honor-empty">{{ t('coBuild.honor.empty') }}</p>
     </div>
 
     <p class="honor-blessing">{{ t('coBuild.honor.blessing') }}</p>
@@ -24,17 +26,50 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import CoBuildSectionHeading from './CoBuildSectionHeading.vue'
+import { getMeritList } from '@/api/order'
 import anonymousSeal from '@/assets/co-build/donor-seal-anonymous.svg'
 import personSeal from '@/assets/co-build/donor-seal-person.svg'
 
-const { t, tm } = useI18n()
-const donorSeeds = computed(() => tm('coBuild.honor.donors'))
+const { t } = useI18n()
 
-// 设计稿每批展示 60 位善信；以语言包中的 12 个示例循环组成完整一批。
-const donors = computed(() => Array.from({ length: 60 }, (_, index) => donorSeeds.value[index % donorSeeds.value.length]))
+// 接口数据：功德名录（已完成捐赠的订单）。
+const apiDonors = ref([])
+
+// 捐赠记录 → 名录条目：捐钱展示金额，捐物展示物品与数量；未留名的显示匿名。
+function mapMerit(item) {
+  const name = String(item.username || '').trim()
+  const isGoods = Number(item.donateType) === 2
+  return {
+    name: name || t('coBuild.honor.anonymousName'),
+    initial: name ? name.slice(0, 1) : t('coBuild.honor.anonymousInitial'),
+    anonymous: !name,
+    gift: isGoods
+      ? `${item.itemName || ''} × ${Number(item.number || 1)}`
+      : `$${Number(item.amount || 0).toLocaleString('en-US')}`,
+  }
+}
+
+async function loadMeritList() {
+  try {
+    const result = await getMeritList({ page: 1, pageSize: 200 }, { silent: true })
+    const list = Array.isArray(result) ? result : result?.list
+    apiDonors.value = Array.isArray(list) ? list.map(mapMerit) : []
+  } catch {
+    apiDonors.value = []
+  }
+}
+
+// 只展示接口返回的真实功德名录；无数据/加载失败时保持为空，版块随之隐藏，不再以语言包示例兜底。
+const donors = computed(() => apiDonors.value)
+
+// 少于一屏（宽屏 6 列 × 2 行）时停用轮播并只渲染一份，避免同屏出现明显重复。
+const MARQUEE_MIN = 12
+const canMarquee = computed(() => donors.value.length >= MARQUEE_MIN)
+
+onMounted(loadMeritList)
 
 function goToDonation() {
   document.getElementById('donation-project')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
@@ -45,7 +80,7 @@ function goToDonation() {
 .honor-section {
   padding: 0 20px 53px;
   overflow: hidden;
-  background: #f3f0e9;
+  background: #f8f5ed;
 }
 
 .honor-window {
@@ -53,6 +88,26 @@ function goToDonation() {
   height: 450px;
   margin: 14px auto 0;
   overflow: hidden;
+}
+
+/* 名录不足一屏：窗口高度自适应、停用滚动动画，条目原样静态展示。 */
+.honor-window.is-static {
+  height: auto;
+}
+
+/* 无真实数据时的空状态占位。 */
+.honor-empty {
+  display: grid;
+  place-items: center;
+  min-height: 220px;
+  margin: 0;
+  color: #a89a85;
+  font-size: 15px;
+  letter-spacing: 3px;
+}
+
+.honor-window.is-static .honor-marquee {
+  animation: none;
 }
 
 .honor-marquee {
@@ -178,6 +233,11 @@ function goToDonation() {
 
 :global(html[data-locale-layout='international'] .honor-list strong) {
   font-size: 10px;
+}
+
+:global(html[data-locale-layout='international'] .honor-empty) {
+  font-family: Georgia, serif;
+  letter-spacing: 0;
 }
 
 :global(html[data-locale-layout='international'] .honor-blessing),

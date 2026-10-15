@@ -11,7 +11,8 @@
       <article v-for="(item, index) in items" :key="item.id || `${item.title}-${index}`" class="practice-card">
         <div class="practice-cover">
           <img :src="getCover(item, index)" alt="" />
-          <button class="play-button" type="button" :aria-label="`${t('wellness.practice.action')}：${item.title}`" @click="playVideo(item)">
+          <!-- 播放按钮与「开始跟练」均跳转到跟练视频详情页。 -->
+          <button class="play-button" type="button" :aria-label="`${t('wellness.practice.action')}：${item.title}`" @click="goDetail(item)">
             <img :src="playCircle" alt="" /><img :src="playIcon" alt="" />
           </button>
         </div>
@@ -19,7 +20,7 @@
           <h3>{{ item.title }}</h3>
           <p>{{ item.intro }}</p>
           <div class="practice-tags"><span v-for="tag in getTags(item)" :key="tag">{{ tag }}</span></div>
-          <button class="practice-action" type="button" @click="playVideo(item)">{{ t('wellness.practice.action') }}</button>
+          <button class="practice-action" type="button" @click="goDetail(item)">{{ t('wellness.practice.action') }}</button>
         </div>
       </article>
     </div>
@@ -32,23 +33,14 @@
     <button v-if="hasMore" class="more-button" type="button" :disabled="isLoading" @click="loadMore">
       {{ isLoading ? t('wellness.practice.loadingMore') : t('wellness.practice.more') }}<span aria-hidden="true">›</span>
     </button>
-
-    <dialog ref="playerDialog" class="practice-player-dialog" @close="handlePlayerClose">
-      <div class="practice-player-content">
-        <button class="practice-player-close" type="button" :aria-label="t('wellness.practice.closePlayer')" @click="closePlayer">×</button>
-        <h2>{{ selectedVideo?.title }}</h2>
-        <p v-if="playerLoading" class="practice-message">{{ t('wellness.practice.loading') }}</p>
-        <p v-else-if="playerError" class="practice-player-error">{{ playerError }}</p>
-        <video v-else-if="selectedVideo?.videoUrl" :src="selectedVideo.videoUrl" controls playsinline />
-      </div>
-    </dialog>
   </section>
 </template>
 
 <script setup>
-import { computed, nextTick, onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { getSportWellnessById, getSportWellnessList } from '@/api/sportWellness'
+import { useRouter } from 'vue-router'
+import { getSportWellnessList } from '@/api/sportWellness'
 import playCircle from '@/assets/wellness/play-circle.svg'
 import playIcon from '@/assets/wellness/play-icon.svg'
 import baduanjin from '@/assets/wellness/practice-baduanjin.webp'
@@ -61,6 +53,7 @@ import WellnessSectionHeading from './WellnessSectionHeading.vue'
 
 const PAGE_SIZE = 6
 const { t } = useI18n()
+const router = useRouter()
 const items = ref([])
 const currentPage = ref(1)
 const totalPages = ref(1)
@@ -68,13 +61,8 @@ const isLoading = ref(false)
 const loadError = ref(false)
 const failedPage = ref(1)
 const failedAppend = ref(false)
-const playerDialog = ref(null)
-const selectedVideo = ref(null)
-const playerLoading = ref(false)
-const playerError = ref('')
 const hasMore = computed(() => currentPage.value < totalPages.value)
 const practiceImages = [baduanjin, jingang, wuqinxi, changshou, liuzijue, taiji]
-let playbackRequestId = 0
 
 function getPage(payload) {
   const page = payload?.data && !payload.list && !payload.records ? payload.data : payload
@@ -151,46 +139,19 @@ function getTags(item) {
   ].filter(Boolean)
 }
 
-async function playVideo(item) {
-  const requestId = ++playbackRequestId
-  selectedVideo.value = { ...item }
-  playerLoading.value = true
-  playerError.value = ''
-  await nextTick()
-  if (!playerDialog.value?.open) playerDialog.value?.showModal()
-  try {
-    const detail = item.id ? await getSportWellnessById(item.id) : item
-    const videoUrl = detail?.videoUrl || item.videoUrl
-    if (!videoUrl) {
-      playerError.value = t('wellness.practice.videoLoadFailed')
-      return
-    }
-    if (requestId !== playbackRequestId) return
-    selectedVideo.value = { ...item, videoUrl }
-  } catch {
-    if (requestId === playbackRequestId) playerError.value = t('wellness.practice.videoLoadFailed')
-  } finally {
-    if (requestId === playbackRequestId) playerLoading.value = false
-  }
-}
-
-function closePlayer() {
-  if (playerDialog.value?.open) playerDialog.value.close()
-  else handlePlayerClose()
-}
-
-function handlePlayerClose() {
-  playbackRequestId += 1
-  selectedVideo.value = null
-  playerLoading.value = false
-  playerError.value = ''
+// 点击卡片/播放按钮：跳转到跟练视频详情页（由详情页加载视频并播放）。
+function goDetail(item) {
+  router.push({
+    name: 'wellness-practice-detail',
+    query: item?.id != null ? { id: String(item.id) } : {},
+  })
 }
 
 onMounted(() => loadPage(1))
 </script>
 
 <style scoped>
-.practice-section { min-height: 1057px; height: auto; padding-bottom: 84px; background: #f3f0e9; }
+.practice-section { min-height: 557px; height: auto; padding-bottom: 84px; background: #f8f5ed; }
 /* 三列卡片，窄屏依次降为两列、一列。 */
 .practice-grid { display: grid; grid-template-columns: repeat(3, 446.67px); gap: 30px 50px; width: 1440px; margin: 39px auto 0; }
 .practice-card { height: 368px; overflow: hidden; background: linear-gradient(130deg, #fff 35%, #f3eae0 100%); border-radius: 12px; transition: box-shadow .25s ease, transform .25s ease; }
@@ -210,13 +171,7 @@ onMounted(() => loadPage(1))
 .more-button:disabled { cursor: wait; opacity: .7; }
 .practice-message { display: flex; align-items: center; justify-content: center; gap: 12px; margin: 36px auto 0; color: #62584e; font-size: 14px; text-align: center; }
 .practice-message button { padding: 0; color: #a33219; background: none; border: 0; cursor: pointer; text-decoration: underline; }
-.practice-player-dialog { width: min(900px, calc(100vw - 32px)); max-width: none; padding: 0; overflow: visible; color: #241e18; background: #fff; border: 0; border-radius: 12px; box-shadow: 0 20px 70px rgba(0,0,0,.35); }
-.practice-player-dialog::backdrop { background: rgba(0,0,0,.72); }
-.practice-player-content { position: relative; padding: 28px; }
-.practice-player-content h2 { margin: 0 42px 18px 0; font-size: 20px; font-weight: 500; }
-.practice-player-content video { display: block; width: 100%; max-height: 70vh; background: #000; }
-.practice-player-close { position: absolute; top: 18px; right: 20px; width: 34px; height: 34px; color: #51483f; font-size: 28px; line-height: 1; background: #f3f0e9; border: 0; border-radius: 50%; cursor: pointer; }
-.practice-player-error { padding: 32px 0; color: #a33219; text-align: center; }
+
 @media (hover: hover) and (pointer: fine) { .practice-card:hover { box-shadow: 0 16px 35px rgba(35,57,70,.15); transform: translateY(-6px); }.practice-card:hover .practice-cover > img { transform: scale(1.045); }.play-button:hover { filter: brightness(1.12); transform: translateX(-50%) scale(1.1); }.practice-action:hover,.more-button:hover { filter: brightness(1.08); transform: translateY(-2px); } }
 
 @media (max-width: 1439px) { .practice-section { height: auto; padding-bottom: 84px; }.practice-grid { grid-template-columns: repeat(2, minmax(0, 380px)); justify-content: center; width: calc(100% - 40px); } }

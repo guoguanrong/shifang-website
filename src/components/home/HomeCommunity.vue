@@ -51,7 +51,8 @@
         <button v-for="(tab, index) in messageTabs" :key="tab" type="button" :class="{ active: activeTab === index }"
           @click="activeTab = index">{{ tab }}</button>
       </div>
-      <div class="message-card-grid">
+      <!-- 接口无数据时展示「暂无寄语」，不再回退静态示例卡。 -->
+      <div v-if="displayedMessages.length" class="message-card-grid">
         <article v-for="(card, index) in displayedMessages" :key="card.id ?? index" class="figma-message-card">
           <img :src="card.cover" :alt="card.title" />
           <button v-if="card.isVideo" type="button" :aria-label="`播放第${index + 1}条视频`" class="play-button"
@@ -62,6 +63,7 @@
           </div>
         </article>
       </div>
+      <p v-else class="message-grid-empty">{{ t('messages.empty') }}</p>
       <button class="section-more messages-more" type="button" @click="goToPage('messages')">{{ t('messages.more') }}
         ⟶</button>
     </div>
@@ -148,15 +150,8 @@ const testimonials = computed(() => apiTestimonials.value.length ? apiTestimonia
 const messageTabs = computed(() => tm('messages.tabs'))
 const messages = computed(() => tm('messages.items'))
 const apiMessages = ref([])
-const displayedMessages = computed(() => apiMessages.value.length
-  ? apiMessages.value
-  : messageCards.map((cover, index) => ({
-    id: `fallback-${index}`,
-    cover,
-    title: messages.value[index]?.name || '',
-    content: messages.value[index]?.quote || '',
-    isVideo: true,
-  })))
+// 无数据时展示空状态图，不再回退静态示例卡。
+const displayedMessages = computed(() => apiMessages.value)
 // 最新动态：优先展示接口数据，无数据或加载失败时回退语言包静态条目。
 const apiNews = ref([])
 
@@ -234,12 +229,12 @@ onMounted(async () => {
 async function loadMessages() {
   try {
     const result = await getWishesList(
-      { page: 1, pageSize: 3, show: true, category: TAB_CATEGORIES[activeTab.value] },
+      { page: 1, pageSize: 6, show: true, category: TAB_CATEGORIES[activeTab.value] },
       { silent: true },
     )
     const list = Array.isArray(result) ? result : result?.list
     apiMessages.value = Array.isArray(list)
-      ? list.slice(0, 3).map((item, index) => ({
+      ? list.slice(0, 6).map((item, index) => ({
         id: item.id ?? `wish-${index}`,
         cover: parseWishImages(item.imgArrUrls)[0] || messageCards[index % messageCards.length],
         title: item.title || messages.value[index]?.name || '',
@@ -264,10 +259,11 @@ function goToPage(name) {
 
 <style scoped>
 .seasonal-section {
-  height: 843px;
+  /* 文案长度随语言变化：区块高度由内容撑开，设计稿高度仅作下限。 */
+  min-height: 843px;
   padding-top: 0;
-  overflow: hidden;
   background: transparent;
+  margin-top: 500px;
 }
 
 .seasonal-section :deep(.section-heading) {
@@ -295,22 +291,16 @@ function goToPage(name) {
   justify-content: center;
   gap: 13px;
   width: 1440px;
-  height: 635px;
+  min-height: 635px;
   padding: 59px 208.5px 67px;
   margin: auto;
-  overflow: hidden;
   background: url('@/assets/images/bg-seasonal.webp') center / 100% 100% no-repeat;
 }
 
 .seasonal-card {
   position: relative;
-  height: 509px;
+  min-height: 509px;
   color: #111;
-  overflow: hidden;
-}
-
-.seasonal-card:nth-child(3) {
-  top: 1px;
 }
 
 .seasonal-card>img {
@@ -321,19 +311,18 @@ function goToPage(name) {
   object-fit: fill;
 }
 
+/* 卡片内容改为流式布局：文案变长时依次撑开徽章、标题、正文与按钮。 */
 .seasonal-card>div {
   position: relative;
-  height: 100%;
-  padding: 0;
+  padding: 64px 24px 60px;
+  text-align: center;
 }
 
 .seasonal-card strong {
-  position: absolute;
-  top: 64px;
-  left: 50%;
   display: grid;
   width: 86px;
   height: 86px;
+  margin: 0 auto;
   place-items: center;
   color: #111;
   font-family: var(--font-calligraphy);
@@ -345,55 +334,38 @@ function goToPage(name) {
   border: 3px double #d45a42;
   border-radius: 50%;
   box-shadow: inset 0 0 0 3px #f8f5ed, inset 0 0 0 4px rgba(194, 159, 121, .7);
-  transform: translateX(-50%);
 }
 
 .seasonal-card h3 {
-  position: absolute;
-  top: 156px;
-  left: 50%;
-  display: grid;
+  display: inline-flex;
+  align-items: center;
   min-width: 81px;
-  height: 26px;
-  margin: 0;
+  max-width: 100%;
+  min-height: 26px;
+  margin: 6px auto 0;
   padding: 0 9px;
-  place-items: center;
   font-family: var(--font-calligraphy);
   font-size: 16px;
   font-weight: 400;
   line-height: 1;
-  white-space: nowrap;
   background: rgba(255, 255, 255, .82);
   border: 1px solid #d8a98a;
-  transform: translateX(-50%);
 }
 
 .seasonal-card p {
-  position: absolute;
-  top: 217px;
-  left: 42px;
-  width: 162px;
-  height: 121px;
-  margin: 0;
-  overflow: hidden;
+  min-height: 121px;
+  margin: 35px auto 0;
   font-family: var(--font-calligraphy);
   font-size: 14px;
   line-height: 25px;
   text-align: center;
 }
 
-.seasonal-card:nth-child(2) p {
-  top: 188px;
-  height: 150px;
-}
-
 .seasonal-card button {
-  position: absolute;
-  top: 351px;
-  left: 50%;
+  display: block;
   width: 158px;
   height: 36px;
-  margin: 0;
+  margin: 13px auto 0;
   padding: 0 4px;
   color: #fff;
   font-family: var(--font-calligraphy);
@@ -404,7 +376,6 @@ function goToPage(name) {
   border-radius: 100px;
   box-shadow: inset 0 0 0 2px rgba(248, 245, 241, .28), 0 5px 7px rgba(110, 52, 20, .16);
   cursor: pointer;
-  transform: translateX(-50%);
 }
 
 .seasonal-card button::before,
@@ -428,7 +399,7 @@ function goToPage(name) {
 
 @media (hover: hover) and (pointer: fine) {
   .seasonal-card button:hover {
-    transform: translateX(-50%) translateY(-3px);
+    transform: translateY(-3px);
   }
 }
 
@@ -442,8 +413,9 @@ function goToPage(name) {
 
 .testimonials-section {
   z-index: 1;
-  height: 1241px;
-  padding: 72px 6vw 0;
+  /* 高度随内容自适应（卡片行数随接口数据变化）；底部预留 175px 供下方寄语
+     区块（margin-top: -175px）叠压过渡，内容行数少时卡片也不会被遮挡。 */
+  padding: 72px 6vw 275px;
   background: #fff;
 }
 
@@ -470,7 +442,7 @@ function goToPage(name) {
   width: 600px;
   height: 610px;
   content: '';
-  background: url('@/assets/cuts/temple-stage-bg.webp') right bottom / 950px auto no-repeat;
+  /* background: url('@/assets/cuts/temple-stage-bg.webp') right bottom / 950px auto no-repeat; */
   opacity: .34;
   transform: scaleX(-1);
 }
@@ -582,9 +554,9 @@ function goToPage(name) {
 
 .messages-section {
   z-index: 2;
-  height: 704px;
+  /* 高度随内容自适应（卡片行数随各类别数据变化），上方负 margin 叠压关系不变。 */
   margin-top: -175px;
-  padding: 104px 6vw 0;
+  padding: 104px 6vw 64px;
   background: #a50908;
 }
 
@@ -644,13 +616,26 @@ function goToPage(name) {
 .message-card-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 50px;
+  gap: 32px;
+}
+
+/* 寄语无数据时的空状态提示。 */
+.message-grid-empty {
+  min-height: 240px;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  color: #c8c3bb;
+  font-size: 15px;
+  letter-spacing: 1px;
 }
 
 .figma-message-card {
   position: relative;
   overflow: hidden;
   background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 10px 24px rgba(80, 10, 5, .18);
 }
 
 .figma-message-card>img {
@@ -791,7 +776,7 @@ function goToPage(name) {
   z-index: 4;
   height: 496px;
   padding-top: 69px;
-  background: #f3f0e9;
+  background: #f8f5ed;
 }
 
 .milestones-section .section-content {

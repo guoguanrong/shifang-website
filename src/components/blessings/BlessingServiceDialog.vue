@@ -22,10 +22,10 @@
           </template>
         </div>
         <p class="service-dialog-blessing">{{ t(`blessingDetails.dialog.${kind === 'talisman' ? 'blessing' : 'seasonalBlessing'}`) }}</p>
-        <!-- 下载按钮为演示用途：aria-disabled 但仍可点击，点击后提示暂未开放。 -->
-        <button v-if="kind === 'talisman'" class="service-dialog-download" type="button" aria-disabled="true"
-          @click="downloadNotice = true">{{ t('blessingDetails.dialog.download') }}</button>
-        <p v-if="downloadNotice" class="service-dialog-download-notice" role="status">{{ t('blessingDetails.dialog.downloadUnavailable') }}</p>
+        <!-- 下载电子护身符图片：同源静态资源，直接触发浏览器保存。 -->
+        <button v-if="kind === 'talisman'" class="service-dialog-download" type="button" @click="downloadTalisman">
+          {{ t('blessingDetails.dialog.download') }}
+        </button>
         <div class="service-dialog-actions">
           <CeremonialButton :label="t(cancel ? 'blessingDetails.dialog.confirm' : 'offerings.completedBlessing')" @click="emit('confirm')" />
           <button v-if="cancel" type="button" class="service-dialog-reconsider" @click="dialog.close()">{{ t('offerings.reconsider') }}</button>
@@ -42,6 +42,7 @@ import { useI18n } from 'vue-i18n'
 import CeremonialButton from '@/components/common/CeremonialButton.vue'
 import closeIcon from '@/assets/blessing-details/service-dialog-close.svg'
 import emblem from '@/assets/blessing-details/service-dialog-emblem.svg'
+import talismanDownload from '@/assets/blessing-details/hushenfu.png'
 import '@/styles/blessing-service-dialog.css'
 
 // kind 决定文案分支（talisman 等）；cancel 表示这是取消服务的确认框。
@@ -52,8 +53,15 @@ const { t } = useI18n()
 const titleId = useId()
 const previewId = useId()
 const dialog = ref(null)
-// 点击下载后的提示是否已展示。
-const downloadNotice = ref(false)
+// 下载电子护身符图片：同源打包资源，用 <a download> 触发浏览器保存。
+function downloadTalisman() {
+  const link = document.createElement('a')
+  link.href = talismanDownload
+  link.download = '护身符.png'
+  document.body.appendChild(link)
+  link.click()
+  link.remove()
+}
 // 记住打开前的焦点与页面滚动状态，关闭后原样恢复。
 let previousFocus
 let previousOverflow

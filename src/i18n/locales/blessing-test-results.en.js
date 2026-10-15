@@ -62,5 +62,6 @@ export default {
   "chooseYear": "Choose a year",
   "chooseMonth": "Choose a month",
   "chooseDay": "Choose a day",
-  "chooseBirthday": "Scroll to choose your lunar birth date"
+  "chooseBirthday": "Scroll to choose your lunar birth date",
+  "loading": "Calculating your result, please wait…"
 }

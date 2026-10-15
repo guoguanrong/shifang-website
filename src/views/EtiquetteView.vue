@@ -34,7 +34,7 @@ async function setLocale(nextLocale) {
   min-width: 320px;
   overflow-x: clip;
   color: #222;
-  background: #f3f0e9;
+  background: #f8f5ed;
 }
 
 </style>

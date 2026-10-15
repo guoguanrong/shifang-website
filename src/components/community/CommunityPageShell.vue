@@ -60,7 +60,7 @@ const setLocale = (locale) => setAppLocale(locale)
   position: relative;
   min-height: 1120px;
   padding: 24px max(24px, calc((100vw - 1440px) / 2)) 96px;
-  background: #f3f0e9;
+  background: #f8f5ed;
 }
 
 .community-breadcrumb {

@@ -29,7 +29,7 @@ defineProps({ hierarchy: { type: Object, required: true } })
 .deity-hierarchy {
   margin: 30px 0 0;
   padding: 40px 30px 60px;
-  background: #f3f0e9;
+  background: #f8f5ed;
   border-radius: 20px;
 }
 

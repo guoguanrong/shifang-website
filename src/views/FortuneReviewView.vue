@@ -22,8 +22,8 @@
         </article>
       </div>
     </section>
-    <!-- 结果弹窗按所选生肖展示（目前仅提供示例文案）。 -->
-    <BlessingTestResultDialog v-if="showResult" kind="fortune" :selection="selected" @close="showResult = false" />
+    <!-- 结果弹窗按所选生肖展示接口推算的流年运势。 -->
+    <BlessingTestResultDialog v-if="showResult" kind="fortune" :selection="selected" :result="fortuneResult" @close="showResult = false" />
   </BlessingTestLayout>
 </template>
 
@@ -33,18 +33,46 @@ import { useI18n } from 'vue-i18n'
 import BlessingTestLayout from '@/components/blessings/BlessingTestLayout.vue'
 import BlessingTestResultDialog from '@/components/blessings/BlessingTestResultDialog.vue'
 import OrnateSectionHeading from '@/components/common/OrnateSectionHeading.vue'
+import { getFortune } from '@/api/pray'
+import { useUserSession } from '@/composables/useUserSession'
+import { useAuthModal } from '@/composables/useAuthModal'
 import heading from '@/assets/blessing-tests/heading.svg'
 import talisman from '@/assets/blessing-tests/protection-talisman.png'
 import kindness from '@/assets/blessing-tests/protection-kindness.png'
 import season from '@/assets/blessing-tests/protection-season.png'
 
 const { t, tm } = useI18n()
+const { isLoggedIn } = useUserSession()
+const { openAuthModal } = useAuthModal()
 // 选中的生肖下标；null 表示尚未选择。
 const selected = ref(null)
 const showResult = ref(false)
-// 记录生肖并打开结果弹窗。
-function previewResult(index) {
+// 接口推算的流年运势（FortuneResult）；失败时为 null，弹窗回退静态示例。
+const fortuneResult = ref(null)
+const fetching = ref(false)
+// 生肖名固定用中文传给后端（接口按中文生肖匹配），与界面语言无关。
+const ZODIAC_NAMES = ['鼠', '牛', '虎', '兔', '龙', '蛇', '马', '羊', '猴', '鸡', '狗', '猪']
+
+// 记录生肖、调用后端推算流年运势，完成后打开结果弹窗。
+async function previewResult(index) {
+  // 未登录先引导登录，登录后再点生肖即可继续。
+  if (!isLoggedIn.value) {
+    openAuthModal('login')
+    return
+  }
   selected.value = index
+  if (fetching.value) return
+
+  fetching.value = true
+  try {
+    // 不静默：失败时全局浮层直接显示后端 msg / 网络错误，便于定位为何无数据。
+    fortuneResult.value = await getFortune({ zodiac: ZODIAC_NAMES[index] })
+  } catch {
+    fortuneResult.value = null
+  } finally {
+    fetching.value = false
+  }
+
   showResult.value = true
 }
 // 三张护佑方式图标。

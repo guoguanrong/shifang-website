@@ -33,7 +33,7 @@ const images = [tabooPoint, tabooMiddleGate, tabooThreshold, tabooPhoto, tabooBl
 <style scoped>
 .taboos-section {
   padding: 44px 24px 80px;
-  background: #f3f0e9;
+  background: #f8f5ed;
 }
 
 h2 {
@@ -100,6 +100,16 @@ img {
   object-fit: contain;
 }
 
+/* 第六张图标（背对神像）原图主体偏小，单独放大一档；同步放大图标列避免挤压文字。 */
+article:nth-child(6) {
+  grid-template-columns: 110px 1fr;
+}
+
+article:nth-child(6) img {
+  width: 98px;
+  height: 98px;
+}
+
 h3 {
   margin: 0 0 7px;
   color: #d33a1c;
@@ -144,6 +154,15 @@ p {
   img {
     width: 66px;
     height: 66px;
+  }
+
+  article:nth-child(6) {
+    grid-template-columns: 92px 1fr;
+  }
+
+  article:nth-child(6) img {
+    width: 78px;
+    height: 78px;
   }
 }
 

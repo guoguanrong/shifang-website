@@ -46,3 +46,12 @@ export function createOrder(data, options) {
 export function deleteOrderById(id) {
   return request({ url: `/order/delete/${id}`, method: 'post' })
 }
+
+/**
+ * 功德名录：已完成捐赠的公开展示列表
+ * @param {object} data {searchKey, status, startTime, endTime, page, pageSize}
+ * @returns {Promise<object>} 分页结构，list 项为 {username, donateType(1钱2物), number, amount, itemName, shopItemsId}
+ */
+export function getMeritList(data, options) {
+  return request({ url: '/order/meritList', method: 'post', data, ...options })
+}

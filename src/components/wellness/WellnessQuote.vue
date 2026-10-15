@@ -32,12 +32,24 @@ defineProps({
   .wellness-quote cite { margin-top: 8px; padding: 0; font-size: 11px; line-height: 15px; text-align: center; }
 }
 
-:global(html[data-locale-layout='international'] .wellness-quote) { padding-inline: 70px; }
-:global(html[data-locale-layout='international'] .wellness-quote p) { font-family: Georgia, serif; font-size: 21px; line-height: 27px; }
+:global(html[data-locale-layout='international'] .wellness-quote) {
+  /* 英文引文较长：卷轴高度随内容撑开（背景 fill 拉伸），不再写死导致文字溢出。 */
+  height: auto;
+  min-height: 162px;
+  padding-block: 34px 22px;
+  padding-inline: 70px;
+}
+:global(html[data-locale-layout='international'] .wellness-quote p) {
+  font-family: Georgia, serif;
+  font-size: 21px;
+  line-height: 30px;
+  /* 均衡换行：长句两行的宽度尽量对称，居中排版不再参差（旧浏览器回退普通居中）。 */
+  text-wrap: balance;
+}
 :global(html[data-locale-layout='international'] .wellness-quote cite) { font-family: Georgia, serif; font-size: 12px; }
 
 @media (max-width: 760px) {
-  :global(html[data-locale-layout='international'] .wellness-quote) { height: 158px; padding-inline: 11vw; }
+  :global(html[data-locale-layout='international'] .wellness-quote) { height: auto; min-height: 158px; padding-block: 26px 16px; padding-inline: 11vw; }
   :global(html[data-locale-layout='international'] .wellness-quote p) { font-size: 15px; line-height: 20px; }
   :global(html[data-locale-layout='international'] .wellness-quote cite) { font-size: 10px; line-height: 13px; }
 }
