@@ -3,6 +3,30 @@ import { clearToken, ResultCode, TOKEN_STORAGE_KEY } from '@/api/http'
 import { getMemberInfo, updateMember } from '@/api/member'
 
 const storageKey = 'shifang-demo-session'
+// 游客访客标识的持久化键；同一浏览器回访复用同一 uvid。
+const VISITOR_STORAGE_KEY = 'shifang-visitor-id'
+let memoryVisitorId = ''
+
+// 生成 uvid（优先 crypto.randomUUID，退化为时间戳+随机串）。
+function randomVisitorId() {
+  if (window.crypto?.randomUUID) return window.crypto.randomUUID()
+  return `uvid-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}-${Math.random().toString(36).slice(2, 10)}`
+}
+
+// 游客访客标识：首次访问生成并写入 localStorage，之后所有页面与回访复用；未登录下单（uvid 入参）等场景使用。
+function ensureVisitorId() {
+  try {
+    const saved = window.localStorage.getItem(VISITOR_STORAGE_KEY)
+    if (saved) return saved
+    const id = randomVisitorId()
+    window.localStorage.setItem(VISITOR_STORAGE_KEY, id)
+    return id
+  } catch {
+    // 存储不可用（隐私模式）时退化为内存级标识，仅当前页面生命周期内有效。
+    memoryVisitorId ||= randomVisitorId()
+    return memoryVisitorId
+  }
+}
 
 function readToken() {
   try {
@@ -188,5 +212,5 @@ if (readToken()) {
 }
 
 export function useUserSession() {
-  return { user: readonly(user), isLoggedIn, startDemoSession, updateDemoProfile, saveMemberProfile, refreshMemberInfo, signOut }
+  return { user: readonly(user), isLoggedIn, ensureVisitorId, startDemoSession, updateDemoProfile, saveMemberProfile, refreshMemberInfo, signOut }
 }

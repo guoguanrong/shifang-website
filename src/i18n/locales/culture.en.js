@@ -45,7 +45,7 @@ export default {
     paragraphs: [
       'The Daozang is the great collection of Taoist scriptures. It preserves works from early China through the Ming dynasty on ritual, alchemy, philosophy, medicine, astronomy and geography.',
       'Its “Three Caverns, Four Supplements and Twelve Categories” arrange the canon according to a distinctive Taoist view of the cosmos and its teachings.',
-      'More than a religious collection, the Daozang is an irreplaceable source for the history of Chinese science, medicine and philosophy.',
+      'More than a religious collection, the Daozang is an invaluable historical record of ancient Chinese science, medicine and philosophy. It preserves a wealth of wellness prescriptions, astronomical calendars and alchemical records of irreplaceable value to the study of China’s history of science and technology. Joseph Needham, the British historian of science, drew extensively on the Daozang in his Science and Civilisation in China, calling it “the largest encyclopedia in the world.”',
     ],
     books: [
       { char: '藏', title: 'Zhengtong Daozang', desc: 'Commissioned by the Yongle Emperor and printed in 1445, the canon comprises 5,300 scrolls. Arranged under the Three Caverns and Four Supplements, it contains about 1,400 works and is the most complete surviving collection of Taoist classics—480 cases preserving the devotion of generations of sages.' },

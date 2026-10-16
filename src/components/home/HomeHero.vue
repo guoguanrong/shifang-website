@@ -8,8 +8,8 @@
     <div class="hero-content">
       <div class="hero-hotspots">
         <button class="hotspot hotspot-primary" type="button" :aria-label="t('hero.ctaPrimary')"
-          @click="$emit('primary-action')" />
-        <button class="hotspot hotspot-secondary" type="button" :aria-label="t('hero.ctaSecondary')" />
+          @click="topage()" />
+        <button class="hotspot hotspot-secondary" type="button"  @click="topage2()" :aria-label="t('hero.ctaSecondary')" />
       </div>
     </div>
 
@@ -24,6 +24,7 @@
 <script setup>
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 // 首屏主视觉：三种视口（移动 ≤760 / 桌面标准 / 桌面宽屏 ≥1441）× 三种语言，各自独立出图。
 import heroWideZhCN from '@/assets/hero/hero-wide-zh-CN.webp'
 import heroWideZhTW from '@/assets/hero/hero-wide-zh-TW.webp'
@@ -35,7 +36,7 @@ import heroMobileZhCN from '@/assets/hero/hero-mobile-zh-CN.webp'
 import heroMobileZhTW from '@/assets/hero/hero-mobile-zh-TW.webp'
 import heroMobileEn from '@/assets/hero/hero-mobile-en.webp'
 
-defineEmits(['primary-action'])
+
 
 // 首屏全部可见文案都随当前语言实时切换。
 const { t, locale } = useI18n()
@@ -66,6 +67,17 @@ onBeforeUnmount(() => {
 
 // 按当前语言与视口取背景图；未知语言回退简体。
 const heroImage = computed(() => HERO_IMAGES[viewport.value][locale.value] || HERO_IMAGES[viewport.value]['zh-CN'])
+
+const router = useRouter()
+
+// 图内「共建十方」按钮：跳转共建页。
+function topage() {
+  router.push({ name: 'co-build' })
+}
+
+function topage2() {
+  router.push({ path: '/culture-origins' })
+}
 </script>
 
 <style scoped>
@@ -116,16 +128,16 @@ const heroImage = computed(() => HERO_IMAGES[viewport.value][locale.value] || HE
 
 /* 桌面标准/宽屏图（横构图）：两枚按钮并排位于图内约 42%-50% 高度、中心对称。 */
 .hotspot-primary {
-  top: 42%;
-  left: 37%;
-  width: 12.5%;
-  height: 8%;
+  top: 45%;
+    left: 31%;
+    width: 17.5%;
+    height: 8%;
 }
 
 .hotspot-secondary {
-  top: 42%;
-  left: 50.5%;
-  width: 12.5%;
+  top: 45%;
+  left: 51.5%;
+   width: 17.5%;
   height: 8%;
 }
 

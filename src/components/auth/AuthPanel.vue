@@ -6,28 +6,42 @@
     <!-- 没有反馈层时展示表单，否则整块替换为成功/错误提示。 -->
     <template v-if="!feedback">
       <header class="auth-panel__header">
+       
         <h1 :id="titleId">{{ t(isRegister ? 'portal.auth.registerTitle' : 'portal.auth.loginTitle') }}</h1>
-        <p>{{ t(isRegister ? 'portal.auth.registerSubtitle' : 'portal.auth.loginSubtitle') }}</p>
       </header>
 
+      <!-- 邮箱/手机号渠道切换：登录与注册共用同一组字段，仅文案与提交逻辑不同。 -->
+      <div class="auth-tabs" role="tablist" :aria-label="t(isRegister ? 'portal.auth.registerTitle' : 'portal.auth.loginTitle')">
+        <button type="button" role="tab" :aria-selected="channel === 'email'" :class="{ 'is-active': channel === 'email' }"
+          @click="switchChannel('email')">
+          {{ t(isRegister ? 'portal.auth.emailRegister' : 'portal.auth.emailLogin') }}
+        </button>
+        <button type="button" role="tab" :aria-selected="channel === 'phone'" :class="{ 'is-active': channel === 'phone' }"
+          @click="switchChannel('phone')">
+          {{ t(isRegister ? 'portal.auth.phoneRegister' : 'portal.auth.phoneLogin') }}
+        </button>
+      </div>
+
       <form novalidate @submit.prevent="submit">
-        <label class="auth-field">
-          <span>{{ t('portal.auth.email') }}</span>
-          <input v-model.trim="form.email" type="email" autocomplete="email" :placeholder="t('portal.auth.emailPlaceholder')" />
-        </label>
+        <template v-if="channel === 'email'">
+          <label class="auth-field">
+            <span>{{ t('portal.auth.email') }}</span>
+            <input v-model.trim="form.email" type="email" autocomplete="email" :placeholder="t('portal.auth.emailPlaceholder')" />
+          </label>
 
-        <label class="auth-field">
-          <span>{{ t('portal.auth.emailCode') }}</span>
-          <span class="auth-field__compound">
-            <input v-model.trim="form.emailCode" inputmode="numeric" maxlength="6" autocomplete="one-time-code" :placeholder="t('portal.auth.emailCodePlaceholder')" />
-            <button type="button" :disabled="emailCountdown > 0" @click="sendCode('email')">
-              {{ emailCountdown ? t('portal.auth.resendCode', { seconds: emailCountdown }) : t('portal.auth.sendCode') }}
-            </button>
-          </span>
-        </label>
+          <label class="auth-field">
+            <span>{{ t('portal.auth.emailCode') }}</span>
+            <span class="auth-field__compound">
+              <input v-model.trim="form.emailCode" inputmode="numeric" maxlength="6" autocomplete="one-time-code" :placeholder="t('portal.auth.emailCodePlaceholder')" />
+              <button type="button" :disabled="emailCountdown > 0" @click="sendCode('email')">
+                {{ emailCountdown ? t('portal.auth.resendCode', { seconds: emailCountdown }) : t('portal.auth.sendCode') }}
+              </button>
+            </span>
+          </label>
+        </template>
 
-        <!-- 手机号与短信验证码只有注册时才需要填写。 -->
-        <template v-if="isRegister">
+        <!-- 手机号渠道：发送验证码复用注册的 reCAPTCHA + 短信接口，登录同样可用。 -->
+        <template v-else>
           <label class="auth-field">
             <span>{{ t('portal.auth.phone') }}</span>
             <span class="auth-field__phone">
@@ -58,16 +72,19 @@
         </button>
       </form>
 
-      <!-- 底部用于在「登录 / 注册」之间切换，并展示协议入口。 -->
+      <!-- 底部：协议入口 + 登录/注册互切。 -->
       <footer class="auth-panel__footer">
         <p>
-          {{ isRegister ? t('portal.auth.loginPrompt') : t('portal.auth.agreementPrefix') }}
-          <button v-if="!isRegister" type="button" @click="policyVisible = true">{{ t('portal.auth.agreement') }}</button>
-          <button v-else type="button" @click="$emit('switch-mode', 'login')">{{ t('portal.auth.loginLink') }}</button>
+          {{ t('portal.auth.agreementPrefix') }}
+          <button type="button" @click="policyVisible = true">{{ t('portal.auth.agreement') }}</button>
         </p>
         <p v-if="!isRegister">
           <span>{{ t('portal.auth.registerPrompt') }}</span>
           <button type="button" @click="$emit('switch-mode', 'register')">{{ t('portal.auth.registerLink') }}</button>
+        </p>
+        <p v-else>
+          <span>{{ t('portal.auth.loginPrompt') }}</span>
+          <button type="button" @click="$emit('switch-mode', 'login')">{{ t('portal.auth.loginLink') }}</button>
         </p>
       </footer>
     </template>
@@ -119,8 +136,10 @@ const emit = defineEmits(['close', 'switch-mode'])
 
 const { t, tm } = useI18n()
 const { refreshMemberInfo, startDemoSession } = useUserSession()
-// 当前是注册还是登录，决定标题、字段与校验项。
+// 当前是注册还是登录，决定标题、按钮与提交逻辑。
 const isRegister = computed(() => props.mode === 'register')
+// 当前登录/注册渠道：email 邮箱验证码，phone 手机号短信验证码；登录与注册共用同一组字段。
+const channel = ref('email')
 // 供 aria-labelledby 使用的标题 id。
 const titleId = computed(() => `auth-${props.mode}-title`)
 // 反馈层内容：null 表示展示表单，否则展示成功/错误结果。
@@ -142,10 +161,10 @@ const phoneCountdown = ref(0)
 // 收集所有倒计时计时器，卸载时统一清理，避免内存泄漏。
 const timers = new Set()
 const form = reactive({ email: '', emailCode: '', country: '+1', phone: '', phoneCode: '' })
-// 注册时可选择的国际区号；名称与区号文案在语言包 portal.auth.country* 中维护。
+// 注册时可选择的国际区号：目前仅开放美国；名称与区号文案在语言包 portal.auth.country* 中维护。
 const countryOptions = [
-  // { value: '+86', labelKey: 'portal.auth.countryChina' },
   { value: '+1', labelKey: 'portal.auth.countryUSA' },
+  // { value: '+86', labelKey: 'portal.auth.countryChina' },
   // { value: '+44', labelKey: 'portal.auth.countryUK' },
   // { value: '+61', labelKey: 'portal.auth.countryAustralia' },
   // { value: '+852', labelKey: 'portal.auth.countryHongKong' },
@@ -156,13 +175,24 @@ const countryOptions = [
   // { value: '+82', labelKey: 'portal.auth.countryKorea' },
 ]
 
-// 依次校验邮箱格式、邮箱验证码；注册时还要校验手机号与短信验证码。
+// 切换渠道时清空上一渠道的反馈与提示，避免结果残留。
+function switchChannel(next) {
+  if (channel.value === next) return
+  channel.value = next
+  feedback.value = null
+  inlineNotice.value = ''
+}
+
+// 按当前渠道校验：邮箱渠道验邮箱+邮箱验证码；手机号渠道验手机号+短信验证码+已发送标记。
 function validationMessage() {
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) return t('portal.auth.invalidEmail')
-  if (!form.emailCode) return t('portal.auth.missingCode')
-  if (isRegister.value && !/^\d{6,15}$/.test(form.phone)) return t('portal.auth.missingPhone')
-  if (isRegister.value && !form.phoneCode) return t('portal.auth.missingPhoneCode')
-  if (isRegister.value && !smsSent.value) return t('portal.auth.requestSmsFirst')
+  if (channel.value === 'email') {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) return t('portal.auth.invalidEmail')
+    if (!form.emailCode) return t('portal.auth.missingCode')
+    return ''
+  }
+  if (!/^\d{6,15}$/.test(form.phone)) return t('portal.auth.missingPhone')
+  if (!form.phoneCode) return t('portal.auth.missingPhoneCode')
+  if (!smsSent.value) return t('portal.auth.requestSmsFirst')
   return ''
 }
 
@@ -171,14 +201,18 @@ function showError(description) {
   feedback.value = { title: t('portal.auth.errorTitle'), description, action: t('portal.auth.dismiss'), success: false }
 }
 
-// 令牌写入后拉取会员资料。接口暂时不可用时仍用邮箱进入本地会话，不中断登录。
-async function establishSession(email) {
-  const profile = await refreshMemberInfo({ fallbackEmail: email, signOutOnAuthError: false })
-  if (!profile) startDemoSession(email)
+// 令牌写入后拉取会员资料。接口暂时不可用时仍用账号进入本地会话，不中断登录。
+async function establishSession(account) {
+  const profile = await refreshMemberInfo({ fallbackEmail: account, signOutOnAuthError: false })
+  if (!profile) startDemoSession(account)
 }
 
 // 登录/注册：校验通过后调用对应接口，成功后保存 accessToken 并进入登录态。
+// 登录接口的 email 字段既传邮箱也传“区号+手机号”（后端同一接口识别，clientId/grantType 由封装自动附加）。
 async function submit() {
+  const account = channel.value === 'email' ? form.email : form.country + form.phone
+  const code = channel.value === 'email' ? form.emailCode : form.phoneCode
+
   const error = validationMessage()
   if (error) {
     showError(error)
@@ -190,13 +224,13 @@ async function submit() {
 
     try {
       // silent：面板内有专属错误反馈层，关闭全局弹窗避免重复提示。
-      const loginResult = await login({ email: form.email, code: form.emailCode }, { silent: true })
+      const loginResult = await login({ email: account, code }, { silent: true })
 
       if (loginResult?.accessToken) {
         setToken(loginResult.accessToken)
       }
 
-      await establishSession(form.email)
+      await establishSession(account)
       feedback.value = {
         title: t('portal.auth.successTitle'),
         description: t('portal.auth.successDescription'),
@@ -212,30 +246,25 @@ async function submit() {
     return
   }
 
-  // 注册：先调用注册接口，成功后用邮箱验证码自动登录（按钮为「注册并登录」）。
+  // 注册：按渠道只传对应字段——手机号注册不传邮箱字段，邮箱注册不传手机号字段。
   submitting.value = true
 
   try {
+    const signupPayload = channel.value === 'email'
+      ? { email: form.email, emailCode: form.emailCode, uvid: await ensureUvid() }
+      : { phone: form.country + form.phone, smsCode: form.phoneCode, uvid: await ensureUvid() }
+
     // silent：面板内有专属错误反馈层，关闭全局弹窗避免重复提示。
-    await signupMember(
-      {
-        email: form.email,
-        emailCode: form.emailCode,
-        phone: form.country + form.phone,
-        smsCode: form.phoneCode,
-        uvid: await ensureUvid(),
-      },
-      { silent: true },
-    )
+    await signupMember(signupPayload, { silent: true })
 
     try {
-      const loginResult = await login({ email: form.email, code: form.emailCode }, { silent: true })
+      const loginResult = await login({ email: account, code }, { silent: true })
 
       if (loginResult?.accessToken) {
         setToken(loginResult.accessToken)
       }
 
-      await establishSession(form.email)
+      await establishSession(account)
       feedback.value = {
         title: t('portal.auth.registerSuccessTitle'),
         description: t('portal.auth.successDescription'),
@@ -243,7 +272,7 @@ async function submit() {
         success: true,
       }
     } catch (loginError) {
-      // 注册成功但自动登录失败（邮箱验证码可能在注册时被消费），引导用户手动登录。
+      // 注册成功但自动登录失败（验证码可能在注册时被消费），引导用户手动登录。
       showError(t('portal.auth.autoLoginFailed'))
     }
   } catch (signupError) {
@@ -357,18 +386,25 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-/* 面板主体：毛玻璃背景 + 圆角阴影，宽度自适应但不超出视口。 */
+/* 面板主体：毛玻璃背景 + 圆角阴影，宽度自适应但不超出视口；文案统一道教书法字体。 */
 .auth-panel {
   position: relative;
   width: min(680px, calc(100vw - 32px));
   padding: 42px 64px 38px;
   overflow: hidden;
   color: #312b24;
+  font-family: var(--font-calligraphy);
   background: rgba(255, 255, 255, .94);
   border: 1px solid rgba(220, 180, 132, .7);
   border-radius: 16px;
   box-shadow: 0 24px 70px rgba(12, 24, 32, .34);
   backdrop-filter: blur(16px);
+}
+
+/* 输入内容（邮箱/手机号/验证码）保持清晰无衬线，避免书法体数字难以辨认。 */
+.auth-field input,
+.auth-field select {
+  font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
 }
 
 /* 右下角的装饰底纹，pointer-events: none 避免挡住操作。 */
@@ -424,11 +460,47 @@ onBeforeUnmount(() => {
   letter-spacing: 2px;
 }
 
-.auth-panel__header p {
-  margin: 8px 0 24px;
-  color: #c69a68;
-  font-size: 13px;
+/* 邮箱/手机号渠道切换：文字 tab，激活项红字并带底部短横。 */
+.auth-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 46px;
+  margin: 4px 0 24px;
 }
+
+.auth-tabs button {
+  position: relative;
+  padding: 4px 2px 10px;
+  color: #8a837b;
+  font-size: 15px;
+  cursor: pointer;
+  background: none;
+  border: 0;
+  transition: color .18s ease;
+}
+
+.auth-tabs button::after {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 26px;
+  height: 3px;
+  content: '';
+  background: #c93617;
+  border-radius: 2px;
+  opacity: 0;
+  transform: translateX(-50%);
+  transition: opacity .18s ease;
+}
+
+.auth-tabs button:hover { color: #c93617; }
+
+.auth-tabs button.is-active {
+  color: #c93617;
+  font-weight: 500;
+}
+
+.auth-tabs button.is-active::after { opacity: 1; }
 
 .auth-field {
   display: block;
@@ -552,7 +624,8 @@ onBeforeUnmount(() => {
   .auth-panel__close { top: 12px; right: 12px; }
   .auth-panel__header h1,
   .auth-feedback h1 { padding-inline: 30px; font-size: 23px; }
-  .auth-panel__header p { margin-bottom: 20px; }
+  .auth-tabs { gap: 32px; margin-bottom: 18px; }
+  .auth-tabs button { font-size: 14px; }
   .auth-field { margin-bottom: 12px; }
   .auth-field input,
   .auth-field select { height: 46px; padding-inline: 14px; }

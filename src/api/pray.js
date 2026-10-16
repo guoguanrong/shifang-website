@@ -22,7 +22,8 @@ export function getFortune(params, options) {
 /**
  * 道教求签：按求签类型返回签题与签文
  * @param {object} params {type*} 求签类型 1.事业 2.财运 3.健康 4.姻缘
- * @returns {Promise<object>} DivinationResult{title, poemText, blessing1, blessing2, buttonText}
+ * @returns {Promise<object>} DivinationResult{title, level, name, poemText, blessing1, blessing2, buttonText}
+ *   level: 签等级 1-6（1上上 2上吉 3中吉 4中平 5下平 6下下，后端按权重抽取）；name: 签等级名（如"上上签"）
  */
 export function getDivination(params, options) {
   return request({ url: '/pray/divination', method: 'get', params, ...options })

@@ -13,11 +13,12 @@ export default {
   auth: {
     loginTitle: 'Sign in · ShiFang Hall', loginSubtitle: 'Sign in with an email code',
     registerTitle: 'Create an account · Join the fellowship', registerSubtitle: 'Verify your details to begin your ShiFang journey',
-    email: 'Email', emailPlaceholder: 'Enter your email address', emailCode: 'Verification code', emailCodePlaceholder: 'Enter the code',
+    email: 'Email', emailPlaceholder: 'Enter your email address', emailCode: 'Verification code', emailCodePlaceholder: 'Enter your email code',
     phone: 'Mobile number', phonePlaceholder: 'Enter your mobile number', phoneCode: 'Mobile code', phoneCodePlaceholder: 'Enter the mobile code',
     countryChina: 'China +86', countryUSA: 'United States +1', countryUK: 'United Kingdom +44', countryAustralia: 'Australia +61',
     countryHongKong: 'Hong Kong +852', countryMacao: 'Macao +853', countryTaiwan: 'Taiwan +886',
-    countrySingapore: 'Singapore +65', countryJapan: 'Japan +81', countryKorea: 'South Korea +82', sendCode: 'Send code', sendingCode: 'Sending…', resendCode: 'Retry in {seconds}s', login: 'Sign in', register: 'Create account & sign in',
+    countrySingapore: 'Singapore +65', countryJapan: 'Japan +81', countryKorea: 'South Korea +82', sendCode: 'Get code', sendingCode: 'Sending…', resendCode: 'Retry in {seconds}s',
+    emailLogin: 'Email sign-in', phoneLogin: 'Mobile sign-in', emailRegister: 'Email sign-up', phoneRegister: 'Mobile sign-up', login: 'Sign in', register: 'Create account & sign in',
     agreementPrefix: 'By signing in you agree to our', agreement: 'Privacy Policy',
     policy: {
       title: 'Privacy Policy',
@@ -32,7 +33,7 @@ export default {
       ],
     },
     forgot: 'Having trouble signing in?',
-    registerPrompt: 'New to ShiFang Hall?', registerLink: 'Create an account', loginPrompt: 'Already registered?', loginLink: 'Back to sign in',
+    registerPrompt: 'New to ShiFang Hall?', registerLink: 'Create an account', loginPrompt: 'Already registered?', loginLink: 'Sign in now',
     successTitle: 'Sign-in complete', registerSuccessTitle: 'Registration complete', successDescription: 'May this new connection bring a lasting sense of peace and goodwill.',
     successAction: 'Continue to ShiFang Hall', errorTitle: 'A gentle reminder', invalidEmail: 'Enter a valid email address.',
     missingCode: 'Enter the verification code you received.', missingPhone: 'Enter a valid mobile number.', missingPhoneCode: 'Enter the mobile verification code.',

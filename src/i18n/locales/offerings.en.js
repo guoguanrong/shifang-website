@@ -126,6 +126,7 @@ export default {
   "paymentPrompt": "Choose a payment method to complete your offering",
   "paymentMethod": "Payment method",
   "pay": "Pay now",
+  "paying": "Processing…",
   "reconsider": "Go back",
   "close": "Close dialog",
   "paymentUnavailable": "Payments are not connected yet. No order has been created and you have not been charged. Please contact support to arrange your offering.",

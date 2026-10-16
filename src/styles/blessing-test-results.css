@@ -23,6 +23,32 @@
   min-height: 72px;
 }
 
+/* 求签结果签等级徽章：data-level 1-2 金底、5-6 转灰调。 */
+.blessing-result-dialog .lot-grade-badge {
+  width: fit-content;
+  margin: -6px auto 10px;
+  padding: 6px 22px;
+  color: #bb351f;
+  font-family: var(--font-calligraphy);
+  font-size: 22px;
+  line-height: 1.2;
+  letter-spacing: 2px;
+  background: linear-gradient(180deg, #fbeccb, #f3d9a4);
+  border: 1px solid #c29f79;
+  border-radius: 999px;
+}
+
+.blessing-result-dialog .lot-grade-badge[data-level='5'],
+.blessing-result-dialog .lot-grade-badge[data-level='6'] {
+  color: #6b6257;
+  background: linear-gradient(180deg, #efeae0, #e0d8c8);
+}
+
+html[data-locale-layout='international'] .blessing-result-dialog .lot-grade-badge {
+  font-family: var(--font-serif-cn);
+  letter-spacing: 0;
+}
+
 .blessing-result-dialog .service-dialog-blessing {
   min-height: 48px;
   margin-top: 9px;

@@ -78,7 +78,7 @@ const { t, locale } = useI18n()
 const titleId = useId()
 const dialog = ref(null)
 // 选中的支付方式与「支付暂未开放」提示。
-const { user } = useUserSession()
+const { user, ensureVisitorId } = useUserSession()
 const payment = ref('paypal')
 const unavailable = ref(false)
 const paying = ref(false)
@@ -120,6 +120,7 @@ async function pay() {
       type: 3,
       businessId: props.order.targetId,
       memberId: member?.id || undefined,
+      uvid: ensureVisitorId(),
       username: props.order.anonymous ? undefined : (props.order.name || undefined),
       mobile: props.order.phone ? `${props.order.country} ${props.order.phone}`.trim() : (member?.phone || undefined),
       email: props.order.email || member?.email || undefined,

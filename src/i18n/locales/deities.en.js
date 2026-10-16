@@ -79,12 +79,12 @@ export default {
     },
     {
       id: 'fanli', categories: ['wealth', 'career'], title: 'Fan Li, Civil God of Wealth', subtitle: 'Master Taozhu · The Way of Prosperity', tags: ['Wealth', 'Trade', 'Prosperity'],
-      description: 'Fan Li was a statesman of Yue in the late Spring and Autumn period. After helping King Goujian defeat Wu, he retired and became a successful merchant, earning the name Master Taozhu. Revered as a Civil God of Wealth, he represents ethical commerce and generous prosperity.',
+      description: 'Fan Li, styled Shaobo, was a minister of Yue in the late Spring and Autumn period. After helping King Goujian conquer Wu, he withdrew at the height of success, roaming the Five Lakes under the name Chiyi Zipi. Settling in Dingtao as a merchant, he amassed a thousand gold three times and dispersed it three times, earning the title “Master Taozhu” and later reverence as the Civil God of Wealth — the model of “prosperity with virtue, gathering and dispersing with the Way.”',
       meta: ['Wealth festival: lunar Jul 22', 'Legacy of Taozhu'], meritTitle: 'Attract Prosperity · Thriving Business', meritDescription: 'For commerce, property, investment, and responsible wealth.',
     },
     {
       id: 'tudigong', categories: ['peace', 'wealth'], title: 'Fude Zhengshen', subtitle: 'Lord of the Land · Local Guardian', tags: ['Peace', 'Wealth', 'Home'],
-      description: 'Fude Zhengshen, affectionately known as Tudigong, is the Taoist guardian of local land. He protects communities, homes, harvests, and livelihoods, and is among the deities closest to everyday family life.',
+      description: 'Fude Zhengshen — the Earth Grandfather (Tudigong) of common speech — is the deity of one locality in Taoist and folk belief, blessing the community with abundant harvests, thriving livestock and peaceful living. With his kindly face, silver beard and white hair and walking staff, he is the nearest and dearest guardian of the people.',
       meta: ['Festival: lunar Feb 2', 'Enduring virtue'], meritTitle: 'A Peaceful Home · Abundant Harvest', meritDescription: 'For home security, good harvests, stable land, and business.',
     },
   ],

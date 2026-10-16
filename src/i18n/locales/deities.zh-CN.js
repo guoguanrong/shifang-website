@@ -74,7 +74,7 @@ export default {
       id: 'wanglingguan', categories: ['peace', 'health'], title: '王灵官', subtitle: '护法监坛 · 镇守山门 · 驱邪护法',
       tags: ['护 法', '镇 邪', '保 安'],
       description: '王灵官为道教护法监坛之神，五百灵官之首。形象为赤面虬须、身披金甲、手执钢鞭，镇守道观山门。凡入道门者最先拜见的就是王灵官。',
-      meta: ['圣诞：六月十三', '五百灵官之首'], meritTitle: '护身保安 · 邪不侵正', meritDescription: '适合求出入平安、驱邪护身、修道护法者',
+      meta: ['圣诞：六月廿三', '五百灵官之首'], meritTitle: '护身保安 · 邪不侵正', meritDescription: '适合求出入平安、驱邪护身、修道护法者',
     },
     {
       id: 'guansheng', categories: ['wealth', 'career', 'peace'], title: '关圣帝君', subtitle: '武财神 · 忠义武圣 · 护法神',
@@ -97,13 +97,13 @@ export default {
     {
       id: 'fanli', categories: ['wealth', 'career'], title: '文财神范蠡', subtitle: '陶朱公 · 生财有道',
       tags: ['财 运', '经 商', '富 贵'],
-      description: '范蠡，春秋末期越国名臣，辅佐勾践灭吴后功成身退，化名经商，三致千金，世称「陶朱公」，被尊为文财神。道教尊其散财济世、聚财有道，供奉可求生意兴隆、财源广进。',
+      description: '范蠡，字少伯，春秋末期越国名臣，辅佐越王勾践灭吴，功成之后激流勇退，化名鸱夷子皮泛舟五湖。后定居定陶经商，三致千金又三散千金，世称「陶朱公」，被后世尊为文财神，是「富而好德、聚散有道」的典范。',
       meta: ['财神节：七月廿二', '陶朱遗风'], meritTitle: '招财进宝 · 生意兴隆', meritDescription: '适合求财求利、经商置业、投资理财者',
     },
     {
       id: 'tudigong', categories: ['peace', 'wealth'], title: '福德正神', subtitle: '土地公 · 一方守护',
       tags: ['平 安', '财 运', '家 宅'],
-      description: '福德正神即民间俗称的土地公、土地爷，道教尊为福德正神，执掌一方土地安宁，护佑乡里五谷丰登、安居乐业。是离百姓最近、最亲切的神明，有「田头田尾土地公」之说。',
+      description: '福德正神即民间俗称的土地公、土地爷，是道教与民间信仰中执掌一方土地的神明，护佑乡里百姓五谷丰登、六畜兴旺、安居乐业。土地公形象慈祥可亲、银须白发，手拄拐杖，是离百姓最近、最亲切的守护神。',
       meta: ['圣诞：二月初二', '福德绵长'], meritTitle: '家宅平安 · 五谷丰登', meritDescription: '适合求家宅安宁、土地丰收、生意稳定者',
     },
   ],

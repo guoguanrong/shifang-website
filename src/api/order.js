@@ -29,10 +29,11 @@ export function getOrderById(id) {
 
 /**
  * 创建订单
- * @param {object} data {type*, businessId*, memberId, username, mobile, email, birthday, prayWish,
+ * @param {object} data {type*, businessId*, memberId, uvid, username, mobile, email, birthday, prayWish,
  *   donateType, shopItemsId, number, amount, cycleType}
  * type：1 点灯，2 神像供奉，3 捐赠。供奉订单 cycleType：1 一年，2 一月。
  * donateType、shopItemsId 仅捐赠订单使用。
+ * uvid：游客访客标识（useUserSession.ensureVisitorId 生成）——未登录创建订单时必传，登录用户可一并携带用于关联。
  * @returns {Promise<string>} 后端返回的字符串（可能是订单号，需与后端确认）
  */
 export function createOrder(data, options) {

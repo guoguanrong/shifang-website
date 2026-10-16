@@ -5,11 +5,11 @@
       <section class="footer-brand">
         <p class="brand">{{ t('footer.logo') }}</p>
         <p class="slogan">{{ t('footer.slogan') }}</p>
-        <div class="download-links">
+        <!-- <div class="download-links">
           <button type="button"><img :src="androidIcon" alt="" /><span>{{ t('footer.android') }}</span></button>
           <button type="button"><img :src="appleIcon" alt="" /><span>{{ t('footer.ios') }}</span></button>
           <button type="button"><img :src="wechatIcon" alt="" /><span>{{ t('footer.wechat') }}</span></button>
-        </div>
+        </div> -->
       </section>
       <section>
         <h2>{{ t('footer.exploreTitle') }}</h2>

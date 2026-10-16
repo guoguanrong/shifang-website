@@ -117,7 +117,7 @@ const aboutMenuItems = computed(() => [
   { label: t('testimonials.title'), target: 'testimonials' },
   { label: t('messages.title'), target: 'messages' },
   { label: t('news.title'), target: 'news' },
-  { label: t('milestones.title'), target: 'milestones' },
+  // { label: t('milestones.title'), target: 'milestones' },
 ])
 
 // 点击导航外部或按 Escape 时关闭“关于我们”下拉菜单。

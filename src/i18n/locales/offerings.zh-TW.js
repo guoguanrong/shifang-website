@@ -126,6 +126,7 @@ export default {
   "paymentPrompt": "選擇支付方式，完成供奉下單",
   "paymentMethod": "支付方式",
   "pay": "立即支付",
+  "paying": "支付中…",
   "reconsider": "再想想",
   "close": "關閉彈窗",
   "paymentUnavailable": "支付服務尚未接入，暫未創建訂單，也未扣款。請聯繫客服確認供奉安排。",

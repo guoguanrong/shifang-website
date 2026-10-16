@@ -10,7 +10,7 @@
           <strong>{{ item.char }}</strong>
           <h3>{{ item.title }}</h3>
           <p>{{ item.desc }}</p>
-          <button type="button">{{ item.action }}</button>
+          <button type="button" @click="openSeasonal(index)">{{ item.action }}</button>
         </div>
       </article>
     </div>
@@ -144,6 +144,19 @@ const messageCards = [messageCard1, messageCard2, messageCard3]
 const newsImages = [news1, news2, news3]
 // 所有列表通过 computed 获取，切换语言时无需手动刷新组件。
 const seasonalItems = computed(() => tm('seasonal.items'))
+
+// 四季卡片按钮的跳转路由：与 seasonalImages 同序（春/夏/秋/冬），填入路径（如 '/blessings'）即可生效，留空则不跳转。
+const SEASONAL_ROUTES = [
+  '/blessings', // 春
+  '/wellness', // 夏
+  '/blessings', // 秋
+  '/blessings', // 冬
+]
+
+function openSeasonal(index) {
+  const target = SEASONAL_ROUTES[index]
+  if (target) router.push(target)
+}
 const staticTestimonials = computed(() => tm('testimonials.items'))
 const apiTestimonials = ref([])
 const testimonials = computed(() => apiTestimonials.value.length ? apiTestimonials.value : staticTestimonials.value)
@@ -780,6 +793,7 @@ function goToPage(name) {
 }
 
 .milestones-section .section-content {
+  width: 100%;
   max-width: 1440px;
 }
 
@@ -788,20 +802,22 @@ function goToPage(name) {
 }
 
 .milestones-section ol {
+  --milestone-axis-y: 158px;
+
   position: relative;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  width: 1420px;
-  margin: 0 0 0 20px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  width: 100%;
+  margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .milestones-section ol::before {
   position: absolute;
-  top: 99px;
+  top: var(--milestone-axis-y);
   right: 0;
-  left: -15px;
+  left: 0;
   height: 1px;
   content: '';
   background: #d0a06d;
@@ -809,7 +825,7 @@ function goToPage(name) {
 
 .milestones-section ol::after {
   position: absolute;
-  top: 6px;
+  top: calc(var(--milestone-axis-y) - 93.5px);
   left: -170px;
   width: 187px;
   height: 187px;
@@ -821,56 +837,70 @@ function goToPage(name) {
   position: relative;
   display: flex;
   flex-direction: column;
-  width: 180px;
+  align-items: center;
+  min-width: 0;
+  min-height: 220px;
+  padding: 0 12px;
 }
 
 .milestones-section li::after {
   position: absolute;
-  top: 93px;
-  left: 83px;
+  top: 148px;
+  left: 50%;
   width: 13px;
   height: 13px;
   content: '';
   background: #cc3513;
   border: 3px double #f2d2af;
-  transform: rotate(45deg);
+  transform: translateX(-50%) rotate(45deg);
 }
 
 .milestones-section time {
   order: 0;
+  width: 100%;
   color: #cc3513;
   font-size: 16px;
-  text-align: center;
   font-weight: 500;
+  text-align: center;
 }
 
 .milestones-section li>div {
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 
 .milestones-section h3 {
-  order: 2;
-  margin: 116px auto 0;
-  padding: 3px 8px;
+  position: absolute;
+  top: 179px;
+  left: 50%;
+  z-index: 1;
+  width: max-content;
+  max-width: calc(100% - 16px);
+  margin: 0;
+  padding: 4px 10px;
   color: #fff;
   font-family: var(--font-calligraphy);
   font-size: 14px;
   font-weight: 400;
+  line-height: 1.3;
   text-align: center;
   background: #1d4e6e;
+  transform: translateX(-50%);
 }
 
 .milestones-section p {
-  order: 1;
   position: absolute;
   top: 24px;
-  width: 180px;
+  left: 50%;
+  width: calc(100% - 24px);
+  max-width: 320px;
   margin: 0;
   color: #555;
   font-size: 12px;
-  line-height: 1.65;
+  line-height: 1.55;
   text-align: center;
+  transform: translateX(-50%);
 }
 
 @media (max-width: 1439px) {
@@ -878,12 +908,18 @@ function goToPage(name) {
   .seasonal-section,
   .testimonials-section,
   .messages-section,
-  .news-section,
-  .milestones-section {
+  .news-section {
     height: auto;
     min-height: 0;
     margin-top: 0;
     padding: 70px 20px;
+  }
+
+  .milestones-section {
+    height: auto;
+    min-height: 0;
+    margin-top: 0;
+    padding: 70px 0;
   }
 
   .seasonal-section {
@@ -903,32 +939,65 @@ function goToPage(name) {
     grid-template-columns: repeat(2, 1fr);
   }
 
+}
+
+@media (max-width: 1023px) {
+  .milestones-section {
+    padding: 56px 16px;
+  }
+
   .milestones-section ol {
     grid-template-columns: 1fr;
     width: min(100%, 700px);
-    margin: auto;
-    gap: 22px;
+    margin: 0 auto;
+    padding-left: 24px;
+    gap: 18px;
   }
 
-  .milestones-section ol::before,
-  .milestones-section ol::after,
-  .milestones-section li::after {
+  .milestones-section ol::before {
+    top: 8px;
+    right: auto;
+    bottom: 8px;
+    left: 7px;
+    width: 1px;
+    height: auto;
+  }
+
+  .milestones-section ol::after {
     display: none;
   }
 
   .milestones-section li {
-    width: 100%;
-    padding-top: 10px;
-    border-top: 1px solid #d0a06d;
+    align-items: stretch;
+    min-height: 0;
+    padding: 0 0 8px;
+  }
+
+  .milestones-section li::after {
+    top: 5px;
+    left: -24px;
+    transform: rotate(45deg);
+  }
+
+  .milestones-section time {
+    text-align: left;
+  }
+
+  .milestones-section h3 {
+    position: static;
+    width: max-content;
+    max-width: min(100%, 250px);
+    margin: 10px 0 0;
+    transform: none;
   }
 
   .milestones-section p {
     position: static;
     width: auto;
-  }
-
-  .milestones-section h3 {
-    margin: 8px auto 0;
+    max-width: none;
+    margin: 6px 0 0;
+    text-align: left;
+    transform: none;
   }
 }
 

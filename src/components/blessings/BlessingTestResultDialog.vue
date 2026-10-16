@@ -33,7 +33,10 @@
             <p>{{ t(`${prefix}.five.element`, { element: element.title }) }}</p>
             <p>{{ element.text.replace('\n', ' · ') }}<template v-if="selection === 2"> {{ t(`${prefix}.five.waterAdvice`) }}</template></p>
           </template>
-          <p v-else-if="kind === 'lots'">{{ result?.poemText || t(`${prefix}.lots.readings.${lotKey}`) }}</p>
+          <template v-else-if="kind === 'lots'">
+            <p v-if="lotGrade" class="lot-grade-badge" :data-level="result?.level || ''">{{ lotGrade }}</p>
+            <p>{{ result?.poemText || t(`${prefix}.lots.readings.${lotKey}`) }}</p>
+          </template>
           <p v-else-if="kind === 'fortune'">{{ result?.fortuneText || t(`${prefix}.fortune.${selection === 1 ? 'oxReading' : 'unavailable'}`) }}</p>
           <p v-else>{{ t(`${prefix}.notice.message`) }}</p>
         </div>
@@ -80,6 +83,15 @@ const zodiacCharacter = computed(() => {
 })
 // These IDs correspond to the text printed on the six exported stick images.
 const lotKey = computed(() => ({ a: 'great', b: 'highest', c: 'lower', d: 'lowest', e: 'good', f: 'balanced' })[props.stick] || 'balanced')
+// 后端新增签等级：level 1-6（上上/上吉/中吉/中平/下平/下下）→ 语言包 grades 键，保证三语言一致。
+const LOT_LEVEL_KEYS = { 1: 'highest', 2: 'great', 3: 'good', 4: 'balanced', 5: 'lower', 6: 'lowest' }
+const lotLevelKey = computed(() => LOT_LEVEL_KEYS[Number(props.result?.level)] || null)
+// 签等级名：优先按 level 取语言包；后端未返回 level 时回退接口 name，再回退静态签等级。
+const lotGrade = computed(() => {
+  if (props.kind !== 'lots' || !props.result) return ''
+  if (lotLevelKey.value) return t(`${prefix}.lots.grades.${lotLevelKey.value}`)
+  return props.result.name || t(`${prefix}.lots.grades.${lotKey.value}`)
+})
 const title = computed(() => {
   if (props.kind === 'five') return t(`${prefix}.five.title`, { element: element.value.title })
   if (props.kind === 'lots') {

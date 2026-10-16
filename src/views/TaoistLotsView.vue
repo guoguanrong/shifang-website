@@ -18,7 +18,7 @@
           :aria-pressed="selected === index" @click="selectCategory(index)">{{ category.short }}</button>
       </div>
       <p class="lot-instruction">{{ t('blessings.details.lots.instruction') }}</p>
-      <LotVessel :label="categories[selected].short" :drawing="drawing" :selected-stick="selectedStick"
+      <LotVessel :label="vesselLabel" :drawing="drawing" :selected-stick="selectedStick"
         @draw-end="finishDraw" @reveal-end="finishReveal" />
       <CeremonialButton :label="t('blessings.details.lots.draw')" :disabled="drawing || revealing || alreadyDrawn"
         :aria-busy="drawing || revealing" @click="startDraw" />
@@ -121,5 +121,13 @@ function selectCategory(index) {
   selectedStick.value = null
   selected.value = index
   requested.value = false
+  divinationResult.value = null
 }
+
+// 签筒标签：摇签/揭晓动画期间显示所求类别，结果揭晓后显示本次签等级（如"上上签"）。
+const vesselLabel = computed(() => {
+  const levelKey = ({ 1: 'highest', 2: 'great', 3: 'good', 4: 'balanced', 5: 'lower', 6: 'lowest' })[Number(divinationResult.value?.level)]
+  if (!drawing.value && !revealing.value && levelKey) return t('blessings.details.results.lots.grades.' + levelKey)
+  return categories.value[selected.value]?.short || ''
+})
 </script>

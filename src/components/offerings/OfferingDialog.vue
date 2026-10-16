@@ -101,7 +101,7 @@ const dialog = ref(null)
 const stage = ref(props.details ? 'confirm' : 'form')
 const order = ref(props.details || {})
 // 选中的支付方式与「支付暂未开放」提示。
-const { user } = useUserSession()
+const { user, ensureVisitorId } = useUserSession()
 const payment = ref('paypal')
 const unavailable = ref(false)
 const paying = ref(false)
@@ -154,6 +154,7 @@ async function pay() {
       type: deity ? 2 : 1,
       businessId: Number(props.businessId),
       memberId: member?.id || undefined,
+      uvid: ensureVisitorId(),
       username: order.value.name,
       mobile: member?.phone || undefined,
       email: member?.email || undefined,

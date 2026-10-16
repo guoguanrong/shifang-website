@@ -201,11 +201,11 @@ html[data-locale-layout='international'] .about-scroll cite {
 }
 
 html[data-locale-layout='international'] .about-copy {
-  /* position: relative;
+  position: relative;
   inset: auto;
   grid-area: copy;
   width: auto;
-  letter-spacing: 0; */
+  letter-spacing: 0;
 }
 
 html[data-locale-layout='international'] .about-copy h3 {
@@ -466,18 +466,17 @@ html[data-locale-layout='international'] .news-grid p {
 }
 
 html[data-locale-layout='international'] .milestones-section p {
-  display: -webkit-box;
-  overflow: hidden;
+  display: block;
+  overflow: visible;
   font-size: 11px;
-  line-height: 1.32;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 5;
+  line-height: 1.4;
 }
 
 html[data-locale-layout='international'] .milestones-section h3 {
-  max-width: 174px;
+  max-width: min(100%, 250px);
   font-size: 12px;
-  line-height: 1.2;
+  line-height: 1.25;
+  white-space: normal;
 }
 
 /* Footer */

@@ -21,9 +21,9 @@
           <div class="account-identity">
             <h2>{{ user.name }}</h2>
             <!-- 实名状态入口与个人设置共用认证页面。 -->
-            <RouterLink class="account-verification" to="/account/verification" @click="close">
+            <!-- <RouterLink class="account-verification" to="/account/verification" @click="close">
               <img :src="verifiedIcon" alt="" />{{ t(`portal.account.${user.verified ? 'verified' : 'unverified'}`) }}<span aria-hidden="true">›</span>
-            </RouterLink>
+            </RouterLink> -->
           </div>
           <p>{{ t('portal.account.member') }} · ID {{ user.id || '—' }}</p>
         </header>
@@ -79,7 +79,7 @@ import { RouterLink, useRoute } from 'vue-router'
 import { useUserSession } from '@/composables/useUserSession'
 import { listSelfOrder } from '@/api/order'
 import CountUp from '@/components/common/CountUp.vue'
-import defaultAvatar from '@/assets/account/avatar.webp'
+import defaultAvatar from '@/assets/account/avatar.png'
 import verifiedIcon from '@/assets/account/verified.svg'
 import volunteerIcon from '@/assets/account/volunteer.svg'
 import ordersIcon from '@/assets/account/orders.svg'
