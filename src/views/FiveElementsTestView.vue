@@ -13,7 +13,7 @@
       <OrnateSectionHeading :art="heading" :title="t('blessings.details.five.quizTitle')" />
       <div v-if="stage === 'intro'" class="quiz-body">
         <p>{{ t('blessings.details.five.instructions') }}</p>
-        <CeremonialButton :label="t('blessings.details.five.start')" @click="stage = 'question'" />
+        <CeremonialButton :label="t('blessings.details.five.start')" @click="startTest" />
       </div>
       <div v-else-if="stage === 'question'" class="quiz-body">
         <p>{{ t('blessings.details.five.progress', { current: 1, total: 5 }) }}</p>
@@ -40,6 +40,8 @@ import BlessingTestLayout from '@/components/blessings/BlessingTestLayout.vue'
 import BlessingTestResultDialog from '@/components/blessings/BlessingTestResultDialog.vue'
 import OrnateSectionHeading from '@/components/common/OrnateSectionHeading.vue'
 import CeremonialButton from '@/components/common/CeremonialButton.vue'
+import { useUserSession } from '@/composables/useUserSession'
+import { useAuthModal } from '@/composables/useAuthModal'
 import heading from '@/assets/blessing-tests/heading.svg'
 import metal from '@/assets/blessing-tests/metal.svg'
 import wood from '@/assets/blessing-tests/wood.svg'
@@ -48,11 +50,20 @@ import fire from '@/assets/blessing-tests/fire.svg'
 import earth from '@/assets/blessing-tests/earth.svg'
 
 const { t, tm } = useI18n()
+const { isLoggedIn } = useUserSession()
+const { openAuthModal } = useAuthModal()
 const icons = [metal, wood, water, fire, earth]
 // Figma supplies the first question only; do not invent the remaining question bank or a score.
 const stage = ref('intro')
 const showResult = ref(false)
 const selectedElement = ref(0)
+function startTest() {
+  if (!isLoggedIn.value) {
+    openAuthModal('login', () => { stage.value = 'question' })
+    return
+  }
+  stage.value = 'question'
+}
 function previewResult(index) {
   selectedElement.value = index
   stage.value = 'pending'

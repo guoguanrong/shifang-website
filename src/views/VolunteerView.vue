@@ -78,6 +78,7 @@ import OrnateSectionHeading from '@/components/common/OrnateSectionHeading.vue'
 import CeremonialButton from '@/components/common/CeremonialButton.vue'
 import { getVolunteerSelfInfo, saveVolunteer } from '@/api/volunteer'
 import { useUserSession } from '@/composables/useUserSession'
+import { useAuthModal } from '@/composables/useAuthModal'
 import templeBenefit from '@/assets/account-pages/volunteer-temple.webp'
 import fellowshipBenefit from '@/assets/account-pages/volunteer-fellowship.webp'
 import meritBenefit from '@/assets/account-pages/volunteer-merit.webp'
@@ -88,6 +89,7 @@ import onlineRole from '@/assets/account-pages/role-online.webp'
 
 const { t } = useI18n()
 const { isLoggedIn } = useUserSession()
+const { openAuthModal } = useAuthModal()
 const benefits = [{ id: 'temple', image: templeBenefit }, { id: 'fellowship', image: fellowshipBenefit }, { id: 'merit', image: meritBenefit }]
 const roles = [{ id: 'temple', image: templeRole }, { id: 'ceremony', image: ceremonyRole }, { id: 'media', image: mediaRole }, { id: 'online', image: onlineRole }]
 const countries = [{ id: 'china', code: '+86' }, { id: 'hongKong', code: '+852' }, { id: 'taiwan', code: '+886' }, { id: 'northAmerica', code: '+1' }]
@@ -170,6 +172,10 @@ async function chooseRole(role) {
 
 async function submit() {
   if (submitting.value) return
+  if (!isLoggedIn.value) {
+    openAuthModal('login', () => submit())
+    return
+  }
   attempted.value = true
   submissionError.value = ''
   await nextTick()

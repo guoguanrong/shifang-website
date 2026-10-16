@@ -13,39 +13,39 @@ export default {
   "lampSubtitle": "Offer a light with sincerity, and a wish for all.",
   "lampEyebrow": "Lamp Offering",
   "section": "Blessings",
-  "lampIntro": "Offering a lamp is a traditional Taoist expression of prayer. Wherever you are, you can dedicate a light at Shifang Hall as a symbol of hope, peace and sincere wishes.",
-  "selectionTitle": "Choose a Lamp for Your Wish",
+  "lampIntro": "Offering a lamp is one of Taoism’s most solemn forms of prayer. Where lamps shine, the deities look upon us; when the heart’s lamp is lit, darkness gives way. Wherever you are, you can offer a blessing lamp at ShiFang Hall and receive its light day and night.",
+  "selectionTitle": "Choose a Lamp · Each Has Its Blessing",
   "offerLamp": "Offer this lamp",
   "yearOffering": "A full year · Prayer included",
   "recommended": "Tai Sui offering",
   "lamps": [
     {
       "id": "guangming",
-      "title": "Guangming Lamp",
+      "title": "Doumu Light Lamp",
       "eyebrow": "Guangming Lamp",
-      "description": "For a bright future and a smooth path",
-      "audience": "For career, peace and new beginnings"
+      "description": "Honor the Dipper · Resolve hardship · Extend life",
+      "audience": "For longevity, relief from hardship and family wellbeing"
     },
     {
       "id": "taisui",
-      "title": "Tai Sui Lamp",
+      "title": "Tai Sui Peace Lamp",
       "eyebrow": "Tai Sui Lamp",
-      "description": "For peace throughout the changing year",
+      "description": "Resolve year’s misfortunes · Find ease through the year",
       "audience": "A traditional offering in your zodiac year"
     },
     {
       "id": "wenchang",
-      "title": "Wenchang Lamp",
+      "title": "Wenchang Wisdom Lamp",
       "eyebrow": "Wenchang Lamp",
-      "description": "For learning and academic achievement",
+      "description": "Advance in learning · Succeed in exams · Earn distinction",
       "audience": "For students, examinations and advancement"
     },
     {
       "id": "caishen",
-      "title": "Caishen Lamp",
+      "title": "Zhao Gongming Lamp of Divine Might",
       "eyebrow": "Caishen Lamp",
-      "description": "For wealth and a thriving business",
-      "audience": "For business owners and those seeking fortune"
+      "description": "Protect the righteous · Attract wealth · Welcome good fortune",
+      "audience": "For business, career and investment prosperity"
     }
   ],
   "stepsTitle": "Four Steps to Your Offering",

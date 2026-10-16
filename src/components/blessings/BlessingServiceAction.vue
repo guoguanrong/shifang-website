@@ -45,9 +45,9 @@ watch(isLoggedIn, value => {
 
 // 点按钮即触发弹窗；节气提醒的接口请求（需登录）在弹窗确认后进行。
 function openDialog() {
-  // 未登录先引导登录，登录后再点按钮即可继续。
-  if (props.kind === 'seasonal' && !isLoggedIn.value) {
-    openAuthModal('login')
+  // 节气提醒与恭请护身符需登录；登录完成后继续打开对应确认弹窗。
+  if (['seasonal', 'talisman'].includes(props.kind) && !isLoggedIn.value) {
+    openAuthModal('login', () => { showDialog.value = true })
     return
   }
   showDialog.value = true

@@ -21,7 +21,11 @@
     </div>
     <div class="donation-form-row">
       <label for="donation-email">{{ t('donation.email') }}</label>
-      <div class="donation-field"><input id="donation-email" v-model="form.email" type="email" autocomplete="email" maxlength="254" :placeholder="t('donation.emailPlaceholder')" /></div>
+      <div class="donation-field"><input id="donation-email" v-model="form.email" type="email" autocomplete="email" maxlength="254"
+        pattern="[^\s@]+@[^\s@]+\.[^\s@]{2,}" :aria-invalid="emailInvalid"
+        :aria-describedby="emailInvalid ? 'donation-email-error' : undefined" :placeholder="t('donation.emailPlaceholder')"
+        @input="emailInvalid = false" /></div>
+      <p v-if="emailInvalid" id="donation-email-error" class="donation-error" role="alert">{{ t('donation.emailInvalid') }}</p>
     </div>
     <div class="donation-form-row">
       <label for="donation-wish">{{ t('donation.wish') }}</label>
@@ -42,6 +46,7 @@ const { t } = useI18n()
 const countryCodes = ['+86', '+852', '+853', '+886', '+65', '+60', '+1', '+44', '+61']
 const emit = defineEmits(['submit'])
 const formElement = ref(null)
+const emailInvalid = ref(false)
 // 表单数据；anonymous 为真时无需姓名。
 const form = reactive({ name: '', anonymous: false, country: '+86', phone: '', email: '', wish: '' })
 
@@ -51,5 +56,11 @@ function submit() {
 }
 
 // 对外暴露 validate，让父级在下单前触发浏览器原生校验。
-defineExpose({ validate: () => formElement.value.reportValidity() })
+function validate() {
+  emailInvalid.value = Boolean(form.email.trim()) && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(form.email.trim())
+  if (emailInvalid.value) return false
+  return formElement.value.reportValidity()
+}
+
+defineExpose({ validate })
 </script>

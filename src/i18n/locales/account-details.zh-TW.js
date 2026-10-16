@@ -4,7 +4,7 @@ export default {
     eyebrow: 'Merit Certificate',
     subtitle: '一份證書 · 一份善心見證',
     heading: '我的證書',
-    description: '功德證書由十方殿頒發，僅頒予隨喜捐款、捐贈供物的善信，是善心與功德的見證。',
+    description: '功德證書由十方殿頒發，僅頒予捐資、捐物的善信，是善心與功德的見證。',
     example: '以下為證書樣例，僅供預覽。',
     imageAlt: '功德證書：{name}，{merit}',
     download: '下載圖片檔案',

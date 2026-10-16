@@ -2,7 +2,7 @@ export default {
   account: {
     title: '个人中心', open: '打开 {name} 的个人中心', member: '十方善信',
     verified: '已认证', unverified: '未认证', verification: '身份认证',
-    lampCount: '供灯数', donationCount: '捐款次数', deityCount: '供奉神像数', noStatistics: '暂无统计数据',
+    lampCount: '供灯数', donationCount: '善捐次数', deityCount: '供奉神像数', noStatistics: '暂无统计数据',
     volunteerGroup: '义工组织', volunteer: '加入义工', volunteerDescription: '共筑道场 · 广结善缘',
     services: '我的服务', orders: '我的订单', ordersDescription: '物料物品购置',
     events: '我的活动', eventsDescription: '道会登记', certificates: '功德证书', certificatesDescription: '福泽见证',
@@ -51,7 +51,7 @@ export default {
     policy: {
       title: '隐私政策',
       sections: [
-        { title: '1. 信息收集', text: '十方殿（ShiFang Hall）可能在善捐及相关活动中收集以下信息：姓名；联系方式（邮箱、电话）；通讯地址；善捐金额及记录；祈愿相关信息（由第三方支付机构处理）。我们仅收集为完善善捐及合规义务所必要的信息。' },
+        { title: '1. 信息收集', text: '十方殿（ShiFang Hall）可能在善捐及相关活动中收集以下信息：姓名；联系方式（邮箱、电话）；通讯地址；善捐金额及记录；纳贡相关信息（由第三方支付机构处理）。我们仅收集为完成善捐及合规义务所必要的信息。' },
         { title: '2. 信息使用', text: '所收集的信息仅用于以下目的：处理善捐及开具善捐凭证；提供善捐确认及沟通；满足法律、税务及合规要求；改善组织服务与沟通体验。我们不会将善捐人信息用于任何商业营销目的。' },
         { title: '3. 信息保护', text: '十方殿采取合理的技术与管理措施保护善捐人信息，包括：数据加密与访问控制；限制内部人员访问权限；定期审查数据安全措施。' },
         { title: '4. 信息共享', text: '我们不会出售、出租或交换善捐人个人信息。仅在以下情况下可能披露信息：法律法规要求；政府监管机构合法请求；款项处理所需的第三方服务机构（如支付平台）。' },
@@ -100,7 +100,7 @@ export default {
       breadcrumb: '各界寄语',
       eyebrow: 'Messages · Full',
       title: '各界寄语',
-      subtitle: '来自社会各界的声音与祝福 · 感恩相聚',
+      subtitle: '来自社会各界的声音与祝福 · 完整列表',
       play: '播放寄语：{name}',
       openArticle: '阅读寄语：{name}',
     },
@@ -108,7 +108,7 @@ export default {
       breadcrumb: '最新动态',
       eyebrow: 'Latest News · Full',
       title: '最新动态',
-      subtitle: '了解更多十方殿的近期动态与资讯',
+      subtitle: '了解更多十方殿的近期活动与资讯',
       date: '2026.04.15',
       source: '十方殿资讯',
       readMore: '阅读全文',
@@ -133,11 +133,11 @@ export default {
       quote: '「文化延续，从敬畏传统开始。十方殿之善举，令人感佩。」',
     },
     messageDetail: {
-      section: '名界寄语',
+      section: '各界寄语',
       eyebrow: 'Messages',
       title: '知名文化学者 · 楼宇烈',
       identity: '知名文化学者 · 楼宇烈',
-      quote: '「文化复兴，从敬畏传统开始。十方殿之善举，令人感佩。」',
+      quote: '文化复兴，从敬畏传统开始。十方殿之善举，令人感佩。',
       play: '播放楼宇烈先生的视频寄语',
       videoParagraphs: [
         '楼宇烈先生为北京大学哲学系教授、著名国学学者，一生致力于中国传统文化的研究与传播。他对道教文化有着独到见解，认为道教作为中国土生土长的宗教，承载着中华民族古老而深厚的精神基因。楼先生高度评价十方殿的全球华人共建计划，称之为“传统文化现代化的创新实践”。',

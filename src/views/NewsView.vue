@@ -32,12 +32,11 @@ import news1 from '@/assets/images/news-card-1.webp'
 import news2 from '@/assets/images/news-card-2.webp'
 import news3 from '@/assets/images/news-card-3.webp'
 
-const { t, tm } = useI18n()
+const { t } = useI18n()
 // 每页数量：宽屏网格约展示 9 张卡片。
 const PAGE_SIZE = 9
 // 封面占位素材：接口未返回图片时循环复用。
 const newsImages = [news1, news2, news3]
-const newsDates = ['2026.04.15', '2026.03.25', '2026.03.08']
 
 // 解析 cover：后端返回 JSON 数组字符串（多图）或单个 URL。
 function parseNewsImages(value) {
@@ -62,9 +61,8 @@ function formatReads(reads) {
   return reads === null || reads === undefined ? '—' : Number(reads).toLocaleString('en-US')
 }
 
-// 按接口加载最新动态（仅展示已发布的）。
+// 按接口加载最新动态（仅展示已发布的）；只展示接口数据，无数据/加载失败时显示“暂无动态”。
 const apiNews = ref([])
-const apiLoaded = ref(false)
 
 async function loadNews() {
   try {
@@ -86,26 +84,10 @@ async function loadNews() {
       : []
   } catch {
     apiNews.value = []
-  } finally {
-    apiLoaded.value = true
   }
 }
 
-// 加载完成前展示语言包静态条目占位，避免首屏空白。
-const staticNews = computed(() => {
-  const items = tm('news.items')
-  return Array.from({ length: 8 }, (_, index) => ({
-    id: `static-${index}`,
-    title: items[index % items.length].title,
-    desc: items[index % items.length].desc,
-    cover: newsImages[index % newsImages.length],
-    date: newsDates[index % newsDates.length],
-    dateLabel: newsDates[index % newsDates.length],
-    reads: 3286,
-  }))
-})
-
-const displayedNews = computed(() => (apiLoaded.value ? apiNews.value : staticNews.value))
+const displayedNews = computed(() => apiNews.value)
 
 onMounted(loadNews)
 </script>
@@ -119,11 +101,15 @@ onMounted(loadNews)
   width: 100%;
 }
 
+/* 无动态时的空状态占位。 */
 .news-empty {
+  display: grid;
+  place-items: center;
+  min-height: 260px;
   margin: 0;
-  color: #8b7a63;
-  font-size: 14px;
-  text-align: center;
+  color: #a89a85;
+  font-size: 15px;
+  letter-spacing: 3px;
 }
 
 /* 上半部封面、下半部文案，整体比例由 aspect-ratio 固定。 */

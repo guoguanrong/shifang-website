@@ -83,12 +83,14 @@ import OrnateSectionHeading from '@/components/common/OrnateSectionHeading.vue'
 import CeremonialButton from '@/components/common/CeremonialButton.vue'
 import { verificationMethods, verificationBenefits } from '@/data/verification'
 import { useUserSession } from '@/composables/useUserSession'
+import { useAuthModal } from '@/composables/useAuthModal'
 import headingArt from '@/assets/verification/heading.svg'
 import '@/styles/account-details.css'
 import '@/styles/account-verification.css'
 
 const { t } = useI18n()
 const { isLoggedIn } = useUserSession()
+const { openAuthModal } = useAuthModal()
 const steps = ['details', 'review', 'complete']
 const sides = ['front', 'back']
 const method = ref('id')
@@ -132,6 +134,10 @@ watch(isLoggedIn, () => {
 })
 
 async function submit() {
+  if (!isLoggedIn.value) {
+    openAuthModal('login', () => submit())
+    return
+  }
   if (isReading.value) return
   attempted.value = true
   submitted.value = false

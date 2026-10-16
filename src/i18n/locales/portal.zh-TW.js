@@ -2,7 +2,7 @@ export default {
   account: {
     title: '個人中心', open: '開啟 {name} 的個人中心', member: '十方善信',
     verified: '已認證', unverified: '未認證', verification: '身分認證',
-    lampCount: '供燈數', donationCount: '捐款次數', deityCount: '供奉神像數', noStatistics: '暫無統計資料',
+    lampCount: '供燈數', donationCount: '善捐次數', deityCount: '供奉神像數', noStatistics: '暫無統計資料',
     volunteerGroup: '義工組織', volunteer: '加入義工', volunteerDescription: '共築道場 · 廣結善緣',
     services: '我的服務', orders: '我的訂單', ordersDescription: '物料物品購置',
     events: '我的活動', eventsDescription: '道會登記', certificates: '功德證書', certificatesDescription: '福澤見證',
@@ -23,7 +23,7 @@ export default {
     policy: {
       title: '隱私政策',
       sections: [
-        { title: '1. 資訊收集', text: '十方殿（ShiFang Hall）可能在善捐及相關活動中收集以下資訊：姓名；聯絡方式（電子郵件、電話）；通訊地址；善捐款項及紀錄；祈願相關資訊（由第三方支付機構處理）。我們僅收集為完善善捐及合規義務所必要的資訊。' },
+        { title: '1. 資訊收集', text: '十方殿（ShiFang Hall）可能在善捐及相關活動中收集以下資訊：姓名；聯絡方式（電子郵件、電話）；通訊地址；善捐金額及紀錄；納貢相關資訊（由第三方支付機構處理）。我們僅收集為完成善捐及合規義務所必要的資訊。' },
         { title: '2. 資訊使用', text: '所收集的資訊僅用於以下目的：處理善捐及開立善捐憑證；提供善捐確認及溝通；滿足法律、稅務及合規要求；改善組織服務與溝通體驗。我們不會將善捐人資訊用於任何商業行銷目的。' },
         { title: '3. 資訊保護', text: '十方殿採取合理的技術與管理措施保護善捐人資訊，包括：資料加密與存取控制；限制內部人員存取權限；定期審查資料安全措施。' },
         { title: '4. 資訊共享', text: '我們不會出售、出租或交換善捐人個人資訊。僅在以下情況下可能揭露資訊：法律法規要求；政府監管機構合法請求；款項處理所需的第三方服務機構（如支付平台）。' },
@@ -42,8 +42,8 @@ export default {
   },
   pages: {
     testimonials: { breadcrumb: '信眾實錄', eyebrow: 'Testimonials · Full', title: '信眾實錄', subtitle: '更多真實案例 · 善願得償 · 福生無量', loading: '正在載入信眾實錄…', empty: '暫無可展示的實錄。', loadError: '實錄載入失敗，目前顯示示例內容。', pagination: '信眾實錄分頁', previous: '上一頁', next: '下一頁', pageInfo: '第 {current} / {total} 頁' },
-    messages: { breadcrumb: '各界寄語', eyebrow: 'Messages · Full', title: '各界寄語', subtitle: '來自社會各界的聲音與祝福 · 感恩相聚', play: '播放寄語：{name}', openArticle: '閱讀寄語：{name}' },
-    news: { breadcrumb: '最新動態', eyebrow: 'Latest News · Full', title: '最新動態', subtitle: '了解更多十方殿的近期動態與資訊', date: '2026.04.15', source: '十方殿資訊', readMore: '閱讀全文', views: '次閱讀', openDetail: '閱讀新聞：{title}' },
+    messages: { breadcrumb: '各界寄語', eyebrow: 'Messages · Full', title: '各界寄語', subtitle: '來自社會各界的聲音與祝福 · 完整列表', play: '播放寄語：{name}', openArticle: '閱讀寄語：{name}' },
+    news: { breadcrumb: '最新動態', eyebrow: 'Latest News · Full', title: '最新動態', subtitle: '了解更多十方殿的近期活動與資訊', date: '2026.04.15', source: '十方殿資訊', readMore: '閱讀全文', views: '次閱讀', openDetail: '閱讀新聞：{title}' },
     detail: { quoteLabel: '寄語', contentLabel: '詳細內容' },
     newsDetail: {
       section: '最新動態', eyebrow: 'Messages', title: '清明祈福道會 · 追思超度', date: '2026.04.08', views: '1,892 次閱讀',
@@ -55,8 +55,8 @@ export default {
       quote: '「文化延續，從敬畏傳統開始。十方殿之善舉，令人感佩。」',
     },
     messageDetail: {
-      section: '名界寄語', eyebrow: 'Messages', title: '知名文化學者 · 樓宇烈', identity: '知名文化學者 · 樓宇烈',
-      quote: '「文化復興，從敬畏傳統開始。十方殿之善舉，令人感佩。」', play: '播放樓宇烈先生的影片寄語',
+      section: '各界寄語', eyebrow: 'Messages', title: '知名文化學者 · 樓宇烈', identity: '知名文化學者 · 樓宇烈',
+      quote: '文化復興，從敬畏傳統開始。十方殿之善舉，令人感佩。', play: '播放樓宇烈先生的影片寄語',
       videoParagraphs: ['樓宇烈先生為北京大學哲學系教授、著名國學學者，一生致力於中國傳統文化的研究與傳播。他對道教文化有著獨到見解，認為道教作為中國土生土長的宗教，承載著中華民族古老而深厚的精神基因。樓先生高度評價十方殿的全球華人共建計劃，稱之為「傳統文化現代化的創新實踐」。'],
       articleParagraphs: [
         '樓宇烈先生長期任教於北京大學哲學系，是當代中國哲學與傳統文化研究領域的重要學者。數十年來，他潛心治學、教書育人，在中國哲學、佛教與道教文化研究方面著述豐厚。',

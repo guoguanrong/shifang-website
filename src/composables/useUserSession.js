@@ -166,6 +166,12 @@ async function refreshMemberInfo({ fallbackEmail = '', signOutOnAuthError = true
   return refreshPromise
 }
 
+// 路由鉴权等待首次会员资料恢复完成，避免刷新后短暂的未登录状态误拦截有效会话。
+async function hasAuthenticatedSession() {
+  if (refreshPromise) await refreshPromise
+  return user.value !== null || Boolean(readToken())
+}
+
 async function saveMemberProfile({ name, phone, email }) {
   const id = user.value?.id
   if (id == null || id === '') {
@@ -212,5 +218,5 @@ if (readToken()) {
 }
 
 export function useUserSession() {
-  return { user: readonly(user), isLoggedIn, ensureVisitorId, startDemoSession, updateDemoProfile, saveMemberProfile, refreshMemberInfo, signOut }
+  return { user: readonly(user), isLoggedIn, ensureVisitorId, hasAuthenticatedSession, startDemoSession, updateDemoProfile, saveMemberProfile, refreshMemberInfo, signOut }
 }

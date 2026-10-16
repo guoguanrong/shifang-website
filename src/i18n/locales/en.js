@@ -61,9 +61,9 @@ export default {
   about: {
     en: 'About Us',
     title: 'About ShiFang Hall',
-    subtitle: 'From all directions we gather, together we accomplish all',
-    quote: '「The Tao is the sanctuary of all things, the treasure of the good.」',
-    quoteSource: '—— Tao Te Ching · Daozang, Dongshen Division',
+    subtitle: 'Gather from all directions to safeguard a thousand-year Taoist lineage',
+    quote: 'Bridging Chinese communities worldwide through culture',
+    quoteSource: '',
     lead: ['Guarding a Millennium of Taoist Heritage', 'Bridging Chinese communities worldwide through culture'],
     paragraphs: [
       'ShiFang Hall is a physical Taoist religious site and religious nonprofit organization legally registered in the United States. The Internal Revenue Service (IRS) has recognized it as a tax-exempt organization under Section 501(c)(3) of the federal tax code.',
@@ -80,17 +80,17 @@ export default {
     title: 'Temple Planning',
     subtitle: 'A millennia-old sanctuary, restored to solemnity',
     cards: [
-      { title: 'Hall of Doumu Yuanjun', desc: 'The main hall restoration enshrines the sacred image of Doumu Yuanjun and attendant deities. The six major works include roof renewal, beam and column reinforcement, painted decoration restoration and gilding of the statues, rendering the golden form of Doumu majestic and the sanctuary pure.' },
-      { title: 'Statue Restoration', desc: 'The statues of the Three Pure Ones are hand-carved by master traditional woodcarvers from Fujian, using premium nanmu wood and standing about 3.6 meters tall. Twelve accompanying statues, including Doumu Yuanjun and the Jade Emperor, are being recast.' },
+      { title: 'Hall of Doumu Yuanjun', desc: 'The main hall restoration will enshrine the sacred image of Doumu Yuanjun and attendant deities. The six major works include roof renewal, beam and column reinforcement, painted decoration restoration and gilding of the statues, restoring Doumu’s golden image to majesty and serenity to the sanctuary.' },
+      { title: 'Statue Restoration', desc: 'The sacred image of Doumu Yuanjun is hand-carved by a master traditional woodcarver from Fujian, using premium nanmu wood. Standing about 3.6 meters tall, it has four faces and eight arms holding the sun, moon, a seal, bow, arrows and ritual implements. Twelve accompanying statues will also be restored.' },
       { title: 'Mural Gallery', desc: 'The treasured Ming-dynasty Taoist murals stretch about 36 meters, depicting the Taoist pantheon and the ten directions. Restoration includes surface cleaning, color consolidation, repainting of missing areas and moisture-proofing.' },
-      { title: 'Garden Landscape', desc: 'Designed in traditional Taoist garden style, the plan includes a release pond, a zigzag bridge, a taiji plaza, seasonal planting and a stele corridor. The taiji plaza accommodates 300 people for outdoor Taoist gatherings.' },
+      { title: 'Garden Landscape', desc: 'Designed in traditional Taoist garden style, the plan includes a clear-water pond, a zigzag bridge, a taiji plaza, seasonal planting and a stele corridor. The taiji plaza accommodates 300 people for outdoor Taoist gatherings.' },
     ],
   },
   // 使命、愿景与核心价值。
   mission: {
     en: 'Mission & Vision',
     title: 'Mission & Vision',
-    subtitle: 'From all directions we gather, together we accomplish all',
+    subtitle: 'Gather from all directions to safeguard a thousand-year Taoist lineage',
     items: [
       { char: 'Tao', title: 'Our Mission', desc: 'To connect benefactors from all directions through digital means, so that every act of goodwill precisely serves the protection and transmission of Taoist cultural heritage.' },
       { char: 'Goodness', title: 'Our Vision', desc: 'To become the most trusted public-interest platform for Taoist culture, with a fully transparent and traceable donation management system.' },
@@ -127,9 +127,9 @@ export default {
     title: 'Seasonal Guide',
     subtitle: 'Honor heaven and follow the seasons · Prevention is better than cure',
     items: [
-      { char: 'Chen', title: '2026 · Bingwu Year', desc: 'The Year of the Horse is a year of Tai Sui. Those born under the Horse meet Tai Sui directly; those born under the Rat clash with it. We suggest offering a Tai Sui lamp early in the year to resolve conflicts and pass the year in peace.', action: 'Learn How to Resolve' },
+      { char: 'Chen', title: '2026 · Bingwu Year', desc: 'The Year of the Horse is a year of Tai Sui. Those born under the Horse meet Tai Sui directly; those born under the Rat clash with it. We suggest offering a Tai Sui Peace Lamp early in the year to resolve conflicts and pass the year in peace.', action: 'Learn How to Resolve' },
       { char: 'Summer', title: 'Midsummer · Cooling the Heart', desc: 'In high summer, heart fire is strong. Keep the mind calm and desires few, avoid heat and seek coolness, eat light fruits and vegetables, and avoid greasy and spicy food. Sit in meditation at noon, walk in the cool of evening. Follow the seasons and pass the summer safely.', action: 'Summer Wellness' },
-      { char: 'Exams', title: 'Exam Season · Wenchang', desc: 'The turn from spring to summer is the critical period for entrance and civil service examinations. Offering a Wenchang lamp brings wishes for success in the exams and a smooth career.', action: 'Light the Wenchang Lamp' },
+      { char: 'Exams', title: 'Exam Season · Wenchang', desc: 'The turn from spring to summer is the critical period for entrance and civil service examinations. Offering a Wenchang Wisdom Lamp brings wishes for success in the exams and a smooth career.', action: 'Light the Wenchang Lamp' },
       { char: 'Fortune', title: 'Yearly Fortune', desc: 'Learn your zodiac fortune for this year and plan ahead. Those who offend, clash with or are punished by Tai Sui should resolve it as early as possible.', action: 'View Your Fortune' },
     ],
   },
@@ -140,14 +140,14 @@ export default {
     subtitle: 'Real stories · Wishes fulfilled · Boundless blessing',
     more: 'View more',
     items: [
-      { name: 'Chen Minghui', tag: 'Career', role: 'Executive · One-year Tai Sui lamp', quote: 'Last year I offended Tai Sui, so I offered a Tai Sui lamp at ShiFang Hall early in the year. Six months later a stalled project suddenly turned around and I was promoted to director. Now I offer a lamp every year — prevention beats last-minute panic.' },
-      { name: 'Chen Minghui', tag: 'Studies', role: 'Executive · One-year Tai Sui lamp', quote: 'When my child was preparing for postgraduate exams I had no peace of mind, so I lit a Wenchang lamp at ShiFang Hall. The Taoist priest even wrote a special petition for my child. Later my child was admitted to their dream school, ranking second in the written exam. Thank you, ShiFang Hall!' },
-      { name: 'Chen Minghui', tag: 'Health', role: 'Executive · One-year Tai Sui lamp', quote: 'While my father was ill I donated a Medicine King lamp at ShiFang Hall and also contributed to the main hall restoration. Two months later the doctor said his recovery was far better than expected. I do not know if it was coincidence, but the peace of mind was real.' },
-      { name: 'Chen Minghui', tag: 'Prosperity', role: 'Executive · One-year Tai Sui lamp', quote: 'Business had been slow last year, so a friend recommended the Wealth God lamp at ShiFang Hall. Three months later I signed two major clients in a row and revenue doubled. Coincidence or not, the confidence and peace of mind were real.' },
-      { name: 'Chen Minghui', tag: 'Safety', role: 'Executive · One-year Tai Sui lamp', quote: 'My family took turns falling ill and being hospitalized last year, so a friend suggested I obtain a peace talisman at ShiFang Hall. The following six months everyone stayed safe and well. Now I think of visiting the temple on the first day of each month — it puts my heart at ease.' },
-      { name: 'Chen Minghui', tag: 'Career', role: 'Executive · One-year Tai Sui lamp', quote: 'My parents had been on tense terms, so I offered a blessing tablet for them at ShiFang Hall and donated to the hall restoration. Over the following months the atmosphere at home noticeably eased, and at weekends the family was willing to eat together again. Sincerity works.' },
-      { name: 'Chen Minghui', tag: 'Blessing', role: 'Executive · One-year Tai Sui lamp', quote: 'Business had been slow last year, so a friend recommended the Wealth God lamp at ShiFang Hall. Three months later I signed two major clients in a row and revenue doubled. Coincidence or not, the confidence and peace of mind were real.' },
-      { name: 'Chen Minghui', tag: 'Career', role: 'Executive · One-year Tai Sui lamp', quote: 'My family took turns falling ill and being hospitalized last year, so a friend suggested I obtain a peace talisman at ShiFang Hall. The following six months everyone stayed safe and well. Now I think of visiting the temple on the first day of each month — it puts my heart at ease.' },
+      { name: '', tag: 'Career', role: '', quote: 'Last year I offended Tai Sui, so I offered a Tai Sui Peace Lamp at ShiFang Hall early in the year. Six months later a stalled project suddenly turned around and I was promoted to director. Now I offer a lamp every year — prevention beats last-minute panic.' },
+      { name: '', tag: 'Studies', role: '', quote: 'When my child was preparing for postgraduate exams I had no peace of mind, so I lit a Wenchang Wisdom Lamp at ShiFang Hall. The Taoist priest even wrote a special petition for my child. Later my child was admitted to their dream school, ranking second in the written exam. Thank you, ShiFang Hall!' },
+      { name: '', tag: 'Health', role: '', quote: 'While my father was ill I offered a Medicine King Health Lamp at ShiFang Hall and also contributed to the restoration of the Hall of Doumu Yuanjun. Two months later the doctor said his recovery was far better than expected. I do not know if it was coincidence, but the peace of mind was real.' },
+      { name: '', tag: 'Prosperity', role: '', quote: 'Business had been slow last year, so a friend recommended the Zhao Gongming Wealth Lamp at ShiFang Hall. Three months later I had several promising client meetings and business began to improve. Coincidence or not, the confidence and peace of mind were real.' },
+      { name: '', tag: 'Safety', role: '', quote: 'My family took turns falling ill and being hospitalized last year, so a friend suggested I obtain a peace talisman at ShiFang Hall. The following six months everyone stayed safe and well. Now I think of visiting the temple on the first day of each month — it puts my heart at ease.' },
+      { name: '', tag: 'Family', role: '', quote: 'My parents had been on tense terms, so I offered a blessing tablet for them at ShiFang Hall and donated to the hall restoration. Over the following months the atmosphere at home noticeably eased, and at weekends the family was willing to eat together again. Sincerity works.' },
+      { name: '', tag: 'Blessing', role: '', quote: 'My mother has been devoted to the Tao since childhood. I donated green bricks for the restoration of the Hall of Doumu Yuanjun, and the priest inscribed her name on the merit stele. She was delighted for days. Bringing peace of mind to one’s parents is the greatest act of filial devotion.' },
+      { name: '', tag: 'Community', role: '', quote: 'After many years abroad, I began joining the new and full moon gatherings at ShiFang Hall online last year. Though overseas, seeing my name in the prayer petitions brings me peace. My company went public last year; I am grateful for the deities’ protection.' },
     ],
   },
   // 各界寄语与分类标签。
@@ -172,8 +172,8 @@ export default {
     more: 'View more',
     empty: 'No news yet',
     items: [
-      { title: 'Beam-Raising Ceremony of the Mahavira Hall', desc: 'The restoration of the Mahavira Hall reached a key milestone — the beam-raising ceremony, joined by over a hundred devotees.' },
-      { title: 'Qingming Blessing Ceremony · Remembrance', desc: 'During Qingming, ShiFang Hall holds a three-day blessing and remembrance ceremony; devotees may offer a light lamp online.' },
+      { title: 'Beam-Raising Ceremony of the Hall of Doumu Yuanjun', desc: 'The restoration of the Hall of Doumu Yuanjun reached a key milestone — the beam-raising ceremony, joined by over a hundred devotees.' },
+      { title: 'Qingming Blessing Ceremony · Remembrance', desc: 'During Qingming, ShiFang Hall holds a three-day blessing and remembrance ceremony; devotees may offer a Doumu Light Lamp online.' },
       { title: 'Ming Dynasty Mural Restoration Begins', desc: 'Conservation of the treasured Ming-dynasty Taoist murals has officially begun, expected to take six months.' }
     ],
   },
@@ -183,10 +183,10 @@ export default {
     title: 'Milestones',
     subtitle: 'The journey of ShiFang Hall',
     items: [
-      { year: '2025', title: 'Shifang Hall Platform Founded', desc: 'Jointly initiated by Taoist lineage holders, dedicated to the digital preservation of temple heritage and the launch of the cloud co-creation system.' },
-      { year: '2026', title: 'Temple Upgrades Complete', desc: 'The new website launched iteratively alongside cultural construction preparations. The fully transparent fund management system went live; donors can check project progress and fund details at any time.' },
-      { year: 'Dec 2026', title: 'Shifang Hall Sanctuary Opens', desc: 'In December 2026, the ShiFang Hall sanctuary officially opened. From the 2025 platform founding and 2026 website upgrade to today’s sanctuary opening, ShiFang Hall has completed the leap from digital platform to physical sanctuary, forming a dual-track culture of “online practice + physical temple.”' },
-      { year: '2027', title: 'Raising $10 Million', desc: 'Plans to raise $10 million to build the Doumu Hall, one of the main halls of the first comprehensive Taoist temple in California.' },
+      { year: '2025', title: 'ShiFang Hall Platform Founded', desc: 'Initiated by people dedicated to the transmission of Taoist culture, with a mission to digitally preserve temple heritage and launch the Cloud Co-Build system.' },
+      { year: '2026', title: 'Website Fully Updated', desc: 'The new website launched, opening a new chapter in cultural collaboration. The transparent fund management system also launched, allowing donors to check project progress and financial details at any time.' },
+      { year: 'December 2026', title: 'ShiFang Hall Sanctuary Opens', desc: 'In December 2026, the ShiFang Hall sanctuary was completed and began operations. From the platform’s founding in 2025 and website upgrade in 2026 to the sanctuary opening, ShiFang Hall has grown from a digital platform into a physical sanctuary, bringing online communal practice and an in-person sanctuary together in a dual-track model for cultural collaboration.' },
+      { year: '2027', title: 'US$10 Million Fundraising Goal', desc: 'A US$10 million fundraising campaign is planned to help build Doumu Hall, one of the main halls of the first large-scale Taoist temple in the Caribbean.' },
     ],
   },
   // 页脚栏目、下载入口及法律信息。

@@ -43,8 +43,8 @@ export default {
   },
   pages: {
     testimonials: { breadcrumb: 'Testimonials', eyebrow: 'Testimonials · Full', title: 'Devotee Stories', subtitle: 'More true stories · Wishes fulfilled · Blessings without measure', loading: 'Loading stories…', empty: 'No stories to display.', loadError: 'Stories could not be loaded. Showing sample stories.', pagination: 'Testimonials pagination', previous: 'Previous', next: 'Next', pageInfo: 'Page {current} of {total}' },
-    messages: { breadcrumb: 'Messages', eyebrow: 'Messages · Full', title: 'Messages from All Walks', subtitle: 'Voices and blessings from across society', play: 'Play message from {name}', openArticle: 'Read message from {name}' },
-    news: { breadcrumb: 'Latest News', eyebrow: 'Latest News · Full', title: 'Latest News', subtitle: 'Discover more recent stories and updates from ShiFang Hall', date: 'Apr 15, 2026', source: 'ShiFang News', readMore: 'Read article', views: 'views', openDetail: 'Read news: {title}' },
+    messages: { breadcrumb: 'Messages', eyebrow: 'Messages · Full', title: 'Messages from All Walks', subtitle: 'Voices and blessings from all walks of life · Full list', play: 'Play message from {name}', openArticle: 'Read message from {name}' },
+    news: { breadcrumb: 'Latest News', eyebrow: 'Latest News · Full', title: 'Latest News', subtitle: 'More recent events and updates from ShiFang Hall', date: 'Apr 15, 2026', source: 'ShiFang News', readMore: 'Read article', views: 'views', openDetail: 'Read news: {title}' },
     detail: { quoteLabel: 'Note', contentLabel: 'Full Story' },
     newsDetail: {
       section: 'Latest News', eyebrow: 'Messages', title: 'Qingming Blessing Ceremony · In Remembrance', date: 'Apr 8, 2026', views: '1,892 views',
@@ -57,7 +57,7 @@ export default {
     },
     messageDetail: {
       section: 'Messages', eyebrow: 'Messages', title: 'Renowned Cultural Scholar · Lou Yulie', identity: 'Renowned Cultural Scholar · Lou Yulie',
-      quote: '“Cultural renewal begins with reverence for tradition. The good work of ShiFang Hall is deeply admirable.”', play: 'Play Professor Lou Yulie’s video message',
+      quote: 'Cultural renewal begins with reverence for tradition. The good work of ShiFang Hall is deeply admirable.', play: 'Play Professor Lou Yulie’s video message',
       videoParagraphs: ['Professor Lou Yulie of Peking University is a renowned scholar devoted to the study and communication of Chinese traditional culture. He sees Taoism, China’s indigenous religion, as a bearer of the nation’s oldest spiritual heritage. Professor Lou praised ShiFang Hall’s global co-building initiative as an innovative modern expression of traditional culture.'],
       articleParagraphs: [
         'Professor Lou Yulie taught for many years in Peking University’s Department of Philosophy and is a leading scholar of Chinese philosophy and traditional culture. Over decades of research and teaching, he produced an extensive body of work on Chinese philosophy, Buddhism, and Taoism.',

@@ -10,6 +10,7 @@
           :mode="mode"
           @close="closeAuthModal"
           @switch-mode="switchAuthMode"
+          @authenticated="onAuthenticated"
         />
       </div>
     </Transition>
@@ -21,7 +22,7 @@ import { onBeforeUnmount, onMounted, watch } from 'vue'
 import AuthPanel from './AuthPanel.vue'
 import { useAuthModal } from '@/composables/useAuthModal'
 
-const { isOpen, mode, closeAuthModal, switchAuthMode } = useAuthModal()
+const { isOpen, mode, closeAuthModal, onAuthenticated, switchAuthMode } = useAuthModal()
 
 // 按 Esc 关闭弹窗。
 function closeOnEscape(event) {

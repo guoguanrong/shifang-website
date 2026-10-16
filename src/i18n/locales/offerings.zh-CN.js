@@ -13,7 +13,7 @@ export default {
   "lampSubtitle": "灯供神前，心诚则灵；福泽十方，善愿皆成",
   "lampEyebrow": "Lamp Offering",
   "section": "祈福纳祥",
-  "lampIntro": "点灯是道教最殊胜的祈福方式之一。灯火通明之处，神明降鉴；心灯一亮，万暗皆消。十方殿线上点灯服务，让您无论身在何处，都能供奉一盏福灯于神前，日夜蒙受道光照拂。",
+  "lampIntro": "点灯是道教最隆重的祈福方式之一。灯火通明之处，神明降鉴；心灯一亮，万暗皆消。十方殿线上点灯服务，让您无论身在何处，都能供奉一盏福灯于神前，日夜蒙受道光照拂。",
   "selectionTitle": "灯种选择 · 各应所愿",
   "offerLamp": "供奉此灯",
   "yearOffering": "供奉全年 · 含疏文",
@@ -21,31 +21,31 @@ export default {
   "lamps": [
     {
       "id": "guangming",
-      "title": "光明灯",
+      "title": "斗姆光明灯",
       "eyebrow": "Guangming Lamp",
-      "description": "祈愿前程光明、诸事顺遂",
-      "audience": "适合求事业、求平安、求转运"
+      "description": "礼斗朝真 · 消灾解厄 · 本命延生",
+      "audience": "适合求本命延生、消灾解厄、阖家安康"
     },
     {
       "id": "taisui",
-      "title": "太岁灯",
+      "title": "太岁祈安灯",
       "eyebrow": "Tai Sui Lamp",
-      "description": "化解流年冲煞 · 值年太岁护佑",
+      "description": "禳解岁厄 · 流年顺遂",
       "audience": "本命年、冲太岁者宜供奉"
     },
     {
       "id": "wenchang",
-      "title": "文昌灯",
+      "title": "文昌启智灯",
       "eyebrow": "Wenchang Lamp",
-      "description": "祈愿学业进步、金榜题名",
+      "description": "学业精进 · 考试顺利 · 金榜题名",
       "audience": "适合考生、求晋升、求功名"
     },
     {
       "id": "caishen",
-      "title": "财神灯",
+      "title": "玄坛赵元帅威灵灯",
       "eyebrow": "Caishen Lamp",
-      "description": "祈愿财源广进、生意兴隆",
-      "audience": "适合经营者、创业者、求财运"
+      "description": "驱邪护正 · 招财利市 · 迎祥纳福",
+      "audience": "适合经商、求职、投资求财"
     }
   ],
   "stepsTitle": "点灯流程 · 简单四步",
@@ -80,7 +80,7 @@ export default {
     {
       "symbol": "慧",
       "title": "增长智慧",
-      "text": "灯火破无明，心智豁然开朗，学业事业得助"
+      "text": "灯火破迷障，心智豁然开朗，学业事业得助"
     },
     {
       "symbol": "寿",
@@ -90,12 +90,12 @@ export default {
     {
       "symbol": "财",
       "title": "财运亨通",
-      "text": "财神灯日夜长明，疏通财路、招财进宝"
+      "text": "玄坛赵元帅威灵灯日夜长明，疏通财路、招财进宝"
     },
     {
       "symbol": "安",
       "title": "阖家平安",
-      "text": "太岁灯镇宅化煞，一人点灯全家受荫"
+      "text": "太岁祈安灯镇宅化煞，一人点灯全家受荫"
     }
   ],
   "meritQuote": "灯供神前，昼夜长明；心诚所至，福泽自生。点灯之功，不在灯之大小，而在心之诚伪。",
@@ -106,7 +106,7 @@ export default {
     "灯供讲究持续不灭，建议供奉全年 · 含疏文",
     "许愿后当尽力践行还愿，言出必行"
   ],
-  "orderTitle": "点灯下单 · 共结善缘",
+  "orderTitle": "点灯供奉 · 共结善缘",
   "confirmTitle": "供奉下单 · 确认支付",
   "lampType": "灯种",
   "lighting": "点灯",
@@ -122,7 +122,7 @@ export default {
   "nameRequired": "请填写善信姓名",
   "submitLamp": "点灯下单 · 呈报祈愿",
   "submitDeity": "供奉神像 · 呈报支付",
-  "materialExplanation": "点灯本身免费，灯供物料由道观统一备办，供奉于神前，昼夜长明。物料随喜，共成善缘。",
+  "materialExplanation": "点灯本身免费，灯供物料由道观统一备办，供奉于神前，昼夜长明。物料随心，共成善缘。",
   "paymentPrompt": "选择支付方式，完成供奉下单",
   "paymentMethod": "支付方式",
   "pay": "立即支付",

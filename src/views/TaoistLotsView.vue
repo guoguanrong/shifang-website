@@ -81,7 +81,7 @@ let divinationPromise = null
 function startDraw() {
   // 未登录先引导登录，登录后再抽取即可继续。
   if (!isLoggedIn.value) {
-    openAuthModal('login')
+    openAuthModal('login', () => startDraw())
     return
   }
   if (drawing.value || revealing.value || alreadyDrawn.value) return

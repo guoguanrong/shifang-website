@@ -10,7 +10,7 @@ export default {
   transparency: {
     title: '資金流向 公開透明',
     promise: '我們鄭重承諾：',
-    items: ['資金流向公開，可隨時查閱', '每一筆捐贈皆可追溯'],
+    items: ['資金流向公開，可隨時查閱', '每一筆善捐皆可追溯'],
     action: '查看資金明細',
     chartTitle: '資金用途',
     chartItems: [

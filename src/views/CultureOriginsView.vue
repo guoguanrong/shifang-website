@@ -1096,8 +1096,8 @@ onBeforeUnmount(() => {
   top: 268px;
   width: 560px;
   font-family: Georgia, serif;
-  font-size: 29px;
-  line-height: 1.35;
+  font-size: 23px;
+  line-height: 1.45;
 }
 
 .is-international .culture-heading :deep(h2) {
@@ -1397,7 +1397,7 @@ onBeforeUnmount(() => {
   .is-international .intro-slogan {
     top: 190px;
     width: 42%;
-    font-size: 25px;
+    font-size: 20px;
   }
 }
 
@@ -1458,7 +1458,7 @@ onBeforeUnmount(() => {
   }
 
   .is-international .intro-slogan {
-    font-size: 24px;
+    font-size: 19px;
   }
 
   .is-international .intro-copy p {

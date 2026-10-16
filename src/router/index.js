@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
+import { useAuthModal } from '@/composables/useAuthModal'
+import { useUserSession } from '@/composables/useUserSession'
 
 // 使用 HTML5 History 模式管理站内页面与锚点导航。
 const router = createRouter({
@@ -13,16 +15,19 @@ const router = createRouter({
     {
       path: '/account/verification',
       name: 'account-verification',
+      meta: { requiresAuth: true },
       component: () => import('@/views/AccountVerificationView.vue'),
     },
     {
       path: '/account/certificates',
       name: 'account-certificates',
+      meta: { requiresAuth: true },
       component: () => import('@/views/AccountCertificatesView.vue'),
     },
     {
       path: '/account/settings',
       name: 'account-settings',
+      meta: { requiresAuth: true },
       component: () => import('@/views/AccountSettingsView.vue'),
     },
     {
@@ -39,36 +44,42 @@ const router = createRouter({
     {
       path: '/account/orders',
       name: 'account-orders',
+      meta: { requiresAuth: true },
       component: () => import('@/views/AccountHistoryView.vue'),
       props: { kind: 'orders' },
     },
     {
       path: '/account/events',
       name: 'account-events',
+      meta: { requiresAuth: true },
       component: () => import('@/views/AccountHistoryView.vue'),
       props: { kind: 'events' },
     },
     {
       path: '/account/lamps',
       name: 'account-lamps',
+      meta: { requiresAuth: true },
       component: () => import('@/views/AccountRecordsView.vue'),
       props: { kind: 'lamps' },
     },
     {
       path: '/account/donations',
       name: 'account-donations',
+      meta: { requiresAuth: true },
       component: () => import('@/views/AccountRecordsView.vue'),
       props: { kind: 'donations' },
     },
     {
       path: '/account/deities',
       name: 'account-deities',
+      meta: { requiresAuth: true },
       component: () => import('@/views/AccountRecordsView.vue'),
       props: { kind: 'deities' },
     },
     {
       path: '/account/volunteer',
       name: 'account-volunteer',
+      meta: { requiresAuth: true },
       component: () => import('@/views/VolunteerView.vue'),
     },
     {
@@ -304,6 +315,17 @@ const router = createRouter({
 
     return { top: 0 }
   },
+})
+
+const { hasAuthenticatedSession } = useUserSession()
+const { openAuthModal } = useAuthModal()
+
+router.beforeEach(async (to) => {
+  if (!to.meta.requiresAuth || await hasAuthenticatedSession()) return true
+
+  const requestedPath = to.fullPath
+  openAuthModal('login', () => router.replace(requestedPath))
+  return { name: 'home' }
 })
 
 export default router

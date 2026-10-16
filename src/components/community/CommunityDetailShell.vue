@@ -128,7 +128,7 @@ const setLocale = (locale) => setAppLocale(locale)
 .community-detail-content :deep(.detail-surface) {
   overflow: hidden;
   background: rgba(255, 252, 248, .86);
-  border-radius: 12px 12px 0 0;
+  border-radius: 12px;
   box-shadow: 0 8px 30px rgba(72, 48, 26, .035);
 }
 

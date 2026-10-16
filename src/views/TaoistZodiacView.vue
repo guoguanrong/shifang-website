@@ -39,15 +39,11 @@ import BlessingTestResultDialog from '@/components/blessings/BlessingTestResultD
 import BirthDateWheel from '@/components/blessings/BirthDateWheel.vue'
 import OrnateSectionHeading from '@/components/common/OrnateSectionHeading.vue'
 import CeremonialButton from '@/components/common/CeremonialButton.vue'
-import { useUserSession } from '@/composables/useUserSession'
-import { useAuthModal } from '@/composables/useAuthModal'
 import heading from '@/assets/blessing-tests/heading.svg'
 import { getConstellation } from '@/api/pray'
 import { getLunarMonths } from '@/utils/lunar-birthday'
 
 const { t, tm } = useI18n()
-const { isLoggedIn } = useUserSession()
-const { openAuthModal } = useAuthModal()
 // 农历生辰：年、月、日三个滚轮各自的值。
 const year = ref('')
 const month = ref('')
@@ -80,11 +76,6 @@ const constellation = ref(null)
 const loading = ref(false)
 
 async function reveal() {
-  // 未登录先引导登录，登录后再点揭晓即可继续。
-  if (!isLoggedIn.value) {
-    openAuthModal('login')
-    return
-  }
   if (!hasBirthday.value) {
     resultKind.value = 'notice'
     return

@@ -13,10 +13,10 @@ export default {
   ...traditional,
   hero: { ...traditional.hero, title: '道會活動', subtitle: '隨緣參加 · 共修共福 · 道長親自主持', intro: '道會，又稱「齋醮」，是道教最重要的集體修行活動。參加道會不僅能為自己和家人祈福消災，更是與十方善信共結善緣的殊勝機緣。十方殿定期舉辦各類道會，歡迎十方善信隨緣參加。' },
   opportunities: { ...traditional.opportunities, title: '親臨道會 · 四大殊勝機緣', subtitle: '一場道會，一次與神明最近的時刻 —— 親自參加，收穫遠超想像' },
-  recentTitle: '近期道會 · 隨喜參加', futureTitle: '未來規劃 · 道會日程', details: '瞭解詳情', more: '查看更多', empty: '暫無數據', loading: '載入中', backToTop: '返回頂部',
+  recentTitle: '近期道會 · 隨心參加', futureTitle: '未來規劃 · 道會日程', details: '瞭解詳情', more: '查看更多', empty: '暫無數據', loading: '載入中', backToTop: '返回頂部',
   detail: {
     ...traditional.detail,
-    time: '道會時間', location: '道會地點', tags: '活動標籤', join: '參加方式', deadline: '報名截止', audience: '適合人群', limit: '限有限制人數', limitPeople: '{count} 人',
+    time: '道會時間', location: '道會地點', tags: '活動標籤', join: '參加方式', deadline: '報名截止', audience: '適合人群', limit: '人數上限', limitPeople: '{count} 人',
     intro: '道會簡介', ritual: '儀軌流程', benefit: '參加道會的功德利益', crowd: '適合人群',
     registerOnline: '線上登記祈福', registerOffline: '線下親臨', deadlineLine: '登記截止：{time}', ahead: '道會日前 {days} 天',
     collective: '集體活動', reserved: '專場預約', joinOnline: '線上登記', joinOffline: '線下親臨',

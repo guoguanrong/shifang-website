@@ -26,7 +26,7 @@
         <template v-if="channel === 'email'">
           <label class="auth-field">
             <span>{{ t('portal.auth.email') }}</span>
-            <input v-model.trim="form.email" type="email" autocomplete="email" :placeholder="t('portal.auth.emailPlaceholder')" />
+            <input v-model.trim="form.email" type="email" maxlength="254" autocomplete="email" :placeholder="t('portal.auth.emailPlaceholder')" />
           </label>
 
           <label class="auth-field">
@@ -50,7 +50,7 @@
                   {{ t(option.labelKey) }}
                 </option>
               </select>
-              <input v-model.trim="form.phone" type="tel" inputmode="tel" autocomplete="tel" :placeholder="t('portal.auth.phonePlaceholder')" :disabled="sendingSms" />
+              <input v-model.trim="form.phone" type="tel" inputmode="tel" maxlength="15" autocomplete="tel" :placeholder="t('portal.auth.phonePlaceholder')" :disabled="sendingSms" />
             </span>
           </label>
 
@@ -132,7 +132,7 @@ import { ensureUvid } from '@/api/visitor'
 import { setToken } from '@/api/http'
 
 const props = defineProps({ mode: { type: String, required: true, validator: (value) => ['login', 'register'].includes(value) } })
-const emit = defineEmits(['close', 'switch-mode'])
+const emit = defineEmits(['close', 'switch-mode', 'authenticated'])
 
 const { t, tm } = useI18n()
 const { refreshMemberInfo, startDemoSession } = useUserSession()
@@ -186,7 +186,7 @@ function switchChannel(next) {
 // 按当前渠道校验：邮箱渠道验邮箱+邮箱验证码；手机号渠道验手机号+短信验证码+已发送标记。
 function validationMessage() {
   if (channel.value === 'email') {
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) return t('portal.auth.invalidEmail')
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(form.email)) return t('portal.auth.invalidEmail')
     if (!form.emailCode) return t('portal.auth.missingCode')
     return ''
   }
@@ -237,6 +237,7 @@ async function submit() {
         action: t('portal.auth.successAction'),
         success: true,
       }
+      emit('authenticated')
     } catch (requestError) {
       showError(requestError.message)
     } finally {
@@ -271,6 +272,7 @@ async function submit() {
         action: t('portal.auth.successAction'),
         success: true,
       }
+      emit('authenticated')
     } catch (loginError) {
       // 注册成功但自动登录失败（验证码可能在注册时被消费），引导用户手动登录。
       showError(t('portal.auth.autoLoginFailed'))
@@ -298,7 +300,7 @@ function startCountdown(target) {
 // 发送验证码：先校验对应的邮箱/手机号，再分别调用邮箱/短信接口。
 async function sendCode(kind) {
   inlineNotice.value = ''
-  if (kind === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+  if (kind === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(form.email)) {
     showError(t('portal.auth.invalidEmail'))
     return
   }

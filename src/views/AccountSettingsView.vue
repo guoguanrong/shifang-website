@@ -82,7 +82,7 @@ const errors = computed(() => {
   const result = {}
   if (!form.name.trim()) result.name = 'accountDetails.settings.nameError'
   if (form.phone.trim() && !/^[+0-9() .-]{5,30}$/.test(form.phone.trim())) result.phone = 'accountDetails.settings.phoneError'
-  if (form.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) result.email = 'accountDetails.settings.emailError'
+  if (form.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(form.email.trim())) result.email = 'accountDetails.settings.emailError'
   return result
 })
 
@@ -96,7 +96,7 @@ watch(user, value => {
 async function save() {
   if (saving.value) return
   if (!isLoggedIn.value) {
-    openAuthModal()
+    openAuthModal('login', () => save())
     return
   }
   attempted.value = true

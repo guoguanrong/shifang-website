@@ -94,7 +94,7 @@ const goods = computed(() => shopItems.value.filter((item) => Number(item.type) 
 const moneyOptions = computed(() => shopItems.value.filter((item) => Number(item.type) !== 2 && item.price > 0))
 const selectedMoneyItem = computed(() => moneyOptions.value.find((item) => item.id === selectedMoneyId.value) || null)
 const selectedGood = computed(() => goods.value[itemIndex.value] || null)
-const invalidAmount = computed(() => customAmount.value !== '' && (!Number.isFinite(Number(customAmount.value)) || Number(customAmount.value) < 50 || Number(customAmount.value) > 999999999 || !/^\d+(\.\d{1,2})?$/.test(customAmount.value)))
+const invalidAmount = computed(() => customAmount.value !== '' && (!/^\d{1,9}$/.test(customAmount.value) || Number(customAmount.value) < 50 || Number(customAmount.value) > 999999999))
 const total = computed(() => mode.value === 'goods'
   ? selectedGood.value ? selectedGood.value.price * quantity.value : null
   : invalidAmount.value ? null : Number(customAmount.value || amount.value))

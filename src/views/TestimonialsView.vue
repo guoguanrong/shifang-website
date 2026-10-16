@@ -10,8 +10,11 @@
           <div v-if="item.fromApi" class="testimonial-avatar" aria-hidden="true">{{ item.initial }}</div>
           <img v-else :src="avatars[index % avatars.length]" alt="" />
           <div>
-            <h2>{{ item.name }} <span v-if="item.fromApi ? item.type : item.tag">{{ item.fromApi ? memoirTypeLabel(item.type) : item.tag }}</span></h2>
-            <p>{{ item.role }}</p>
+            <h2 v-if="item.name || (item.fromApi ? item.type : item.tag)">
+              <template v-if="item.name">{{ item.name }}</template>
+              <span v-if="item.fromApi ? item.type : item.tag">{{ item.fromApi ? memoirTypeLabel(item.type) : item.tag }}</span>
+            </h2>
+            <p v-if="item.role">{{ item.role }}</p>
           </div>
         </header>
         <p v-if="item.storyTitle" class="testimonial-title">{{ item.storyTitle }}</p>

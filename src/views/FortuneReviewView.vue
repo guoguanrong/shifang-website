@@ -57,7 +57,7 @@ const ZODIAC_NAMES = ['鼠', '牛', '虎', '兔', '龙', '蛇', '马', '羊', '�
 async function previewResult(index) {
   // 未登录先引导登录，登录后再点生肖即可继续。
   if (!isLoggedIn.value) {
-    openAuthModal('login')
+    openAuthModal('login', () => previewResult(index))
     return
   }
   selected.value = index

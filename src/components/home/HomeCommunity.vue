@@ -28,8 +28,11 @@
             <div v-if="item.fromApi" class="testimonial-avatar" aria-hidden="true">{{ item.initial }}</div>
             <img v-else :src="avatars[index % avatars.length]" alt="" />
             <span>
-              <b>{{ item.name }} <em v-if="item.fromApi ? item.type : item.tag">{{ item.fromApi ? memoirTypeLabel(item.type) : item.tag }}</em></b>
-              {{ item.role }}
+              <b v-if="item.name || (item.fromApi ? item.type : item.tag)">
+                <template v-if="item.name">{{ item.name }}</template>
+                <em v-if="item.fromApi ? item.type : item.tag">{{ item.fromApi ? memoirTypeLabel(item.type) : item.tag }}</em>
+              </b>
+              <template v-if="item.role">{{ item.role }}</template>
             </span>
           </div>
           <p v-if="item.storyTitle" class="testimonial-story-title">{{ item.storyTitle }}</p>
@@ -72,7 +75,7 @@
   <!-- 最新动态列表。 -->
   <section id="news" class="news-section">
     <HomeSectionHeading :eyebrow="t('news.en')" :title="t('news.title')" :description="t('news.subtitle')" />
-    <div class="news-grid">
+    <div v-if="newsItems.length" class="news-grid">
       <article v-for="(item, index) in newsItems" :key="item.id ?? item.title"><img
         :src="item.cover || newsImages[index]" :alt="item.title"
       />
@@ -80,6 +83,7 @@
         <p>{{ item.desc }}</p>
       </article>
     </div>
+    <p v-else class="news-empty" role="status">{{ t('news.empty') }}</p>
     <button class="section-more" type="button" @click="goToPage('news')">{{ t('news.more') }} ⟶</button>
   </section>
 
@@ -165,7 +169,7 @@ const messages = computed(() => tm('messages.items'))
 const apiMessages = ref([])
 // 无数据时展示空状态图，不再回退静态示例卡。
 const displayedMessages = computed(() => apiMessages.value)
-// 最新动态：优先展示接口数据，无数据或加载失败时回退语言包静态条目。
+// 最新动态：只展示接口数据；无数据或加载失败时保持为空，显示“暂无动态”，不再回退语言包静态条目。
 const apiNews = ref([])
 
 async function loadNews() {
@@ -185,7 +189,7 @@ async function loadNews() {
   }
 }
 
-const newsItems = computed(() => (apiNews.value.length ? apiNews.value : tm('news.items')))
+const newsItems = computed(() => apiNews.value)
 const milestones = computed(() => tm('milestones.items'))
 // 时间轴徽章作为 CSS 背景变量使用，避免在模板中增加装饰节点。
 const milestoneEmblemBackground = `url("${milestoneEmblem}")`
@@ -734,6 +738,18 @@ function goToPage(name) {
   margin: auto;
 }
 
+/* 无动态时的空状态占位。 */
+.news-empty {
+  display: grid;
+  place-items: center;
+  min-height: 200px;
+  max-width: 1440px;
+  margin: auto;
+  color: #a89a85;
+  font-size: 15px;
+  letter-spacing: 3px;
+}
+
 .news-grid article {
   position: relative;
   height: 280px;
@@ -787,7 +803,7 @@ function goToPage(name) {
 
 .milestones-section {
   z-index: 4;
-  height: 496px;
+  height: 626px;
   padding-top: 69px;
   background: #f8f5ed;
 }

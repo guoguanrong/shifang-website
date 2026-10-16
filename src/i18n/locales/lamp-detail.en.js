@@ -3,8 +3,8 @@ export default {
   "total": "Total",
   "noticesTitle": "Offering Guidance",
   "guangmingDescription": [
-    "The Guangming Lamp represents light dispelling darkness. A traditional Taoist offering, its steady flame expresses a sincere wish for clarity, peace and a bright path ahead.",
-    "At Shifang Hall, priests tend the lamp altar in Sanqing Hall with daily incense and oil. Dedicated prayers are included in the ceremonies held at the new and full moon."
+    "The Doumu Light Lamp honors Doumu Yuanjun with offerings of light, worship of the Dipper, relief from hardship and prayers for longevity. Its flame dispels darkness: where lamps shine, the deities look upon us; when the heart’s lamp is lit, darkness gives way.",
+    "At ShiFang Hall, priests tend the light-lamp altar in the Hall of Doumu Yuanjun with daily incense and oil. Dedicated prayers are included in the ceremonies held at the new and full moon."
   ],
   "merits": [
     {

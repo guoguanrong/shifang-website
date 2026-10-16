@@ -13,7 +13,7 @@ export default {
   "lampSubtitle": "燈供神前，心誠則靈；福澤十方，善願皆成",
   "lampEyebrow": "Lamp Offering",
   "section": "祈福納祥",
-  "lampIntro": "點燈是道教最殊勝的祈福方式之一。燈火通明之處，神明降鑒；心燈一亮，萬暗皆消。十方殿線上點燈服務，讓您無論身在何處，都能供奉一盞福燈於神前，日夜蒙受道光照拂。",
+  "lampIntro": "點燈是道教最隆重的祈福方式之一。燈火通明之處，神明降鑒；心燈一亮，萬暗皆消。十方殿線上點燈服務，讓您無論身在何處，都能供奉一盞福燈於神前，日夜蒙受道光照拂。",
   "selectionTitle": "燈種選擇 · 各應所願",
   "offerLamp": "供奉此燈",
   "yearOffering": "供奉全年 · 含疏文",
@@ -21,31 +21,31 @@ export default {
   "lamps": [
     {
       "id": "guangming",
-      "title": "光明燈",
+      "title": "斗姆光明燈",
       "eyebrow": "Guangming Lamp",
-      "description": "祈願前程光明、諸事順遂",
-      "audience": "適合求事業、求平安、求轉運"
+      "description": "禮斗朝真 · 消災解厄 · 本命延生",
+      "audience": "適合求本命延生、消災解厄、闔家安康"
     },
     {
       "id": "taisui",
-      "title": "太歲燈",
+      "title": "太歲祈安燈",
       "eyebrow": "Tai Sui Lamp",
-      "description": "化解流年沖煞 · 值年太歲護佑",
+      "description": "禳解歲厄 · 流年順遂",
       "audience": "本命年、沖太歲者宜供奉"
     },
     {
       "id": "wenchang",
-      "title": "文昌燈",
+      "title": "文昌啟智燈",
       "eyebrow": "Wenchang Lamp",
-      "description": "祈願學業進步、金榜題名",
+      "description": "學業精進 · 考試順利 · 金榜題名",
       "audience": "適合考生、求晉升、求功名"
     },
     {
       "id": "caishen",
-      "title": "財神燈",
+      "title": "玄壇趙元帥威靈燈",
       "eyebrow": "Caishen Lamp",
-      "description": "祈願財源廣進、生意興隆",
-      "audience": "適合經營者、創業者、求財運"
+      "description": "驅邪護正 · 招財利市 · 迎祥納福",
+      "audience": "適合經商、求職、投資求財"
     }
   ],
   "stepsTitle": "點燈流程 · 簡單四步",

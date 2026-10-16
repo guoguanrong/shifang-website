@@ -63,14 +63,14 @@ export default {
     "restart": "Try Again"
   },
   "lots": {
-    "title": "Taoist Lot Drawing",
+    "title": "Taoist Fortune Lots",
     "eyebrow": "Taoist Lot",
-    "subtitle": "A sincere question · Traditional guidance · One lot at a time",
-    "introTitle": "The Ritual of Drawing Lots",
+    "subtitle": "Seek sincerely · Priest-guided interpretation · One question, one lot",
+    "introTitle": "The Ritual of Seeking a Lot",
     "intro": [
-      "Drawing lots is a traditional Taoist way of seeking guidance from the deities. Quietly focus on a specific question and respectfully request a lot. Keep your attention on one concern: one question, one lot."
+      "Seeking a lot is a traditional Taoist way of communicating with the deities. Quietly focus on a specific question and respectfully request a lot; the text is a sign from the deities. Keep your attention on one concern: one question, one lot."
     ],
-    "categoriesTitle": "Four Vessels · Four Areas of Life",
+    "categoriesTitle": "Four Kinds of Lots · Each for a Different Need",
     "categories": [
       {
         "title": "Career",
@@ -93,12 +93,12 @@ export default {
         "text": "Connection · Marriage · Romance"
       }
     ],
-    "drawTitle": "One Lot Today · Reflect on Your Question",
+    "drawTitle": "Reflect on Your Question · One Question, One Lot",
     "limit": "One lot per person each day · Renewed the next day",
     "alreadyDrawn": "You have drawn your lot today. Please come back tomorrow.",
-    "instruction": "Choose a vessel, then draw a lot · Ask with sincerity · One question at a time",
-    "draw": "Draw a Lot",
-    "pending": "This is a preview of the lot-drawing animation. Full lot readings are being prepared; your daily allowance has not been used.",
+    "instruction": "Choose a lot, then tap below to shake · Ask with sincerity · One question, one lot",
+    "draw": "Tap to Shake",
+    "pending": "Your lot could not be completed. Please try again shortly.",
     "guideTitle": "Understanding Your Lot",
     "guide": "Highest blessing: move forward with confidence. Great blessing: embrace a timely opportunity. Moderate blessing: progress patiently. Balanced lot: stay grounded in the present. Lower lot: cultivate calm and resilience. Challenging lot: pause, reflect and seek guidance."
   },
