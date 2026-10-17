@@ -12,6 +12,7 @@ export default {
   "lampTitle": "Light a Lamp · Share a Blessing",
   "lampSubtitle": "Offer a light with sincerity, and a wish for all.",
   "lampEyebrow": "Lamp Offering",
+  "lampEmpty": "No lamps available for lighting",
   "section": "Blessings",
   "lampIntro": "Offering a lamp is one of Taoism’s most solemn forms of prayer. Where lamps shine, the deities look upon us; when the heart’s lamp is lit, darkness gives way. Wherever you are, you can offer a blessing lamp at ShiFang Hall and receive its light day and night.",
   "selectionTitle": "Choose a Lamp · Each Has Its Blessing",

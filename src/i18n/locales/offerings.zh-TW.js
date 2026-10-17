@@ -12,6 +12,7 @@ export default {
   "lampTitle": "線上點燈 · 福澤十方",
   "lampSubtitle": "燈供神前，心誠則靈；福澤十方，善願皆成",
   "lampEyebrow": "Lamp Offering",
+  "lampEmpty": "暫無可點亮的燈",
   "section": "祈福納祥",
   "lampIntro": "點燈是道教最隆重的祈福方式之一。燈火通明之處，神明降鑒；心燈一亮，萬暗皆消。十方殿線上點燈服務，讓您無論身在何處，都能供奉一盞福燈於神前，日夜蒙受道光照拂。",
   "selectionTitle": "燈種選擇 · 各應所願",
