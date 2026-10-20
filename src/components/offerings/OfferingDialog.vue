@@ -58,12 +58,15 @@
                 <dd>{{ order.wish }}</dd>
               </div>
             </dl>
-            <!-- <p class="payment-caption">{{ t(kind === 'deity' ? 'offerings.deityPaymentPrompt' : 'offerings.paymentPrompt') }}</p>
+            <p class="payment-caption">{{ t(kind === 'deity' ? 'offerings.deityPaymentPrompt' : 'offerings.paymentPrompt') }}</p>
             <div class="payment-options" role="group" :aria-label="t('offerings.paymentMethod')">
               <button v-for="method in methods" :key="method.id" :class="method.id" type="button"
-                :aria-pressed="payment === method.id" @click="payment = method.id"><img :src="method.image"
-                  :alt="method.label" /><span v-if="kind === 'deity' && method.id === 'paypal'" class="payment-recommended">{{ t('offerings.paymentRecommended') }}</span></button>
-            </div> -->
+                :disabled="paying" :aria-pressed="payment === method.id" @click="payment = method.id">
+                <img v-if="method.image" :src="method.image" :alt="method.label" />
+                <span v-else class="payment-brand stripe-brand">{{ method.label }}</span>
+                <span v-if="kind === 'deity' && method.id === 'paypal'" class="payment-recommended">{{ t('offerings.paymentRecommended') }}</span>
+              </button>
+            </div>
             <div class="dialog-actions">
               <CeremonialButton :label="paying ? t('offerings.paying') : `${t('offerings.pay')}  $${amount}`" :disabled="paying" @click="pay" /><button
                 class="dialog-cancel" type="button" :disabled="paying" @click="cancel">{{ t('offerings.reconsider') }}</button>
@@ -83,10 +86,10 @@ import { useI18n } from 'vue-i18n'
 import CeremonialButton from '@/components/common/CeremonialButton.vue'
 import OfferingOrderForm from './OfferingOrderForm.vue'
 import { createOrder } from '@/api/order'
+import { createPaypalPayment } from '@/api/paypal'
 import { createStripePayment } from '@/api/stripe'
 import { useUserSession } from '@/composables/useUserSession'
 import paypal from '@/assets/offerings/paypal.png'
-import applePay from '@/assets/offerings/apple-pay.webp'
 import closeIcon from '@/assets/offerings/close.svg'
 import emblem from '@/assets/events/section-emblem.svg'
 import confirmEmblem from '@/assets/offerings/confirm-emblem.svg'
@@ -106,7 +109,7 @@ const payment = ref('paypal')
 const unavailable = ref(false)
 const paying = ref(false)
 const payError = ref('')
-const methods = [{ id: 'paypal', image: paypal, label: 'PayPal' }, { id: 'apple-pay', image: applePay, label: 'Apple Pay' }]
+const methods = [{ id: 'paypal', image: paypal, label: 'PayPal' }, { id: 'stripe', label: 'Stripe' }]
 // 记住打开前的焦点与页面滚动状态，关闭后原样恢复。
 let previousOverflow
 let previousFocus
@@ -130,9 +133,9 @@ function orderNumber(data) {
 function paymentUrl(data) {
   if (typeof data === 'string') return /^https?:\/\//.test(data) ? data : ''
   if (!data || typeof data !== 'object') return ''
-  const named = data.url || data.checkoutUrl || data.sessionUrl || data.payUrl
-  if (named) return named
-  return Object.values(data).find(value => typeof value === 'string' && /^https?:\/\//.test(value)) || ''
+  const named = data.approvalUrl || data.url || data.checkoutUrl || data.sessionUrl || data.payUrl
+  if (named) return /^https?:\/\//i.test(named) ? named : ''
+  return Object.values(data).find(value => typeof value === 'string' && /^https?:\/\//i.test(value)) || ''
 }
 async function pay() {
   if (paying.value) return
@@ -165,20 +168,29 @@ async function pay() {
       cycleType: deity ? props.cycleType : undefined,
     }, { silent: true })
     const orderNo = orderNumber(created)
-    const session = await createStripePayment({
-      orderNo,
-      amount: Number(props.amount),
-      pageUrl: window.location.href,
-    }, { silent: true })
-    const url = paymentUrl(session)
+    if (!orderNo) throw new Error(t('offerings.paymentFailed'))
+
+    const pendingPayment = { flow: 'offering', title: props.title, name: order.value.name }
+    const paymentResult = payment.value === 'paypal'
+      ? await createPaypalPayment({ orderNo, amount: Number(props.amount), pageUrl: window.location.href }, { silent: true })
+      : await createStripePayment({ orderNo, amount: Number(props.amount), pageUrl: window.location.href }, { silent: true })
+    const url = paymentUrl(paymentResult)
     if (!url) {
       payError.value = t('offerings.paymentRedirectMissing')
       return
     }
     try {
-      sessionStorage.setItem('shifang-stripe-return', JSON.stringify({ title: props.title, name: order.value.name }))
+      if (payment.value === 'paypal') {
+        sessionStorage.setItem('shifang-paypal-return', JSON.stringify({
+          ...pendingPayment,
+          paypalOrderId: paymentResult?.paypalOrderId || '',
+          orderNo,
+        }))
+      } else {
+        sessionStorage.setItem('shifang-stripe-return', JSON.stringify(pendingPayment))
+      }
     } catch {
-      // 回跳后仍可按支付状态展示结果。
+      // The payment provider returns the order id for callback handling if storage is unavailable.
     }
     window.location.assign(url)
   } catch (error) {

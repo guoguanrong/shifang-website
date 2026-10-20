@@ -8,17 +8,24 @@
         </button>
         <div class="dialog-heading">
           <img :src="emblem" alt="" aria-hidden="true" />
-          <h2 id="paypal-return-title">{{ t(paid ? 'donation.dialog.thanksTitle' : 'offerings.paymentResultTitle') }}</h2>
+          <h2 id="paypal-return-title">{{ t(paid ? (pending.flow === 'offering' ? 'offerings.completedTitle' : 'donation.dialog.thanksTitle') : 'offerings.paymentResultTitle') }}</h2>
         </div>
         <div v-if="checking" class="offering-completed" role="status">
           <p>{{ t('offerings.paymentChecking') }}</p>
         </div>
         <div v-else-if="paid" class="offering-completed" role="status">
-          <p>{{ t('donation.dialog.thanks') }}</p>
-          <p>{{ t('donation.dialog.paidWith', { method: 'PayPal' }) }}</p>
-          <p>{{ t('donation.dialog.recorded') }}</p>
+          <template v-if="pending.flow === 'offering'">
+            <p>{{ t('offerings.completedThanks') }}</p>
+            <p v-if="pending.name && pending.title">{{ t('offerings.completedDedication', { name: pending.name, deity: pending.title }) }}</p>
+            <p>{{ t('offerings.completedService') }}</p>
+          </template>
+          <template v-else>
+            <p>{{ t('donation.dialog.thanks') }}</p>
+            <p>{{ t('donation.dialog.paidWith', { method: 'PayPal' }) }}</p>
+            <p>{{ t('donation.dialog.recorded') }}</p>
+          </template>
           <p class="completed-blessing">{{ t('offerings.completedBlessing') }}！</p>
-          <CeremonialButton :label="t('donation.dialog.acknowledge')" @click="dialog.close()" />
+          <CeremonialButton :label="t(pending.flow === 'offering' ? 'offerings.completedBlessing' : 'donation.dialog.acknowledge')" @click="dialog.close()" />
         </div>
         <div v-else class="offering-completed" role="alert">
           <p>{{ message || t('offerings.paymentFailed') }}</p>
@@ -51,6 +58,7 @@ const checking = ref(false)
 const paid = ref(false)
 const message = ref('')
 const pendingPaypalOrderId = ref('')
+const pending = ref({})
 const seen = new Set()
 let previousOverflow = ''
 
@@ -89,7 +97,7 @@ watch(() => returnKey(route.query), async (key) => {
   if (!key || seen.has(key)) return
   seen.add(key)
 
-  const pending = readPending()
+  pending.value = readPending()
   open.value = true
   checking.value = true
   paid.value = false
@@ -105,7 +113,7 @@ watch(() => returnKey(route.query), async (key) => {
       message.value = t('offerings.paymentUnpaid')
       return
     }
-    pendingPaypalOrderId.value = paypalOrderIdFromQuery(route.query) || pending.paypalOrderId || ''
+    pendingPaypalOrderId.value = paypalOrderIdFromQuery(route.query) || pending.value.paypalOrderId || ''
     if (!pendingPaypalOrderId.value) {
       message.value = t('offerings.paymentFailed')
       return

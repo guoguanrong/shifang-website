@@ -116,6 +116,13 @@
   box-shadow: none;
 }
 
+.offering-dialog .payment-options .stripe-brand {
+  color: #635bff;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -.04em;
+}
+
 .payment-recommended {
   padding: 2px 7px;
   color: #c29f79;

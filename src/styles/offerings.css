@@ -955,12 +955,6 @@ html[data-locale-layout='international'] .lamp-steps p {
   object-fit: contain;
 }
 
-.payment-options .apple-pay img {
-  width: 78px;
-  height: 78px;
-  object-fit: contain;
-}
-
 .dialog-actions {
   display: flex;
   gap: 20px;
@@ -1271,11 +1265,6 @@ html[data-locale-layout='international'] .shrine-deity-heading h2 {
   .payment-options .paypal img {
     width: 88px;
     height: 44px;
-  }
-
-  .payment-options .apple-pay img {
-    width: 62px;
-    height: 62px;
   }
 
   .dialog-actions {
