@@ -2,41 +2,21 @@ import { request } from './http'
 
 /**
  * 创建 PayPal 支付
- * @param {object} data 支付参数 {uvid, amount}
- * @returns {Promise<object>} PayPal 返回 Map，含 approvalUrl 支付跳转地址
+ * @param {object} data PayRequest {orderNo, amount, pageUrl}
+ * @param {object} [options] 额外请求配置，如 { silent: true }
+ * @returns {Promise<object>} PayPalCreateOrderVO，含 paypalOrderId 和 approvalUrl
  */
-export function createPaypalPayment(data) {
-  return request({ url: '/paypal/create', method: 'post', data })
+export function createPaypalPayment(data, options) {
+  return request({ url: '/paypal/create', method: 'post', data, ...options })
 }
 
 /**
  * Capture：用户支付完成后确认扣款
  * @param {string} paypalOrderId PayPal 订单 id
- * @returns {Promise<object>} PayPal 订单详情
+ * @param {object} [options] 额外请求配置，如 { silent: true }
+ * @returns {Promise<object>} PayPal capture response
  */
-export function capturePaypalPayment(paypalOrderId) {
-  return request({ url: '/paypal/capture', params: { paypalOrderId } })
-}
-
-/**
- * 查询 PayPal 订单
- * @param {string} paypalOrderId PayPal 订单 id
- */
-export function getPaypalOrder(paypalOrderId) {
-  return request({ url: `/paypal/order/${paypalOrderId}` })
-}
-
-/**
- * PayPal 支付成功回调
- * @param {string} token PayPal 回调 token
- */
-export function paypalSuccess(token) {
-  return request({ url: '/paypal/success', params: { token } })
-}
-
-/**
- * PayPal 取消支付回调
- */
-export function paypalCancel() {
-  return request({ url: '/paypal/cancel' })
+export function capturePaypalPayment(paypalOrderId, options) {
+  const encodedId = encodeURIComponent(paypalOrderId)
+  return request({ url: `/paypal/capture/${encodedId}`, method: 'post', ...options })
 }

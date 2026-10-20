@@ -8,6 +8,7 @@
   <SiteQuickActions />
   <AuthModal />
   <StripeReturnDialog />
+  <PaypalReturnDialog />
 </template>
 
 <script setup>
@@ -16,6 +17,7 @@ import { RouterView } from 'vue-router'
 import AuthModal from '@/components/auth/AuthModal.vue'
 import SiteQuickActions from '@/components/common/SiteQuickActions.vue'
 import StripeReturnDialog from '@/components/offerings/StripeReturnDialog.vue'
+import PaypalReturnDialog from '@/components/co-build/PaypalReturnDialog.vue'
 </script>
 
 <style scoped>

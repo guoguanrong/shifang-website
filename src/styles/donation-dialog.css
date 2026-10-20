@@ -24,6 +24,12 @@
 .offering-dialog.donation-dialog .order-summary dd { overflow-wrap: anywhere; }
 .offering-dialog.donation-dialog .devotee-summary { min-height: 178px; padding-top: 26px; }
 .offering-dialog.donation-dialog .payment-caption { margin-top: 18px; }
+.offering-dialog.donation-dialog .payment-options .stripe-brand {
+  color: #635bff;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -.04em;
+}
 .offering-dialog.donation-dialog .ceremonial-button { height: auto; background-image: url('@/assets/donation/dialog-texture.png'); }
 .offering-dialog.donation-dialog .ceremonial-button::after {
   inset-inline: 0;
