@@ -95,19 +95,99 @@ export default {
     "guide": [
       {
         "title": "Start of Spring",
-        "text": "Welcome the new season with prayers for good fortune."
+        "text": "Greet the new year and welcome spring with prayers for good fortune."
+      },
+      {
+        "title": "Rain Water",
+        "text": "Spring rain nourishes life; may all wishes flow smoothly and in peace."
+      },
+      {
+        "title": "Awakening of Insects",
+        "text": "Spring thunder awakens all things — may obstacles fall away and everything renew."
+      },
+      {
+        "title": "Spring Equinox",
+        "text": "Yin and yang in balance; may body and mind be harmonious and all affairs peaceful."
       },
       {
         "title": "Qingming",
-        "text": "Remember ancestors and offer prayers in their honour."
+        "text": "Remember ancestors and offer prayers for the departed."
+      },
+      {
+        "title": "Grain Rain",
+        "text": "Rain waters the five grains; may harvests be plentiful and life abundant."
+      },
+      {
+        "title": "Start of Summer",
+        "text": "All things flourish; may endeavors thrive."
+      },
+      {
+        "title": "Grain Buds",
+        "text": "All things reach gentle fullness; may progress be steady and far-reaching."
+      },
+      {
+        "title": "Grain in Ear",
+        "text": "Sowing and reaping; may every effort bear fruit."
       },
       {
         "title": "Summer Solstice",
-        "text": "As yin begins to return, cultivate inner calm."
+        "text": "As yin quietly begins, cultivate a calm heart and go with the season."
+      },
+      {
+        "title": "Minor Heat",
+        "text": "Summer heat gradually rises; may body and mind stay clear and at peace."
+      },
+      {
+        "title": "Major Heat",
+        "text": "Peak summer heat; may you pass the dog days in safety."
+      },
+      {
+        "title": "Start of Autumn",
+        "text": "Autumn begins to gather in; may blessings gather with the season."
+      },
+      {
+        "title": "End of Heat",
+        "text": "The heat recedes; may all worries disperse."
+      },
+      {
+        "title": "White Dew",
+        "text": "Dew turns cool; may you find clarity and ease."
+      },
+      {
+        "title": "Autumn Equinox",
+        "text": "Day and night in equal measure; may gains and losses find equanimity."
+      },
+      {
+        "title": "Cold Dew",
+        "text": "Cold dew gathers; may the body stay warm and the heart at peace."
+      },
+      {
+        "title": "Frost's Descent",
+        "text": "Frost descends on all things; may you keep safe and hold what you have built."
+      },
+      {
+        "title": "Start of Winter",
+        "text": "All things return to rest; may strength be gathered."
+      },
+      {
+        "title": "Minor Snow",
+        "text": "First snow falls lightly; may auspicious signs grace your door."
+      },
+      {
+        "title": "Major Snow",
+        "text": "Snow covers the earth; may you quietly await spring."
       },
       {
         "title": "Winter Solstice",
-        "text": "Welcome returning yang with prayers for blessings."
+        "text": "Yang returns anew; welcome it with prayers for blessings."
+      },
+      {
+        "title": "Minor Cold",
+        "text": "Cold days deepen; may warmth be kept and fortune stored."
+      },
+      {
+        "title": "Major Cold",
+        "text": "Cold gives way to spring; may the new year open a fresh chapter."
       }
     ],
     "action": "Enable Seasonal Reminders"

@@ -2,13 +2,13 @@
 export default {
   hero: {
     eyebrow: 'Deities & Immortals',
-    title: '诸神科普',
+    title: '圣像释义',
     subtitle: '了解每位神明的来历与职责，知所求、明所愿',
     quote: '「神无方而易无体，一阴一阳之谓道」',
     quoteSource: '—— 《周易·系辞》· 道藏洞真部',
   },
   filtersLabel: '按所求分类筛选神祇',
-  filters: ['全部', '事业', '学业', '平安', '财运', '健康'],
+  filters: ['全部', '财运', '事业', '健康', '学业', '平安'],
   meritLabel: '所求功德',
   actions: { light: '线上点灯', offer: '神像供奉' },
   monthlyPrice: '月供',
@@ -35,12 +35,6 @@ export default {
   },
   cards: [
     {
-      id: 'beidou', categories: ['health', 'peace'], title: '北斗九皇', subtitle: '北斗七星与辅弼二星 · 掌生死寿夭',
-      tags: ['消 灾', '延 寿', '解 厄'],
-      description: '北斗九皇为北斗七星（天枢、天璇、天玑、天权、玉衡、开阳、摇光）与辅星、弼星之合称，是道教最重要的星辰信仰。北斗注死、南斗注生，拜斗可消灾延寿、度厄解困。九皇诞为每年农历九月初一至初九。',
-      meta: ['九皇诞：九月初一至初九', '北斗注死'], meritTitle: '消灾度厄 · 延寿增福', meritDescription: '适合运势低迷、求寿延年、化解凶厄者，九皇诞期间拜斗效果最佳',
-    },
-    {
       id: 'taisui', categories: ['career', 'peace'], title: '六十甲子太岁', subtitle: '值年太岁神 · 流年运势主管',
       tags: ['流 年', '运 势', '化 煞'],
       description: '太岁星君为道教值年神祇，共六十位，以六十甲子为序每年轮值一位，主管当年人间吉凶祸福。犯太岁者需及时化解。太岁信仰源于中国古代星宿崇拜，与木星运行周期密切相关。',
@@ -57,12 +51,6 @@ export default {
       tags: ['学 业', '考 试', '仕 途'],
       description: '文昌帝君为道教主管文运、功名、仕途的神明，源于古代星宿崇拜。文昌星乃北斗七星之辅星，主文运。文昌帝君圣诞为二月初三，是求学业考试晋升的最佳时机。',
       meta: ['圣诞：二月初三', '主管考试晋升'], meritTitle: '学业进步 · 仕途通达', meritDescription: '适合考生、求晋升、求功名者',
-    },
-    {
-      id: 'kuixing', categories: ['study', 'career'], title: '魁星帝君', subtitle: '魁星点斗 · 科举仕途 · 独占鳌头',
-      tags: ['科 举', '文 章', '仕 进'],
-      description: '魁星帝君为道教主管科举考试的神明，源于古代星宿崇拜，为北斗七星之第一星天枢星。魁星形象为赤发蓝面、一手捧斗、一手执笔，一脚独立鳌头之上。',
-      meta: ['圣诞：七月初七', '独占鳌头'], meritTitle: '金榜题名 · 独占鳌头', meritDescription: '适合参加考试、面试、答辩者',
     },
     {
       id: 'zhaogongming', categories: ['wealth', 'career'], title: '玄坛赵元帅', subtitle: '正财神 · 五路财源 · 招财进宝',

@@ -60,14 +60,7 @@
     </div>
     <p v-else-if="!loading" class="project-empty">{{ t('coBuild.project.empty') }}</p>
 
-    <div class="assurance-grid" :style="{ '--assurance-top': `${assuranceTop}px` }">
-      <article v-for="(item, index) in assurances" :key="item.title" class="assurance-card">
-        <img class="assurance-frame" :src="assuranceFrames[index]" alt="" aria-hidden="true" />
-        <img class="assurance-icon" :src="assuranceIcons[index]" alt="" aria-hidden="true" />
-        <h3>{{ item.title }}</h3>
-        <p>{{ item.desc }}</p>
-      </article>
-    </div>
+    
   </section>
 </template>
 
@@ -94,10 +87,10 @@ const router = useRouter()
 const assurances = computed(() => tm('coBuild.assurances'))
 const goals = ref([])
 const loading = ref(true)
-const heroHeight = computed(() => Math.max(1454, 604 + Math.max(goals.value.length, 1) * 520
-  + Math.max(0, goals.value.length - 1) * 24 + 40 + 210 + 80))
-const assuranceTop = computed(() => 604 + Math.max(goals.value.length, 1) * 520
-  + Math.max(0, goals.value.length - 1) * 24 + 40)
+const heroHeight = computed(() => Math.max(1240, 604 + Math.max(goals.value.length, 1) * 434
+  + Math.max(0, goals.value.length - 1) * 16 + 22 + 174 + 6))
+const assuranceTop = computed(() => 604 + Math.max(goals.value.length, 1) * 434
+  + Math.max(0, goals.value.length - 1) * 16 + 22)
 const assuranceFrames = [assuranceFrame1, assuranceFrame2, assuranceFrame3]
 const assuranceIcons = [assuranceIcon1, assuranceIcon2, assuranceIcon3]
 
@@ -174,7 +167,7 @@ onMounted(loadGoals)
 .co-build-hero {
   isolation: isolate;
   position: relative;
-  height: max(1454px, var(--hero-height, 1454px));
+  height: max(1240px, var(--hero-height, 1240px));
   overflow: hidden;
   background: #f8f5ed;
 }

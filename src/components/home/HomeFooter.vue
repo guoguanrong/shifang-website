@@ -61,7 +61,7 @@ const policyTargets = ['/contact', '/legal', '/privacy', '/compliance']
 
 async function navigate(sectionId) {
   // 已实现的内容页使用独立路由；信众实录 / 各界寄语 / 最新动态仍以首页版块为准，平滑滚动定位。
-  const routeByTarget = { culture: 'culture-origins', deities: 'deities', etiquette: 'etiquette', wellness: 'wellness', 'co-build': 'co-build', 'cloud-build': 'cloud-build', blessings: 'blessings', events: 'events' }
+  const routeByTarget = { culture: 'culture-origins', deities: 'deities', etiquette: 'etiquette', 'co-build': 'co-build', 'cloud-build': 'cloud-build', blessings: 'blessings', events: 'events' }
   if (routeByTarget[sectionId]) {
     await router.push({ name: routeByTarget[sectionId] })
     return

@@ -26,7 +26,7 @@ export default {
   "chooseType": "Choose a Donation Type",
   "types": {
     "money": {
-      "title": "Donate Funds",
+      "title": "Build Shifang Together",
       "description": "Support temple restoration\nand cultural projects directly."
     },
     "goods": {

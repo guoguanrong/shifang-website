@@ -46,7 +46,7 @@ export default {
   // 顶部导航与账户操作。
   nav: {
     logo: 'ShiFang Hall',
-    items: ['About', 'Origins', 'Deities', 'Etiquette', 'Wellness', 'Co-Build', 'Cloud', 'Blessings', 'Events'],
+    items: ['About', 'Origins', 'Sacred Statues', 'Etiquette', 'Co-Build', 'Cloud', 'Blessings', 'Events'],
     lang: 'English',
     login: 'Log In',
   },
@@ -194,7 +194,7 @@ export default {
     logo: 'ShiFang Hall',
     slogan: 'Gathering from all directions to build a spiritual homeland for Chinese worldwide',
     exploreTitle: 'Explore',
-    explore: ['Cultural Origins', 'Deity Encyclopedia', 'Worship Etiquette', 'Blessings', 'Taoist Gatherings'],
+    explore: ['Cultural Origins', 'Sacred Statue Guide', 'Worship Etiquette', 'Blessings', 'Taoist Gatherings'],
     joinTitle: 'Participate',
     join: ['Become a Guardian', 'Cloud Co-Creation'],
     aboutTitle: 'About',

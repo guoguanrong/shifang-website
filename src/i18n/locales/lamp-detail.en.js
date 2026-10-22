@@ -8,19 +8,19 @@ export default {
   ],
   "merits": [
     {
-      "symbol": "慧",
-      "title": "Wisdom",
-      "text": "A light for learning, understanding and growth"
-    },
-    {
-      "symbol": "安",
-      "title": "Peace & Good Fortune",
-      "text": "A sincere wish for a peaceful path ahead"
+      "symbol": "顺",
+      "title": "Smooth Sailing",
+      "text": "A lamp dispels a thousand shadows; may the earthly path run smooth"
     },
     {
       "symbol": "福",
-      "title": "Family Wellbeing",
-      "text": "One offering, with wishes for the whole family"
+      "title": "Blessings Gathered",
+      "text": "The lamp reaches the heavens; auspicious light gathers blessings"
+    },
+    {
+      "symbol": "安",
+      "title": "Peace Within",
+      "text": "A burning lamp guards body and mind; peace at home and within"
     }
   ],
   "materials": [

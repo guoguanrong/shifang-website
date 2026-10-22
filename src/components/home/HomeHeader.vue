@@ -104,7 +104,7 @@ async function focusLogin() {
 const navigationStyle = { '--navigation-decoration': `url("${navigationDecoration}")` }
 
 // target 是实际导航标识，显示名称从当前语言包按相同顺序读取。
-const navigationTargets = ['about', 'culture', 'deities', 'etiquette', 'wellness', 'community', 'cloud-build', 'blessings', 'events']
+const navigationTargets = ['about', 'culture', 'deities', 'etiquette', 'community', 'cloud-build', 'blessings', 'events']
 const navigationItems = computed(() => navigationTargets.map((_, index) => t(`nav.items[${index}]`)))
 const aboutMenuItems = computed(() => [
   { label: t('about.title'), target: 'about' },
@@ -143,7 +143,7 @@ function updateHeaderState() {
 
 // 独立页面路由与导航 target 的映射集中在一处，后续新增内页不再扩散模板判断。
 function isCurrentNavigation(target) {
-  const routeByTarget = { culture: 'culture-origins', deities: 'deities', etiquette: 'etiquette', wellness: 'wellness', community: 'co-build', 'cloud-build': 'cloud-build', blessings: 'blessings', events: 'events', testimonials: 'testimonials', messages: 'messages', news: 'news' }
+  const routeByTarget = { culture: 'culture-origins', deities: 'deities', etiquette: 'etiquette', community: 'co-build', 'cloud-build': 'cloud-build', blessings: 'blessings', events: 'events', testimonials: 'testimonials', messages: 'messages', news: 'news' }
   return routeByTarget[target] === (route.meta.navigation || route.name)
 }
 
@@ -164,7 +164,7 @@ onBeforeUnmount(() => {
 
 async function navigateTo(sectionId) {
   // 已落地的内容页使用独立路由；信众实录 / 各界寄语 / 最新动态仍以首页版块为准，平滑滚动定位。
-  const routeByTarget = { culture: 'culture-origins', deities: 'deities', etiquette: 'etiquette', wellness: 'wellness', community: 'co-build', 'cloud-build': 'cloud-build', blessings: 'blessings', events: 'events' }
+  const routeByTarget = { culture: 'culture-origins', deities: 'deities', etiquette: 'etiquette', community: 'co-build', 'cloud-build': 'cloud-build', blessings: 'blessings', events: 'events' }
   if (routeByTarget[sectionId]) {
     await router.push({ name: routeByTarget[sectionId] })
     return

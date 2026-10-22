@@ -152,7 +152,7 @@ const seasonalItems = computed(() => tm('seasonal.items'))
 // 四季卡片按钮的跳转路由：与 seasonalImages 同序（春/夏/秋/冬），填入路径（如 '/blessings'）即可生效，留空则不跳转。
 const SEASONAL_ROUTES = [
   '/blessings', // 春
-  '/wellness', // 夏
+  '', // 夏（道法养生暂隐藏，留空不跳转）
   '/blessings', // 秋
   '/blessings', // 冬
 ]

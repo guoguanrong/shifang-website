@@ -64,10 +64,12 @@ const featured = computed(() => {
   const deity = tm('deities.featured')
   return { ...deity, worship: getWorshipForDeity(deity.id) }
 })
+// 卡片顺序按筛选标签权重排布：财运 → 事业 → 健康 → 学业 → 平安（以各卡首个分类归组，组内保持语言包原顺序）。
+const CATEGORY_ORDER = ['wealth', 'career', 'health', 'study', 'peace']
 const deities = computed(() => tm('deities.cards').map((deity) => ({
   ...deity,
   worship: getWorshipForDeity(deity.id),
-})))
+})).sort((left, right) => CATEGORY_ORDER.indexOf(left.categories[0]) - CATEGORY_ORDER.indexOf(right.categories[0])))
 const filteredDeities = computed(() => {
   if (activeFilter.value === 'all') return deities.value
   return deities.value.filter((deity) => deity.categories.includes(activeFilter.value))

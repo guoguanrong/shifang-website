@@ -28,12 +28,15 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 import CoBuildSectionHeading from './CoBuildSectionHeading.vue'
+import { getDonateTargetList } from '@/api/donateTarget'
 import { getMeritList } from '@/api/order'
 import anonymousSeal from '@/assets/co-build/donor-seal-anonymous.svg'
 import personSeal from '@/assets/co-build/donor-seal-person.svg'
 
 const { t } = useI18n()
+const router = useRouter()
 
 // 接口数据：功德名录（已完成捐赠的订单）。
 const apiDonors = ref([])
@@ -71,8 +74,25 @@ const canMarquee = computed(() => donors.value.length >= MARQUEE_MIN)
 
 onMounted(loadMeritList)
 
-function goToDonation() {
-  document.getElementById('donation-project')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+// 点击进入捐赠详情页：取第一个可用捐赠目标，跳转逻辑与共建 hero 的 goToDonation 一致。
+async function goToDonation() {
+  let goal = null
+  try {
+    const payload = await getDonateTargetList({ status: 1, page: 1, pageSize: 1 }, { silent: true })
+    const result = payload?.data ?? payload
+    const list = Array.isArray(result) ? result : result?.list || result?.records || []
+    goal = (Array.isArray(list) ? list : []).find((item) => item.status === undefined || Number(item.status) === 1) || null
+  } catch {
+    goal = null
+  }
+
+  router.push({
+    name: 'donation',
+    query: {
+      type: Number(goal?.type) === 2 ? '2' : '1',
+      ...(goal?.id ? { targetId: String(goal.id) } : {}),
+    },
+  })
 }
 </script>
 

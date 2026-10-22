@@ -8,19 +8,19 @@ export default {
   ],
   "merits": [
     {
-      "symbol": "慧",
-      "title": "增長智慧",
-      "text": "燈火破無明，學業事業得助"
-    },
-    {
-      "symbol": "安",
-      "title": "諸事順遂",
-      "text": "驅散晦氣，平安順遂"
+      "symbol": "順",
+      "title": "事事順遂",
+      "text": "點燈破千晦，塵途事事順"
     },
     {
       "symbol": "福",
-      "title": "闔家安康",
-      "text": "一人供燈，全家受蔭"
+      "title": "納福呈祥",
+      "text": "寶燈通上界，祥光納厚福"
+    },
+    {
+      "symbol": "安",
+      "title": "身心安康",
+      "text": "燃燈護身心，身寧家自安"
     }
   ],
   "materials": [

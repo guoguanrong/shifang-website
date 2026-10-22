@@ -110,12 +110,13 @@ const lamp = computed(() => ({
 const portrait = computed(() => currentLight.value?.picture || ({ guangming, taisui, wenchang, caishen: guangmingSecond })[props.lampId] || guangming)
 // 独立长文仅提供光明灯；其他灯种沿用自身介绍，不套用光明灯的道场资料。
 const description = computed(() => props.lampId === 'guangming' ? tm('lampDetail.guangmingDescription') : [lamp.value.description, lamp.value.audience])
-// 功德章映射：顺序与语言包 lampDetail.merits 一致（慧、安、福）；简繁同形回退简体图。
-const MERIT_SYMBOL_KEYS = ['hui', 'an', 'fu']
+// 功德章映射：顺序与语言包 lampDetail.merits 一致（顺、福、安）；简繁同形回退简体图。
+// 「顺」字章图待设计提供，暂以「慧」字章占位，提供后替换为 merit-symbol-shun-*。
+const MERIT_SYMBOL_KEYS = ['shun', 'fu', 'an']
 const MERIT_SYMBOLS = {
-  hui: { 'zh-CN': symbolHuiZhCN, 'zh-TW': symbolHuiZhCN, en: symbolHuiEn },
-  an: { 'zh-CN': symbolAnZhCN, 'zh-TW': symbolAnZhCN, en: symbolAnEn },
+  shun: { 'zh-CN': symbolHuiZhCN, 'zh-TW': symbolHuiZhCN, en: symbolHuiEn },
   fu: { 'zh-CN': symbolFu, 'zh-TW': symbolFu, en: symbolFu },
+  an: { 'zh-CN': symbolAnZhCN, 'zh-TW': symbolAnZhCN, en: symbolAnEn },
 }
 const meritSymbolImages = computed(() => tm('lampDetail.merits').map((item, index) => {
   const set = MERIT_SYMBOLS[MERIT_SYMBOL_KEYS[index]] || {}

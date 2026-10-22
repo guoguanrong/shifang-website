@@ -4,10 +4,11 @@
     <HomeHeader @select-locale="setLocale" />
     <main>
       <CoBuildHero />
-      <CoBuildRewards />
+      <!-- <CoBuildRewards /> -->
       <CoBuildMerits />
-      <CoBuildReasons />
-      <CoBuildProcess />
+      <!-- <CoBuildReasons /> -->
+      <!-- <CoBuildProcess /> -->
+       <CloudBuildCameras />
       <CoBuildHonorRoll />
     </main>
     <HomeFooter />
@@ -19,10 +20,11 @@ import { useI18n } from 'vue-i18n'
 import { setAppLocale } from '@/i18n'
 import CoBuildHero from '@/components/co-build/CoBuildHero.vue'
 import CoBuildHonorRoll from '@/components/co-build/CoBuildHonorRoll.vue'
+import CloudBuildCameras from '@/components/cloud-build/CloudBuildCameras.vue'
 import CoBuildMerits from '@/components/co-build/CoBuildMerits.vue'
-import CoBuildProcess from '@/components/co-build/CoBuildProcess.vue'
-import CoBuildReasons from '@/components/co-build/CoBuildReasons.vue'
-import CoBuildRewards from '@/components/co-build/CoBuildRewards.vue'
+// import CoBuildProcess from '@/components/co-build/CoBuildProcess.vue'
+// import CoBuildReasons from '@/components/co-build/CoBuildReasons.vue'
+// import CoBuildRewards from '@/components/co-build/CoBuildRewards.vue'
 import HomeFooter from '@/components/home/HomeFooter.vue'
 import HomeHeader from '@/components/home/HomeHeader.vue'
 

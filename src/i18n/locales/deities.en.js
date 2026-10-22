@@ -2,13 +2,13 @@
 export default {
   hero: {
     eyebrow: 'Deities & Immortals',
-    title: 'Deity Encyclopedia',
+    title: 'Sacred Statue Guide',
     subtitle: 'Discover each deity’s origin and role, and understand the wish you seek.',
     quote: '“Spirit has no fixed direction, and change no fixed form; yin and yang constitute the Way.”',
     quoteSource: '— The Book of Changes · Great Treatise',
   },
   filtersLabel: 'Filter deities by blessing',
-  filters: ['All', 'Career', 'Study', 'Peace', 'Wealth', 'Health'],
+  filters: ['All', 'Wealth', 'Career', 'Health', 'Study', 'Peace'],
   meritLabel: 'Blessing',
   actions: { light: 'Light a Lamp', offer: 'Make an Offering' },
   monthlyPrice: 'Monthly',
@@ -28,11 +28,6 @@ export default {
   },
   cards: [
     {
-      id: 'beidou', categories: ['health', 'peace'], title: 'Nine Sovereigns of Beidou', subtitle: 'Seven Dipper Stars and Two Assistants · Masters of Lifespan', tags: ['Relief', 'Longevity', 'Protection'],
-      description: 'The Nine Sovereigns comprise the seven stars of the Northern Dipper together with the Fu and Bi assistant stars. This central Taoist star cult teaches that the Northern Dipper governs death and the Southern Dipper life; Dipper rites seek relief, longevity, and release from hardship.',
-      meta: ['Festival: lunar Sep 1–9', 'Beidou governs destiny'], meritTitle: 'Relief from Hardship · Longer Life', meritDescription: 'For low fortune, longevity prayers, and resolving adversity.',
-    },
-    {
       id: 'taisui', categories: ['career', 'peace'], title: 'Sixty Taisui Generals', subtitle: 'Annual Guardians · Governors of the Year', tags: ['Year', 'Fortune', 'Harmony'],
       description: 'The sixty Taisui are annual Taoist guardians arranged by the sixty-year stem-and-branch cycle. One presides each year over worldly fortune and adversity. Those whose zodiac conflicts with the year traditionally seek harmony early.',
       meta: ['One guardian each year', 'Seek harmony early'], meritTitle: 'Resolve Conflict · A Smoother Year', meritDescription: 'For birth-year or zodiac conflicts with the annual Taisui.',
@@ -46,11 +41,6 @@ export default {
       id: 'wenchang', categories: ['study', 'career'], title: 'Wenchang Dijun', subtitle: 'Lord of Learning · Achievement and Office', tags: ['Study', 'Exams', 'Career'],
       description: 'Wenchang Dijun governs learning, examination success, reputation, and official advancement. Associated with an assistant star of the Northern Dipper, he is especially revered by students and those seeking promotion.',
       meta: ['Festival: lunar Feb 3', 'Exams and promotion'], meritTitle: 'Academic Progress · Career Success', meritDescription: 'For students, candidates, promotion, and scholarly achievement.',
-    },
-    {
-      id: 'kuixing', categories: ['study', 'career'], title: 'Kuixing Dijun', subtitle: 'The Dipper’s Brush · Examination Success', tags: ['Exams', 'Writing', 'Success'],
-      description: 'Kuixing Dijun is a Taoist patron of examinations, traditionally linked with the first star of the Northern Dipper. He is shown red-haired and blue-faced, holding a dipper and brush while standing upon the mythical ao.',
-      meta: ['Festival: lunar Jul 7', 'First on the honours list'], meritTitle: 'Brilliant Writing · Highest Honours', meritDescription: 'For examinations, interviews, competition, and advancement.',
     },
     {
       id: 'zhaogongming', categories: ['wealth', 'career'], title: 'Marshal Zhao of Xuantan', subtitle: 'God of Wealth · Prosperity from Five Directions', tags: ['Wealth', 'Business', 'Prosperity'],

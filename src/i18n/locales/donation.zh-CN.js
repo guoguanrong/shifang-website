@@ -26,7 +26,7 @@ export default {
   "chooseType": "选择善捐方式",
   "types": {
     "money": {
-      "title": "捐钱 · 随心功德",
+      "title": "共建十方",
       "description": "直接护持善款\n用于道观修缮与文化事业"
     },
     "goods": {

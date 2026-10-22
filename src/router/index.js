@@ -168,25 +168,25 @@ const router = createRouter({
       // 参拜礼仪包含较多原型切图，继续使用路由级懒加载控制首页体积。
       component: () => import('@/views/EtiquetteView.vue'),
     },
-    // 道法养生：养生理念与实践页，导航里的「道法养生」。
-    {
-      path: '/wellness',
-      name: 'wellness',
-      // 道法养生页图片资源较多，使用路由级懒加载保持首页首包轻量。
-      component: () => import('@/views/WellnessView.vue'),
-    },
-    // 跟练视频详情：养生功法的视频正文页。
-    {
-      path: '/wellness/practice',
-      name: 'wellness-practice-detail',
-      component: () => import('@/views/WellnessPracticeDetailView.vue'),
-    },
-    // 道典精读详情：养生知识的文章正文页。
-    {
-      path: '/wellness/knowledge',
-      name: 'wellness-knowledge-detail',
-      component: () => import('@/views/WellnessKnowledgeDetailView.vue'),
-    },
+    // 道法养生：产品暂隐藏（代码保留，恢复时取消注释即可）。
+    // {
+    //   path: '/wellness',
+    //   name: 'wellness',
+    //   // 道法养生页图片资源较多，使用路由级懒加载保持首页首包轻量。
+    //   component: () => import('@/views/WellnessView.vue'),
+    // },
+    // 跟练视频详情：养生功法的视频正文页。（随 /wellness 暂隐藏）
+    // {
+    //   path: '/wellness/practice',
+    //   name: 'wellness-practice-detail',
+    //   component: () => import('@/views/WellnessPracticeDetailView.vue'),
+    // },
+    // 道典精读详情：养生知识的文章正文页。（随 /wellness 暂隐藏）
+    // {
+    //   path: '/wellness/knowledge',
+    //   name: 'wellness-knowledge-detail',
+    //   component: () => import('@/views/WellnessKnowledgeDetailView.vue'),
+    // },
     // 共建十方：公益共建与功德介绍页，导航里的「共建十方」。
     {
       path: '/co-build',
