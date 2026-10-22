@@ -84,7 +84,8 @@ const payment = ref('paypal')
 const unavailable = ref(false)
 const paying = ref(false)
 const payError = ref('')
-const methods = [{ id: 'paypal', label: 'PayPal', image: paypal }, { id: 'stripe', label: 'Stripe' }]
+// const methods = [{ id: 'paypal', label: 'PayPal', image: paypal }, { id: 'stripe', label: 'Stripe' }]
+const methods = [{ id: 'stripe', label: 'Stripe' }]
 // 金额按当前语言格式化。
 const amountLabel = computed(() => `$${new Intl.NumberFormat(locale.value, { maximumFractionDigits: 2 }).format(props.order?.amount ?? 0)}`)
 // 记住打开前的焦点与页面滚动状态，关闭后原样恢复。

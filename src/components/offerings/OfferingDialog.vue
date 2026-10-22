@@ -109,7 +109,8 @@ const payment = ref('paypal')
 const unavailable = ref(false)
 const paying = ref(false)
 const payError = ref('')
-const methods = [{ id: 'paypal', image: paypal, label: 'PayPal' }, { id: 'stripe', label: 'Stripe' }]
+// const methods = [{ id: 'paypal', image: paypal, label: 'PayPal' }, { id: 'stripe', label: 'Stripe' }]
+const methods = [{ id: 'stripe', label: 'Stripe' }]
 // 记住打开前的焦点与页面滚动状态，关闭后原样恢复。
 let previousOverflow
 let previousFocus
