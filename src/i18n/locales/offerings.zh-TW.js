@@ -23,7 +23,7 @@ export default {
   "lampIntro": "點燈是道教最隆重的祈福方式之一。燈火通明之處，神明降鑒；心燈一亮，萬暗皆消。十方殿線上點燈服務，讓您無論身在何處，都能供奉一盞福燈於神前，日夜蒙受道光照拂。",
   "selectionTitle": "燈種選擇 · 各應所願",
   "offerLamp": "供奉此燈",
-  "yearOffering": "供奉全年 · 含疏文",
+  "yearOffering": "主祀尊神：",
   "recommended": "本命年宜供",
   "lamps": [
     {
@@ -127,9 +127,9 @@ export default {
   "namePlaceholder": "用於疏文書寫與祈福納祥",
   "wishPlaceholder": "心願不拘多少，道長代呈疏文",
   "nameRequired": "請填寫善信姓名",
-  "submitLamp": "點燈下單 · 呈報祈願",
+  "submitLamp": "敬奉明燈",
   "submitDeity": "供奉神像 · 呈報支付",
-  "materialExplanation": "點燈本身免費，燈供物料由道觀統一備辦，供奉於神前，晝夜長明。物料隨喜，共成善緣。",
+  "materialExplanation": "*點燈物料由道觀統一備辦，供奉於神前，晝夜長明。物料隨喜，共成善緣。",
   "paymentPrompt": "選擇支付方式，完成供奉下單",
   "paymentMethod": "支付方式",
   "pay": "立即支付",

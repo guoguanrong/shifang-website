@@ -1,224 +1,241 @@
 <template>
-  <!-- 组织架构：六类组织角色按文案与牌匾切图索引对应展示。 -->
-  <section id="organization" class="organization-section" aria-labelledby="organization-title">
-    <img class="organization-background" :src="organizationBackground" alt="" />
+  <section id="organization" class="organization-section" aria-labelledby="admonitions-title">
+    <img class="organization-background" :src="organizationBackground" alt="" aria-hidden="true" />
     <div class="organization-content">
-      <HomeSectionHeading
-        id="organization-title"
-        :eyebrow="t('organization.en')"
-        :title="t('organization.title')"
-        :description="t('organization.subtitle')"
-        light
-      />
-      <div class="organization-grid">
-        <article v-for="(item, index) in organizationItems" :key="item.title">
-          <img :src="organizationFrames[index]" alt="" />
-          <div>
+      <header class="admonitions-heading">
+        <p>{{ t('admonitions.en') }}</p>
+        <h2 id="admonitions-title">{{ t('admonitions.title') }}</h2>
+        <span>{{ t('admonitions.subtitle') }}</span>
+      </header>
+
+      <div class="admonitions-grid">
+        <div class="admonitions-column">
+          <article v-for="item in leftItems" :key="item.title">
             <h3>{{ item.title }}</h3>
             <p>{{ item.desc }}</p>
-          </div>
-        </article>
+          </article>
+        </div>
+
+        <img class="yin-yang" :src="yinYang" alt="" aria-hidden="true" />
+
+        <div class="admonitions-column">
+          <article v-for="item in rightItems" :key="item.title">
+            <h3>{{ item.title }}</h3>
+            <p>{{ item.desc }}</p>
+          </article>
+        </div>
       </div>
     </div>
   </section>
-
-  <!-- 资金监管：展示实时查看与资金流向两项透明机制。 -->
-  <!-- <section id="supervision" class="supervision-section" aria-labelledby="supervision-title">
-    <div class="supervision-content">
-      <HomeSectionHeading
-        id="supervision-title"
-        :eyebrow="t('supervision.en')"
-        :title="t('supervision.title')"
-        :description="t('supervision.subtitle')"
-      />
-      <img class="supervision-scroll" :src="supervisionScroll" alt="" />
-      <div class="supervision-grid">
-        <article v-for="(item, index) in supervisionItems" :key="item.title">
-          <img class="supervision-card-background" :src="supervisionCard" alt="" />
-          <img class="supervision-icon" :src="supervisionIcons[index]" alt="" />
-          <h3>{{ item.title }}</h3>
-          <p>{{ item.desc }}</p>
-        </article>
-      </div>
-    </div>
-  </section> -->
 </template>
 
 <script setup>
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import HomeSectionHeading from './HomeSectionHeading.vue'
-import organizationBackground from '@/assets/cuts/organization-brush.webp'
-import organizationBoard from '@/assets/cuts/org-executive.png'
-import organizationSecretariat from '@/assets/cuts/org-secretariat.png'
-import organizationSupervision from '@/assets/cuts/org-supervision.png'
-import organizationAdvisers from '@/assets/cuts/org-advisers.png'
-import organizationPartners from '@/assets/cuts/org-partners.png'
-import organizationVolunteers from '@/assets/cuts/org-board.png'
-import supervisionScroll from '@/assets/cuts/supervision-scroll-figma.webp'
-import supervisionCard from '@/assets/cuts/supervision-card-figma.svg'
-import supervisionCloud from '@/assets/cuts/supervision-cloud-figma.svg'
-import supervisionFunds from '@/assets/cuts/supervision-funds-figma.svg'
+import organizationBackground from '@/assets/home/admonitions/background.webp'
+import yinYang from '@/assets/home/admonitions/yin-yang.webp'
 
 const { t, tm } = useI18n()
-// 列表文案使用 computed，以响应全局语言变化。
-const organizationItems = computed(() => tm('organization.items'))
-const supervisionItems = computed(() => tm('supervision.items'))
-// 组织牌匾切图与 organization.items 使用相同顺序。
-const organizationFrames = [
-  organizationBoard,
-  organizationSecretariat,
-  organizationSupervision,
-  organizationAdvisers,
-  organizationPartners,
-  organizationVolunteers,
-]
-// 监管图标与 supervision.items 使用相同顺序。
-const supervisionIcons = [supervisionCloud, supervisionFunds]
+const admonitions = computed(() => tm('admonitions.items'))
+const leftItems = computed(() => admonitions.value.slice(0, 2))
+const rightItems = computed(() => admonitions.value.slice(2, 4))
 </script>
 
 <style scoped>
 .organization-section {
   position: relative;
   z-index: 3;
-  height: 852px;
-  overflow: visible;
-  background: #f9f5ed;
+  height: 1090px;
+  overflow: hidden;
+  color: #fff;
+  background: #101a31;
 }
 
 .organization-background {
   position: absolute;
-  z-index: 0;
-  top: -118px;
+  top: -219px;
   left: 50%;
-  width: 100%;
-  height: 1639px;
+  width: 1589px;
+  height: 1349px;
   max-width: none;
   object-fit: fill;
-  transform: translateX(-50%);
+  pointer-events: none;
+  transform: translateX(-50%) rotate(-5.82deg);
 }
 
 .organization-content {
   position: relative;
   z-index: 1;
-  width: 1440px;
+  width: 1112px;
+  max-width: calc(100% - 48px);
   margin: 0 auto;
-  padding-top: 305px;
+  padding-top: 236px;
 }
 
-.organization-content :deep(.section-heading) { margin-bottom: 78px; }
-
-.organization-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 446px);
-  gap: 50px 51px;
-}
-
-.organization-grid article {
+.admonitions-heading {
   position: relative;
-  height: 250px;
-}
-
-.organization-grid article > img {
-  position: absolute;
-  inset: 0;
-  width: 358px;
-  height: 250px;
-  object-fit: fill;
-}
-
-.organization-grid article > div {
-  position: absolute;
-  top: 116px;
-  left: 38px;
-  width: 285px;
+  height: 111px;
   text-align: center;
 }
 
-.organization-grid h3 {
-  margin: 0 0 18px;
-  color: #333;
-  font-family: var(--font-calligraphy);
-  font-size: 30px;
-  font-weight: 400;
-  line-height: 1;
-}
-
-.organization-grid p {
-  margin: 0;
-  color: #333;
-  font-family: var(--font-calligraphy);
-  font-size: 16px;
-  line-height: 22px;
-}
-
-.supervision-section {
-  position: relative;
-  z-index: 2;
-  height: 949px;
-  overflow: hidden;
-  background: transparent;
-}
-
-.supervision-content {
+.admonitions-heading p,
+.admonitions-heading h2,
+.admonitions-heading span {
   position: absolute;
-  top: 417px;
   left: 50%;
-  width: 1440px;
-  height: 485px;
+  width: max-content;
+  max-width: 100%;
+  margin: 0;
   transform: translateX(-50%);
 }
 
-.supervision-content :deep(.section-heading) { margin-bottom: 0; }
-
-.supervision-scroll {
-  position: absolute;
-  z-index: 0;
-  top: 258px;
-  left: 0;
-  width: 1440px;
-  height: 227px;
-  object-fit: fill;
+.admonitions-heading p {
+  top: 0;
+  font-size: 24px;
+  line-height: 30px;
 }
 
-.supervision-grid {
-  position: absolute;
-  z-index: 1;
-  top: 182px;
-  left: 348.5px;
+.admonitions-heading h2 {
+  top: 38px;
+  font-family: var(--font-calligraphy);
+  font-size: 42px;
+  font-weight: 400;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.admonitions-heading span {
+  top: 95px;
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.admonitions-grid {
   display: grid;
-  grid-template-columns: repeat(2, 340px);
-  gap: 63px;
+  grid-template-columns: 300px 352px 300px;
+  align-items: center;
+  gap: 80px;
+  margin-top: 80px;
 }
 
-.supervision-grid article {
-  position: relative;
-  isolation: isolate;
-  width: 340px;
-  height: 283px;
-  text-align: center;
+.admonitions-column {
+  display: flex;
+  flex-direction: column;
+  gap: 100px;
 }
 
-.supervision-card-background { position: absolute; z-index: 0; top: 0; left: 0; width: 340px; height: 250px; object-fit: fill; }
-.supervision-icon { position: absolute; z-index: 1; left: 50%; object-fit: contain; transform: translateX(-50%); }
-.supervision-grid article:first-child .supervision-icon { top: 36px; width: 58px; height: 58px; }
-.supervision-grid article:nth-child(2) .supervision-icon { top: 30px; width: 70px; height: 70px; }
-.supervision-grid h3 { position: absolute; z-index: 1; top: 114px; left: 0; width: 100%; margin: 0; color: #333; font-family: var(--font-calligraphy); font-size: 32px; font-weight: 400; line-height: 1; }
-.supervision-grid p { position: absolute; z-index: 1; top: 167px; left: 53px; width: 234px; height: 116px; margin: 0; overflow: hidden; color: #333; font-family: var(--font-serif-cn); font-size: 16px; line-height: 20px; letter-spacing: 1.6px; }
+.admonitions-column article {
+  min-width: 0;
+}
 
-@media (max-width: 1439px) {
-  .organization-section, .supervision-section { height: auto; min-height: 0; padding: 70px 20px; overflow: hidden; }
-  .organization-background { top: 0; height: 100%; opacity: .9; }
-  .organization-content, .supervision-content { position: relative; inset: auto; width: 100%; height: auto; padding-top: 0; transform: none; }
-  .organization-grid { grid-template-columns: repeat(2, 358px); justify-content: center; }
-  .supervision-section { background: url('@/assets/cuts/supervision-stage-bg.webp') center top / cover no-repeat; }
-  .supervision-content :deep(.section-heading) { margin-bottom: 55px; }
-  .supervision-scroll { top: auto; bottom: -10px; left: 50%; width: min(1440px, 140vw); height: auto; transform: translateX(-50%); }
-  .supervision-grid { position: relative; top: auto; left: auto; grid-template-columns: repeat(2, 340px); justify-content: center; width: auto; }
+.admonitions-column h3 {
+  margin: 0 0 21px;
+  color: #fff;
+  font-family: var(--font-calligraphy);
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.admonitions-column p {
+  margin: 0;
+  color: rgba(255, 255, 255, .8);
+  font-family: var(--font-calligraphy);
+  font-size: 16px;
+  line-height: 20px;
+  letter-spacing: 1.6px;
+  text-wrap: pretty;
+}
+
+.yin-yang {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  transform: scaleX(-1);
+}
+
+html[data-locale-layout='international'] .admonitions-heading h2 {
+  font-family: var(--font-serif-cn);
+  font-size: 34px;
+}
+
+html[data-locale-layout='international'] .admonitions-column h3 {
+  font-family: var(--font-serif-cn);
+  font-size: 26px;
+}
+
+html[data-locale-layout='international'] .admonitions-column p {
+  font-family: var(--font-serif-cn);
+  font-size: 14px;
+  line-height: 1.6;
+  letter-spacing: 0;
+}
+
+@media (max-width: 1200px) and (min-width: 761px) {
+  .organization-content { width: 100%; max-width: calc(100% - 48px); }
+  .admonitions-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(220px, 32vw) minmax(0, 1fr);
+    gap: clamp(24px, 5.56vw, 80px);
+  }
+  .admonitions-column h3 { font-size: 28px; }
+  .admonitions-column p { font-size: 14px; line-height: 1.6; letter-spacing: 1px; }
 }
 
 @media (max-width: 760px) {
-  .organization-grid { grid-template-columns: 358px; }
-  .supervision-grid { grid-template-columns: 340px; gap: 28px; }
+  .organization-section {
+    height: auto;
+    min-height: 0;
+    padding: 70px 20px 80px;
+  }
+
+  .organization-background {
+    top: 50%;
+    width: 145%;
+    height: 120%;
+    transform: translate(-50%, -50%) rotate(-5.82deg);
+  }
+
+  .organization-content {
+    width: 100%;
+    max-width: 100%;
+    padding-top: 0;
+  }
+
+  .admonitions-heading { height: 105px; }
+  .admonitions-heading p { font-size: 18px; }
+  .admonitions-heading h2 { top: 34px; font-size: 32px; }
+  .admonitions-heading span { top: 81px; width: 100%; font-size: 13px; white-space: normal; }
+  html[data-locale-layout='international'] .admonitions-heading h2 { width: 100%; font-size: 24px; white-space: normal; }
+
+  .admonitions-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 36px 24px;
+    margin-top: 25px;
+  }
+
+  .yin-yang {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    width: min(290px, 70vw);
+    margin: 0 auto;
+  }
+
+  .admonitions-column { gap: 36px; }
+  .admonitions-column h3 { margin-bottom: 12px; font-size: 22px; }
+  .admonitions-column p { font-size: 13px; line-height: 1.7; letter-spacing: .4px; }
+}
+
+@media (max-width: 480px) {
+  .admonitions-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 34px;
+  }
+
+  .yin-yang { order: -1; width: min(250px, 68vw); }
+  .admonitions-column { width: 100%; gap: 30px; }
+  .admonitions-column h3 { font-size: 24px; }
+  .admonitions-column p { font-size: 14px; }
 }
 </style>

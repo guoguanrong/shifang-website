@@ -15,7 +15,8 @@
         :placeholder="t('offerings.wishPlaceholder')" /></label>
     <div class="order-submit">
       <CeremonialButton type="submit"
-        :label="submitLabel || t(kind === 'lamp' ? 'offerings.submitLamp' : 'offerings.submitDeity')" />
+        :label="submitLabel || t(kind === 'lamp' ? 'offerings.submitLamp' : 'offerings.submitDeity')"
+        :disabled="submitDisabled" />
     </div>
     <p v-if="kind === 'deity'" class="order-explanation centered">{{ t('offerings.deityPromise') }}</p>
   </form>
@@ -24,7 +25,7 @@
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import CeremonialButton from '@/components/common/CeremonialButton.vue'
-const props = defineProps({ kind: { type: String, default: 'lamp' }, amount: Number, period: String, compact: Boolean, hideTotal: Boolean, submitLabel: String, initialDetails: { type: Object, default: () => ({}) } })
+const props = defineProps({ kind: { type: String, default: 'lamp' }, amount: Number, period: String, compact: Boolean, hideTotal: Boolean, submitLabel: String, submitDisabled: Boolean, initialDetails: { type: Object, default: () => ({}) } })
 // kind 为 lamp 或 deity；compact / hideTotal 用于详情页里的精简展示。
 const emit = defineEmits(['submit'])
 const { t } = useI18n()

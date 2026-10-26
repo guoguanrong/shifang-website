@@ -1,16 +1,20 @@
-import { request, CLIENT_ID, GRANT_TYPE } from './http'
+import { request, CLIENT_ID } from './http'
 
 /**
- * 登录（邮箱验证码登录）
- * @param {object} data {email, code}
+ * 登录（邮箱/手机号，验证码或密码登录）
+ * 验证码登录 grantType=memberEmail，密码登录 grantType=memberPassword。
+ * @param {object} data {email, code} 验证码登录，或 {email, password} 密码登录
  * @param {object} [options] 额外请求配置，如 { silent: true } 关闭全局错误弹窗
  * @returns {Promise<{accessToken: string, expireIn: number, clientId: string, openid: string}>}
  */
 export function login(data, options) {
+  // 传入密码即视为密码登录，否则走验证码登录。
+  const grantType = data?.password ? 'memberPassword' : 'memberEmail'
+
   return request({
     url: '/auth/login',
     method: 'post',
-    data: { clientId: CLIENT_ID, grantType: GRANT_TYPE, ...data },
+    data: { clientId: CLIENT_ID, grantType, ...data },
     ...options,
   })
 }

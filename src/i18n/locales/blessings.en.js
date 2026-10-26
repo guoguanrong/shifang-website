@@ -3,10 +3,12 @@ import details from './blessing-tests.en.js'
 export default {
   details,
   hero: { eyebrow: 'SPIRITUAL BENEDICTION', title: 'Blessings & Auspice', subtitle: 'Merit lies not in size, but in a single sincere thought' },
+  servicesAria: 'Blessing services',
   services: [
-    { title: 'Online Lamp Offering', lines: ['Offer a lamp online; a Taoist priest tends it for you', 'Receive your personal blessing video', 'The lamp burns before the deities day and night', 'A shared rite every new and full moon'], action: 'Learn More' },
-    { title: 'Digital Talisman', lines: ['An exquisitely designed talisman', 'Keep it as your phone wallpaper for protection', 'Consecrated through scripture chanting'], action: 'Receive as a Gift' },
-    { title: 'Seasonal Reminders', lines: ['Timely updates for all 24 solar terms', 'Wellness advice aligned with nature', 'Seasonal blessing guidance'], action: 'Enable Alerts' },
+    { title: 'Online Lamp Offering', lines: ['A Taoist priest tends the lamp on your behalf', 'Receive a personal blessing video', 'The lamp shines day and night, with prayers on each new and full moon'], action: 'Offer a Lamp' },
+    { title: 'Deity Statue Offering', lines: ['A place for a deity statue at ShiFang Hall', 'Incense is offered throughout the year', 'Sincere devotion brings blessings and wisdom'], action: 'Make an Offering' },
+    { title: 'Digital Blessing Card', lines: ['A beautifully designed Taoist talisman', 'Save it as your phone wallpaper for protection', 'Consecrated with scripture chanting'], action: 'Receive as a Gift' },
+    { title: 'Seasonal Reminders', lines: ['Updates for all 24 solar terms', 'Wellness advice and blessings for each season'], action: 'Enable Reminders' },
   ],
   testsTitle: 'Taoist Culture Tests · Know Your Nature',
   tests: [

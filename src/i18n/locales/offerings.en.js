@@ -23,7 +23,7 @@ export default {
   "lampIntro": "Offering a lamp is one of Taoism’s most solemn forms of prayer. Where lamps shine, the deities look upon us; when the heart’s lamp is lit, darkness gives way. Wherever you are, you can offer a blessing lamp at ShiFang Hall and receive its light day and night.",
   "selectionTitle": "Choose a Lamp · Each Has Its Blessing",
   "offerLamp": "Offer this lamp",
-  "yearOffering": "A full year · Prayer included",
+  "yearOffering": "Presiding Deity: ",
   "recommended": "Tai Sui offering",
   "lamps": [
     {
@@ -127,9 +127,9 @@ export default {
   "namePlaceholder": "Name for your written prayer",
   "wishPlaceholder": "Share the wish you would like the priest to present",
   "nameRequired": "Please enter your name.",
-  "submitLamp": "Review lamp offering",
+  "submitLamp": "Offer a Lamp",
   "submitDeity": "Review deity offering",
-  "materialExplanation": "Lighting is free. The temple prepares lamp oil, incense and prayer materials for a full-year offering.",
+  "materialExplanation": "*Lamp materials are prepared by the temple and offered before the deities, shining day and night. Give as you wish, and let us complete this bond of goodwill together.",
   "paymentPrompt": "Choose a payment method to complete your offering",
   "paymentMethod": "Payment method",
   "pay": "Pay now",

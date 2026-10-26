@@ -3,10 +3,12 @@ import details from './blessing-tests.zh-TW.js'
 export default {
   details,
   hero: { eyebrow: 'Spiritual Benediction', title: '祈福納祥', subtitle: '功德不在大小，惟在一念至誠' },
+  servicesAria: '祈福服務',
   services: [
-    { title: '線上點燈', lines: ['線上供奉 → 道長代為供燈', '回傳專屬祈福影片', '燈供神前日夜長明', '每月朔望道會統一祈福'], action: '瞭解詳情' },
-    { title: '電子護身符', lines: ['精美符籙設計', '可設為手機桌布，隨身護佑', '道長誦經開光加持'], action: '免費結緣' },
-    { title: '節氣提醒', lines: ['二十四節氣即時推送', '順天應時養生建議', '節氣祈福方法指導'], action: '開通提醒' },
+    { title: '線上點燈', lines: ['線上供奉，道長代為供燈', '回傳專屬祈福影片', '燈供神前日夜長明，每月朔望道會統一祈福'], action: '敬奉明燈' },
+    { title: '神像供奉', lines: ['十方殿恭安神像，可立祈福奉位', '長期供香，靜寄祈願', '誠心奉祀，善緣相伴，福慧相隨'], action: '前往供奉' },
+    { title: '電子祈福卡', lines: ['精美符籙設計', '可設為手機桌布，隨身護佑', '道長誦經開光加持'], action: '免費結緣' },
+    { title: '節氣提醒', lines: ['二十四節氣即時推送', '順天應時養生建議，節氣祈福方法指導'], action: '開通提醒' },
   ],
   testsTitle: '道教文化測試 · 知己知命',
   tests: [

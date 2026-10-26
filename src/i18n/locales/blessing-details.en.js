@@ -3,7 +3,7 @@ export default {
     "talismanTitle": "Boundless Blessings",
     "enableTitle": "Enable Reminders",
     "cancelTitle": "Cancel Reminders",
-    "talismanRequested": "Talisman requested (demo)",
+    "talismanRequested": "Blessing card requested (demo)",
     "talismanConsecration": "Download it after ritual consecration by the priests.",
     "talismanWallpaper": "Set it as your phone wallpaper and carry it with you.",
     "enabled": "Seasonal reminders enabled (demo)",
@@ -13,44 +13,45 @@ export default {
     "blessing": "May blessings be boundless!",
     "seasonalBlessing": "Live with the seasons. May blessings be boundless!",
     "download": "Download Image File",
-    "downloadUnavailable": "The official talisman file is not available for download yet.",
+    "downloadUnavailable": "The official blessing card file is not available for download yet.",
     "confirm": "Confirm",
-    "preview": "Page demo only: no talisman has been issued and no SMS service activated. This state lasts only on this page."
+    "preview": "Page demo only: no blessing card has been issued and no SMS service activated. This state lasts only on this page."
   },
-  "unavailable": "This service is not connected yet. No talisman has been issued and no reminder subscription has been created.",
+  "unavailable": "This service is not connected yet. No blessing card has been issued and no reminder subscription has been created.",
   "talisman": {
-    "title": "Digital Talisman",
-    "eyebrow": "Digital Talisman",
+    "title": "Digital Blessing Card",
+    "eyebrow": "Digital Blessing Card",
     "subtitle": "A companion of faith · Ritually blessed by Taoist priests",
-    "introTitle": "A Talisman Close to Your Heart",
+    "introTitle": "The Digital Blessing Card, crafted with reverence by ShiFang Hall — free to request.",
     "intro": [
-      "Based on traditional Taoist talismanic scripts, each digital talisman is drawn and consecrated by Taoist priests through ritual recitation. Set it as your phone wallpaper as a daily reminder of your faith.",
-      "On the first and fifteenth days of each lunar month, the priests of ShiFang Hall renew the blessings for these digital talismans."
+      "In the spirit of the Great Way's grace that reaches all directions, this single card gathers four wishes — peace, wealth, career and love. Save it as your phone or computer wallpaper and keep it close day and night.",
+      "Entrust your many wishes to one sincere heart. Calm a restless mind, cultivate a peaceful nature, form good connections and hold good intentions.",
+      "May fellow devotees enjoy steady body and mind, lasting wealth and blessings, a smooth career and a loving companion — with wisdom and merit growing daily and all things unfolding with ease."
     ],
     "benefitsTitle": "Three Blessings",
     "benefits": [
       {
-        "title": "Traditional Scripts",
-        "text": "Drawn according to ancient practice\nwith traditional talismanic forms"
+        "title": "Card of Good Wishes",
+        "text": "Drawn in ancient Taoist style\nCarrying a heart of sincere intent"
       },
       {
         "title": "Always With You",
-        "text": "Set it as your phone wallpaper\nand carry it day and night"
+        "text": "Save as wallpaper or lock screen\nClose beside you day and night"
       },
       {
-        "title": "Ritual Consecration",
-        "text": "Blessed through ritual recitation\nand renewed twice each lunar month"
+        "title": "Blessings Bestowed",
+        "text": "Blessings shared through temple recitation\nEndless grace and merit"
       }
     ],
     "stepsTitle": "How to Use",
     "steps": [
       {
         "title": "Request",
-        "text": "Register sincerely to request your talisman"
+        "text": "Register sincerely to request your blessing card"
       },
       {
         "title": "Set Up",
-        "text": "Save the talisman and set it as your phone wallpaper"
+        "text": "Save the blessing card and set it as your phone wallpaper"
       },
       {
         "title": "Reflect",
@@ -59,12 +60,12 @@ export default {
     ],
     "noticesTitle": "Please Note",
     "notices": [
-      "A sincere and upright heart is central to talisman practice.",
+      "A sincere and upright heart is central to this practice.",
       "For personal spiritual use only, not for commercial use.",
       "Blessings are renewed on the first and fifteenth lunar days; download again for an update.",
-      "When changing phones, set your talisman wallpaper again."
+      "When changing phones, set your blessing card wallpaper again."
     ],
-    "action": "Request a Talisman"
+    "action": "Request a Blessing Card"
   },
   "seasonal": {
     "title": "Seasonal Reminders",

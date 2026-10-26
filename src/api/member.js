@@ -40,6 +40,15 @@ export function signupMember(data, options) {
 }
 
 /**
+ * 忘记密码：通过短信或邮箱验证码重置会员密码
+ * @param {object} data ResetPwdRequest{phone?, email?, newPwd*, confirmPwd*, code*}
+ * @param {object} [options] 额外请求配置，如 { silent: true } 关闭全局错误弹窗
+ */
+export function resetMemberPassword(data, options) {
+  return request({ url: '/member/resetPwd', method: 'post', data, ...options })
+}
+
+/**
  * 修改会员
  * @param {object} data {id*, nickname, phone, email, password, avatar, status, ...}
  */

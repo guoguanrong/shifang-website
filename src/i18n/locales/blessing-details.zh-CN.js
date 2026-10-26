@@ -3,7 +3,7 @@ export default {
     "talismanTitle": "福生无量",
     "enableTitle": "开通提醒",
     "cancelTitle": "取消提醒",
-    "talismanRequested": "护身符已恭请（演示）",
+    "talismanRequested": "祈福卡已恭请（演示）",
     "talismanConsecration": "道长诵经开光加持后即可下载使用",
     "talismanWallpaper": "设为手机桌布，随身护佑",
     "enabled": "节气提醒已开通（演示）",
@@ -13,40 +13,41 @@ export default {
     "blessing": "福生无量天尊！",
     "seasonalBlessing": "顺天应时，福生无量天尊！",
     "download": "下载图片文件",
-    "downloadUnavailable": "正式护身符文件尚未提供，暂不可下载。",
+    "downloadUnavailable": "正式祈福卡文件尚未提供，暂不可下载。",
     "confirm": "确定",
     "preview": "页面演示：尚未实际领取或开通短信提醒，状态仅在当前页面有效。"
   },
-  "unavailable": "服务开通流程尚未接入，暂未领取护身符或订阅提醒。",
+  "unavailable": "服务开通流程尚未接入，暂未领取祈福卡或订阅提醒。",
   "talisman": {
-    "title": "电子护身符",
-    "eyebrow": "Digital Talisman",
+    "title": "电子祈福卡",
+    "eyebrow": "Digital Blessing Card",
     "subtitle": "随身护佑 · 道长开光加持",
-    "introTitle": "随身护佑　一符在心",
+    "introTitle": "十方殿恭制电子祈愿卡，免费请领。",
     "intro": [
-      "电子护身符以道教秘传符箓为蓝本，经道长依科绘制、诵经开光，凝聚道炁法脉。将符箓设为手机桌布，随身携带，如符在身、如神在侧。",
-      "每至初一、十五，十方殿道长将统一为电子护身符重新加持，符力日新，护佑绵长。"
+      "承大道普惠十方之意，汇平安、财禄、事业、良缘四愿于一卡，可保存为手机或电脑壁纸，朝夕相伴。",
+      "以一念虔诚寄托多重心愿，安定浮躁心神，涵养平和本心，广结善缘、常存善念。",
+      "愿诸位道友身心安稳、财禄绵长、事业顺遂、良缘相守，福慧日增，万事从容。"
     ],
     "benefitsTitle": "三大护佑",
     "benefits": [
       {
-        "title": "秘传符箓",
-        "text": "依古法绘制\n符胆符窍俱全"
+        "title": "善愿绘卡",
+        "text": "依玄门古意\n载一念诚心"
       },
       {
-        "title": "随身护佑",
-        "text": "设为手机桌布\n昼夜不离左右"
+        "title": "随身护持",
+        "text": "存为壁纸屏保\n朝夕常伴左右"
       },
       {
-        "title": "道长开光",
-        "text": "诵经开光加持\n初一十五重加"
+        "title": "祝福加持",
+        "text": "随坛诵经回向\n福泽绵绵不绝"
       }
     ],
     "stepsTitle": "使用方式",
     "steps": [
       {
         "title": "恭请",
-        "text": "诚心登记，恭请护身符"
+        "text": "诚心登记，恭请祈福卡"
       },
       {
         "title": "设置",
@@ -64,7 +65,7 @@ export default {
       "每月初一、十五自动更新加持，可重新下载",
       "换机后请重新设置桌布，符箓长伴左右"
     ],
-    "action": "恭请护身符"
+    "action": "恭请祈福卡"
   },
   "seasonal": {
     "title": "节气提醒",

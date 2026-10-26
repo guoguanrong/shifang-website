@@ -102,6 +102,24 @@
       </ol>
     </div>
   </section>
+
+  <section class="sxb-box" aria-labelledby="sxb-box-title">
+    <div class="sxb-card">
+      <header class="sxb-heading">
+        <span class="sxb-heading-emblem" aria-hidden="true" />
+        <h2 id="sxb-box-title">{{ t('sxbBox.title') }}</h2>
+      </header>
+      <div class="sxb-copy">
+        <p v-for="paragraph in tm('sxbBox.paragraphs')" :key="paragraph">{{ paragraph }}</p>
+      </div>
+      <button class="sxb-cta" type="button" @click="goToPage('co-build')">
+        <span class="sxb-cta-ornament" aria-hidden="true"><img :src="sxbEmblem" alt="" /></span>
+        <span>{{ t('sxbBox.cta') }}</span>
+        <span class="sxb-cta-ornament" aria-hidden="true"><img :src="sxbEmblem" alt="" /></span>
+      </button>
+    </div>
+  </section>
+
 </template>
 
 <script setup>
@@ -116,6 +134,9 @@ import testimonialsBackground from '@/assets/images/bg-testimonials.webp'
 import messagesBackground from '@/assets/cuts/messages-bg.webp'
 import milestonesBackground from '@/assets/cuts/milestones-bg.png'
 import milestoneEmblem from '@/assets/cuts/milestone-emblem.png'
+import sxbButtonTexture from '@/assets/home/sxb/panel.webp'
+import sxbEmblem from '@/assets/home/sxb/emblem.svg'
+import sxbTitleEmblem from '@/assets/home/sxb/union.svg'
 import seasonal1 from '@/assets/images/seasonal-scroll-1.webp'
 import seasonal2 from '@/assets/images/seasonal-scroll-2.webp'
 import seasonal3 from '@/assets/images/seasonal-scroll-3.webp'
@@ -193,6 +214,8 @@ const newsItems = computed(() => apiNews.value)
 const milestones = computed(() => tm('milestones.items'))
 // 时间轴徽章作为 CSS 背景变量使用，避免在模板中增加装饰节点。
 const milestoneEmblemBackground = `url("${milestoneEmblem}")`
+const sxbButtonTextureBackground = `url("${sxbButtonTexture}")`
+const sxbTitleEmblemBackground = `url("${sxbTitleEmblem}")`
 
 function memoirTypeLabel(type) {
   const labels = {
@@ -1036,5 +1059,170 @@ function goToPage(name) {
   .seasonal-card p {
     min-height: auto;
   }
+}
+
+.sxb-box {
+  position: relative;
+  z-index: 4;
+  padding: 60px 24px 88px;
+  background: #f8f5ed;
+}
+
+.sxb-card {
+  display: flex;
+  width: min(1240px, 100%);
+  flex-direction: column;
+  gap: 0;
+  margin: 0 auto;
+  padding: 40px 70px;
+  color: #333;
+  background: #fff;
+  border-radius: 40px;
+}
+
+.sxb-heading {
+  position: relative;
+  display: grid;
+  min-height: 120px;
+  place-items: center;
+  isolation: isolate;
+}
+
+.sxb-heading-emblem {
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  left: 50%;
+  width: 138px;
+  height: 120px;
+  background: v-bind(sxbTitleEmblemBackground) center / contain no-repeat;
+  opacity: .2;
+  transform: translateX(-50%);
+}
+
+.sxb-heading h2 {
+  margin: 35px 0 0;
+  color: #333;
+  font-family: var(--font-calligraphy);
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 1.25;
+  letter-spacing: 3.2px;
+  text-align: center;
+}
+
+.sxb-copy {
+  font-family: var(--font-calligraphy);
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 1.6px;
+  text-align: justify;
+}
+
+.sxb-copy p {
+  margin: 0;
+}
+
+.sxb-copy p + p {
+  margin-top: 24px;
+}
+
+.sxb-cta {
+  position: relative;
+  display: flex;
+  width: min(520px, 100%);
+  height: 56px;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  align-self: center;
+  margin-top: 40px;
+  overflow: hidden;
+  padding: 0 20px;
+  color: #fff;
+  font-family: var(--font-calligraphy);
+  font-size: 24px;
+  line-height: 1;
+  background: linear-gradient(105deg, #cc3513, #981c04);
+  border: 2px solid #c29f79;
+  border-radius: 100px;
+  box-shadow: inset 0 0 0 3px rgba(255, 255, 255, .12);
+  cursor: pointer;
+  transition: filter .2s ease, transform .2s ease;
+}
+
+.sxb-cta::before {
+  position: absolute;
+  inset: 3px;
+  content: '';
+  background: v-bind(sxbButtonTextureBackground) center / cover;
+  border: 1px solid rgba(194, 159, 121, .8);
+  border-radius: inherit;
+  opacity: .24;
+  pointer-events: none;
+}
+
+.sxb-cta > span {
+  position: relative;
+  z-index: 1;
+}
+
+.sxb-cta-ornament {
+  display: grid;
+  width: 10px;
+  height: 10px;
+  place-items: center;
+  flex: 0 0 10px;
+  border-top: 1px solid #d9bb99;
+  border-left: 1px solid #d9bb99;
+  transform: rotate(-45deg);
+}
+
+.sxb-cta-ornament img {
+  display: block;
+  width: 3px;
+  height: 3px;
+  transform: rotate(45deg);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .sxb-cta:hover {
+    filter: brightness(1.08);
+    transform: translateY(-2px);
+  }
+}
+
+html[data-locale-layout='international'] .sxb-heading h2 {
+  max-width: min(760px, 100%);
+  font-family: var(--font-serif-cn);
+  font-size: 28px;
+  letter-spacing: 0;
+}
+
+html[data-locale-layout='international'] .sxb-copy {
+  font-family: var(--font-serif-cn);
+  line-height: 1.7;
+  letter-spacing: 0;
+  text-align: left;
+}
+
+html[data-locale-layout='international'] .sxb-cta { font-size: 18px; }
+
+@media (max-width: 760px) {
+  .sxb-box { padding: 40px 16px 60px; }
+  .sxb-card { gap: 0; padding: 30px 24px; border-radius: 24px; }
+  .sxb-heading { min-height: 100px; }
+  .sxb-heading-emblem { width: 118px; height: 100px; }
+  .sxb-heading h2 { margin-top: 25px; font-size: 26px; letter-spacing: 1.5px; }
+  .sxb-copy { font-size: 14px; line-height: 1.8; letter-spacing: .5px; }
+  .sxb-copy p + p { margin-top: 18px; }
+  .sxb-cta { height: 52px; margin-top: 28px; font-size: 20px; }
+}
+
+@media (max-width: 430px) {
+  .sxb-card { padding-inline: 18px; }
+  .sxb-heading h2 { font-size: 23px; }
+  html[data-locale-layout='international'] .sxb-heading h2 { font-size: 22px; }
+  html[data-locale-layout='international'] .sxb-cta { font-size: 16px; }
 }
 </style>

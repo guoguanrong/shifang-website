@@ -2,7 +2,15 @@
 export default {
   backToTop: 'Back to top',
   cta: 'Donate with Joy · Sow Fields of Blessing',
-  hero: { eyebrow: 'Global Guardians', title: 'Giving with Goodwill · Blessings through Merit', subtitle: 'Every act of kindness is followed by blessings', quote: '“Do no evil; practice all good. Accumulate merit, and truth reveals itself.”', quoteSource: '— Treatise on Response and Retribution · Daozang' },
+  hero: {
+    eyebrow: 'Global Guardians', title: 'Giving with Goodwill · Blessings through Merit', subtitle: 'Every act of kindness is followed by blessings',
+    introduction: [
+      'ShiFang Hall takes its name from the Great Dao’s care for all directions. It is a Taoist temple dedicated to carrying on Chinese Taoist culture and welcoming kindred connections from across the world. As the temple is still being built, we invite friends near and far to join hands and help bring it to completion.',
+      'Every brick and tile laid for the temple carries a bond of goodwill; every kind intention helps build this sacred place. You may support the halls, sponsor a prayer lamp, or make an offering for a sacred image. Choose the way that speaks to you. Any amount is welcome, given freely.',
+      'To all who sincerely support this work and plant seeds of goodwill, ShiFang Hall wishes you peace of mind, harmony in your family, and growth in your work, prosperity, and wisdom.',
+      'May friends from every direction come together to help complete the temple soon, uphold kind intentions, and share in peace.',
+    ],
+  },
   project: {
     eyebrow: 'FUNDRAISING GOAL', heading: 'Fundraising Goal', title: 'Hall of Doumu Yuanjun', total: '$ 12,680,000', description: 'Temple restoration · Reviving a millennium of dignity', progressLabel: 'Fundraising progress', raisedLabel: 'Raised', raised: '$8,624,300', targetStatLabel: 'Fundraising goal', completedStatLabel: 'Raised amount', typeStatLabel: 'Donation type', statRaised: 'Funds raised', statTarget: 'Goal', statDonors: 'Donors', empty: 'No fundraising projects yet',
     stats: [{ label: 'Donated', value: '$8,624,300' }, { label: 'Funds Used', value: '$2,624,300' }, { label: 'Contributors', value: '14,300' }],

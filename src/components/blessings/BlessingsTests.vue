@@ -140,7 +140,7 @@ const cards = computed(() => tm('blessings.tests')
   margin-bottom: 28px;
 }
 
-@media (max-width:1100px) {
+@media (max-width:1239px) {
   .tests {
     position: relative;
     top: auto;

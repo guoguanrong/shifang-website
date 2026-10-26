@@ -3,10 +3,12 @@ import details from './blessing-tests.zh-CN.js'
 export default {
   details,
   hero: { eyebrow: 'Spiritual Benediction', title: '祈福纳祥', subtitle: '功德不在大小，惟在一念至诚' },
+  servicesAria: '祈福服务',
   services: [
-    { title: '线上点灯', lines: ['线上供奉 → 道长代为供灯', '回传专属祈福视频', '灯供神前日夜长明', '每月朔望道会统一祈福'], action: '了解详情' },
-    { title: '电子护身符', lines: ['精美符箓设计', '可设为手机桌布，随身护佑', '道长诵经开光加持'], action: '免费结缘' },
-    { title: '节气提醒', lines: ['二十四节气即时推送', '顺天应时养生建议', '节气祈福方法指导'], action: '开通提醒' },
+    { title: '线上点灯', lines: ['线上供奉，道长代为供灯', '回传专属祈福视频', '灯供神前日夜长明，每月朔望道会统一祈福'], action: '敬奉明灯' },
+    { title: '神像供奉', lines: ['十方殿恭安神像，可立祈福奉位', '长期供香，静寄祈愿', '诚心奉祀，善缘相伴，福慧相随'], action: '前往供奉' },
+    { title: '电子祈福卡', lines: ['精美符箓设计', '可设为手机桌布，随身护佑', '道长诵经开光加持'], action: '免费结缘' },
+    { title: '节气提醒', lines: ['二十四节气即时推送', '顺天应时养生建议，节气祈福方法指导'], action: '开通提醒' },
   ],
   testsTitle: '道教文化测试 · 知己知命',
   tests: [

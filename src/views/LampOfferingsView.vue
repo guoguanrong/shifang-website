@@ -14,21 +14,31 @@
           <div class="lamp-portrait"><img class="lamp-portrait-border" :src="portraitBorder" alt="" /><img
               :src="lamp.picture || fallbackImage" :alt="lamp.name" width="230" height="230" /></div>
           <h2>{{ lamp.name }}</h2>
-          <p v-if="lamp.matchGod">{{ lamp.matchGod }}</p>
-          <p class="lamp-period">{{ t('offerings.yearOffering') }}</p>
+          <p >{{ lamp.matchCrowd }}</p>
+          <p class="lamp-period">{{ t('offerings.yearOffering') }}{{ lamp.matchGod }}</p>
           <CeremonialButton :label="t('offerings.offerLamp')" @click="router.push(lampTo(lamp))" />
         </article>
       </div>
     </section>
-    <section class="lamp-steps offering-paper">
-      <OrnateSectionHeading :title="t('offerings.stepsTitle')" />
-      <ol class="offering-four-columns">
-        <li v-for="(step, index) in tm('offerings.steps')" :key="step.roman">
-          <!-- 序号随语言切换：中文用「壹贰叁肆 + 拼音」，其他语言用阿拉伯数字 + 英文序数词。 -->
-          <div class="step-symbol"><img :src="stepEmblem" alt="" /><span>{{ stepSymbol(step, index)
-              }}</span><small>{{ stepRoman(step, index) }}</small></div>
-          <h3>{{ step.title }}</h3>
-          <p>{{ step.text }}</p>
+    <section class="lamp-steps" :aria-label="t('offerings.stepsTitle')">
+      <OrnateSectionHeading :title="t('offerings.stepsTitle')" :art="stepHeadingHalo" />
+      <ol class="lamp-steps__grid">
+        <li v-for="(step, index) in tm('offerings.steps')" :key="step.roman" class="lamp-step-card">
+          <img class="lamp-step-card__union" :src="stepCardUnion" width="295" height="315" alt=""
+            aria-hidden="true" />
+          <img class="lamp-step-card__outline" :src="stepCardOutline" width="283" height="302" alt=""
+            aria-hidden="true" />
+          <div class="lamp-step-card__photo" aria-hidden="true">
+            <img class="lamp-step-card__photo-base" :src="stepImages[index]" alt="" loading="lazy" />
+            <img v-if="index === 3" class="lamp-step-card__photo-detail" :src="stepYearlyDetail" alt=""
+              loading="lazy" />
+          </div>
+          <span class="lamp-step-card__diamond is-left" aria-hidden="true" />
+          <span class="lamp-step-card__diamond is-right" aria-hidden="true" />
+          <div class="lamp-step-card__copy">
+            <h3>{{ step.title }}</h3>
+            <p>{{ step.text }}</p>
+          </div>
         </li>
       </ol>
     </section>
@@ -61,7 +71,14 @@ import cardArt from '@/assets/offerings/lamp-card.webp'
 import cardOutline from '@/assets/offerings/lamp-outline.svg'
 import portraitBorder from '@/assets/offerings/lamp-border.svg'
 import fallbackImage from '@/assets/offerings/lamp-guangming.png'
-import stepEmblem from '@/assets/offerings/step-emblem.svg'
+import stepHeadingHalo from '@/assets/offerings/lamp-steps-v2/heading-halo.svg'
+import stepCardUnion from '@/assets/offerings/lamp-steps-v2/card-union.svg'
+import stepCardOutline from '@/assets/offerings/lamp-steps-v2/card-outline.svg'
+import stepChoice from '@/assets/offerings/lamp-steps-v2/step-choice.png'
+import stepWish from '@/assets/offerings/lamp-steps-v2/step-wish.png'
+import stepPriest from '@/assets/offerings/lamp-steps-v2/step-priest.png'
+import stepYearlyBase from '@/assets/offerings/lamp-steps-v2/step-yearly-base.png'
+import stepYearlyDetail from '@/assets/offerings/lamp-steps-v2/step-yearly-detail.png'
 // 功德章为整图（图内含花瓣底、颜色与书法字），按当前语言取图。
 import symbolHuiZhCN from '@/assets/offerings/merit-symbols/merit-symbol-hui-zh-CN.png'
 import symbolHuiEn from '@/assets/offerings/merit-symbols/merit-symbol-hui-en.png'
@@ -93,18 +110,7 @@ const lamps = ref([])
 const loading = ref(true)
 const emptyLabel = ref('')
 
-// 步骤序号随语言切换（语言包中的 symbol/roman 为中文数字与拼音，仅中文界面使用）。
-const isInternational = computed(() => !locale.value.toLowerCase().startsWith('zh'))
-const STEP_SYMBOLS = ['1', '2', '3', '4']
-const STEP_ROMANS = ['ONE', 'TWO', 'THREE', 'FOUR']
-
-function stepSymbol(step, index) {
-  return isInternational.value ? STEP_SYMBOLS[index] || '' : step.symbol
-}
-
-function stepRoman(step, index) {
-  return isInternational.value ? STEP_ROMANS[index] || '' : step.roman
-}
+const stepImages = [stepChoice, stepWish, stepPriest, stepYearlyBase]
 
 function lampTo(lamp) {
   return { name: 'lamp-detail', params: { lampId: String(lamp.id) } }

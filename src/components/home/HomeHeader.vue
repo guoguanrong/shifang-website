@@ -110,8 +110,8 @@ const aboutMenuItems = computed(() => [
   { label: t('about.title'), target: 'about' },
   { label: t('templePlan.title'), target: 'temple-plan' },
   { label: t('mission.title'), target: 'mission' },
-  { label: t('organization.title'), target: 'organization' },
-  // 资金监管：页面区块暂未上线，菜单入口同步隐藏（HomeGovernance.vue 内代码已注释保留）。
+  { label: t('admonitions.title'), target: 'organization' },
+  // 资金监管入口暂不显示；当前此处链接到首页玄门四箴。
   // { label: t('supervision.title'), target: 'supervision' },
   { label: t('seasonal.title'), target: 'seasonal' },
   { label: t('testimonials.title'), target: 'testimonials' },

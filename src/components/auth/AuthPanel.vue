@@ -1,42 +1,32 @@
 <template>
   <!-- 登录/注册面板：表单校验、验证码倒计时与结果反馈都在这个面板内完成。 -->
-  <section class="auth-panel" :class="{ 'auth-panel--register': isRegister }" role="dialog" aria-modal="true" :aria-labelledby="titleId">
+  <section class="auth-panel" :class="{ 'auth-panel--register': isRegister, 'auth-panel--reset': resetMode, 'auth-panel--phone': channel === 'phone', 'auth-panel--feedback': !!feedback, 'auth-panel--feedback-error': feedback && !feedback.success }" role="dialog" aria-modal="true" :aria-labelledby="titleId">
     <button class="auth-panel__close" type="button" :aria-label="t('portal.common.close')" @click="$emit('close')">×</button>
 
     <!-- 没有反馈层时展示表单，否则整块替换为成功/错误提示。 -->
     <template v-if="!feedback">
       <header class="auth-panel__header">
-       
-        <h1 :id="titleId">{{ t(isRegister ? 'portal.auth.registerTitle' : 'portal.auth.loginTitle') }}</h1>
+        <img class="auth-panel__emblem" :src="registerEmblem" alt="" aria-hidden="true" />
+        <h1 :id="titleId">{{ panelTitle }}</h1>
       </header>
 
       <!-- 邮箱/手机号渠道切换：登录与注册共用同一组字段，仅文案与提交逻辑不同。 -->
-      <div class="auth-tabs" role="tablist" :aria-label="t(isRegister ? 'portal.auth.registerTitle' : 'portal.auth.loginTitle')">
+      <div class="auth-tabs" role="tablist" :aria-label="t(isRegister ? 'portal.auth.registerTitle' : resetMode ? 'portal.auth.resetTitle' : 'portal.auth.loginTitle')">
         <button type="button" role="tab" :aria-selected="channel === 'email'" :class="{ 'is-active': channel === 'email' }"
           @click="switchChannel('email')">
-          {{ t(isRegister ? 'portal.auth.emailRegister' : 'portal.auth.emailLogin') }}
+          {{ t(channelLabelKeys.email) }}
         </button>
         <button type="button" role="tab" :aria-selected="channel === 'phone'" :class="{ 'is-active': channel === 'phone' }"
           @click="switchChannel('phone')">
-          {{ t(isRegister ? 'portal.auth.phoneRegister' : 'portal.auth.phoneLogin') }}
+          {{ t(channelLabelKeys.phone) }}
         </button>
       </div>
 
-      <form novalidate @submit.prevent="submit">
+      <form class="auth-panel__form" :class="{ 'auth-panel__form--login': !isRegister && !resetMode }" novalidate @submit.prevent="submit">
         <template v-if="channel === 'email'">
           <label class="auth-field">
             <span>{{ t('portal.auth.email') }}</span>
             <input v-model.trim="form.email" type="email" maxlength="254" autocomplete="email" :placeholder="t('portal.auth.emailPlaceholder')" />
-          </label>
-
-          <label class="auth-field">
-            <span>{{ t('portal.auth.emailCode') }}</span>
-            <span class="auth-field__compound">
-              <input v-model.trim="form.emailCode" inputmode="numeric" maxlength="6" autocomplete="one-time-code" :placeholder="t('portal.auth.emailCodePlaceholder')" />
-              <button type="button" :disabled="emailCountdown > 0" @click="sendCode('email')">
-                {{ emailCountdown ? t('portal.auth.resendCode', { seconds: emailCountdown }) : t('portal.auth.sendCode') }}
-              </button>
-            </span>
           </label>
         </template>
 
@@ -54,44 +44,68 @@
             </span>
           </label>
 
+        </template>
+
+        <label v-if="needsVerificationCode" class="auth-field" :class="{ 'auth-panel__login-code': !isRegister && !resetMode }">
+          <span>{{ t(codeLabelKey) }}</span>
+          <span class="auth-field__compound">
+            <input v-if="channel === 'email'" v-model.trim="form.emailCode" inputmode="numeric" maxlength="6" autocomplete="one-time-code" :placeholder="t('portal.auth.emailCodePlaceholder')" />
+            <input v-else v-model.trim="form.phoneCode" inputmode="numeric" maxlength="6" autocomplete="one-time-code" :placeholder="t('portal.auth.phoneCodePlaceholder')" />
+            <button type="button" :disabled="channel === 'email' ? emailCountdown > 0 : phoneCountdown > 0 || sendingSms" @click="sendCode(channel)">
+              {{ channel === 'phone' && sendingSms ? t('portal.auth.sendingCode') : (channel === 'email' ? emailCountdown : phoneCountdown) ? t('portal.auth.resendCode', { seconds: channel === 'email' ? emailCountdown : phoneCountdown }) : t('portal.auth.sendCode') }}
+            </button>
+          </span>
+        </label>
+        <div v-if="channel === 'phone' && needsVerificationCode" ref="recaptchaContainer" class="auth-panel__recaptcha" />
+
+        <!-- 密码字段：登录为登录密码（含忘记密码入口）；注册/重置为设置+确认两栏。 -->
+        <template v-if="resetMode || isRegister">
           <label class="auth-field">
-            <span>{{ t('portal.auth.phoneCode') }}</span>
-            <span class="auth-field__compound">
-              <input v-model.trim="form.phoneCode" inputmode="numeric" maxlength="6" autocomplete="one-time-code" :placeholder="t('portal.auth.phoneCodePlaceholder')" />
-              <button type="button" :disabled="phoneCountdown > 0 || sendingSms" @click="sendCode('phone')">
-                {{ sendingSms ? t('portal.auth.sendingCode') : phoneCountdown ? t('portal.auth.resendCode', { seconds: phoneCountdown }) : t('portal.auth.sendCode') }}
-              </button>
+            <span>{{ t('portal.auth.setPassword') }}</span>
+            <input v-model="form.password" type="password" :maxlength="resetMode ? 18 : 64" autocomplete="new-password" :placeholder="t(resetMode ? 'portal.auth.resetPasswordPlaceholder' : 'portal.auth.setPasswordPlaceholder')" />
+          </label>
+          <label class="auth-field">
+            <span>{{ t('portal.auth.confirmPassword') }}</span>
+            <input v-model="form.confirmPassword" type="password" :maxlength="resetMode ? 18 : 64" autocomplete="new-password" :placeholder="t('portal.auth.confirmPasswordPlaceholder')" />
+          </label>
+        </template>
+        <div v-else class="auth-login-method-group">
+          <label v-if="loginMethod === 'password'" class="auth-field">
+            <span>{{ t('portal.auth.loginPassword') }}</span>
+            <span class="auth-field__password-control">
+              <input v-model="form.password" type="password" maxlength="64" autocomplete="current-password" :placeholder="t('portal.auth.loginPasswordPlaceholder')" />
+              <button type="button" class="auth-field__forgot" @click="startReset">{{ t('portal.auth.forgotPassword') }}</button>
             </span>
           </label>
-          <div ref="recaptchaContainer" class="auth-panel__recaptcha" />
-        </template>
+          <button class="auth-login-method" type="button" @click="switchLoginMethod">
+            {{ t(loginMethod === 'password' ? 'portal.auth.loginWithCode' : 'portal.auth.loginWithPassword') }}
+            <span class="auth-login-method__arrow" aria-hidden="true">›</span>
+          </button>
+        </div>
+
+        <div v-if="!resetMode && !isRegister" class="auth-panel__agreement">
+          {{ t('portal.auth.agreementPrefix') }}
+          <button type="button" @click="policyVisible = true">{{ t('portal.auth.agreement') }}</button>
+        </div>
 
         <p v-if="inlineNotice" class="auth-panel__notice" role="status">{{ inlineNotice }}</p>
         <button class="auth-panel__submit" type="submit" :disabled="submitting">
-          {{ t(isRegister ? 'portal.auth.register' : 'portal.auth.login') }}
+          {{ resetMode ? t('portal.auth.resetSubmit') : t(isRegister ? 'portal.auth.register' : 'portal.auth.login') }}
         </button>
       </form>
 
-      <!-- 底部：协议入口 + 登录/注册互切。 -->
-      <footer class="auth-panel__footer">
+      <!-- 底部：协议入口 + 登录/注册互切（重置模式不显示）。 -->
+      <footer v-if="!resetMode && !isRegister" class="auth-panel__footer">
         <p>
-          {{ t('portal.auth.agreementPrefix') }}
-          <button type="button" @click="policyVisible = true">{{ t('portal.auth.agreement') }}</button>
-        </p>
-        <p v-if="!isRegister">
           <span>{{ t('portal.auth.registerPrompt') }}</span>
           <button type="button" @click="$emit('switch-mode', 'register')">{{ t('portal.auth.registerLink') }}</button>
-        </p>
-        <p v-else>
-          <span>{{ t('portal.auth.loginPrompt') }}</span>
-          <button type="button" @click="$emit('switch-mode', 'login')">{{ t('portal.auth.loginLink') }}</button>
         </p>
       </footer>
     </template>
 
     <!-- 成功与错误共用这一层：success 为真时点击按钮即关闭弹窗。 -->
     <div v-else class="auth-feedback" role="alert">
-      <span class="auth-feedback__seal" aria-hidden="true" />
+      <img class="auth-feedback__seal" :src="registerEmblem" alt="" aria-hidden="true" />
       <h1 :id="titleId">{{ feedback.title }}</h1>
       <p>{{ feedback.description }}</p>
       <button type="button" @click="handleFeedbackAction">{{ feedback.action }}</button>
@@ -125,11 +139,12 @@ import { useI18n } from 'vue-i18n'
 import { getFirebaseAuth } from '@/firebase'
 import { useUserSession } from '@/composables/useUserSession'
 import { login } from '@/api/auth'
-import { signupMember } from '@/api/member'
+import { resetMemberPassword, signupMember } from '@/api/member'
 import { sendEmailCode } from '@/api/mail'
 import { sendSmsCode } from '@/api/sms'
 import { ensureUvid } from '@/api/visitor'
 import { setToken } from '@/api/http'
+import registerEmblem from '@/assets/events/register-emblem.png'
 
 const props = defineProps({ mode: { type: String, required: true, validator: (value) => ['login', 'register'].includes(value) } })
 const emit = defineEmits(['close', 'switch-mode', 'authenticated'])
@@ -138,8 +153,40 @@ const { t, tm } = useI18n()
 const { refreshMemberInfo, startDemoSession } = useUserSession()
 // 当前是注册还是登录，决定标题、按钮与提交逻辑。
 const isRegister = computed(() => props.mode === 'register')
+const loginMethod = ref('password')
 // 当前登录/注册渠道：email 邮箱验证码，phone 手机号短信验证码；登录与注册共用同一组字段。
 const channel = ref('email')
+// 重置密码模式：从登录页“忘记密码”进入，复用面板与渠道切换。
+const resetMode = ref(false)
+const needsVerificationCode = computed(() => isRegister.value || resetMode.value || loginMethod.value === 'code')
+const codeLabelKey = computed(() => {
+  if (resetMode.value) return channel.value === 'email' ? 'portal.auth.resetEmailCode' : 'portal.auth.resetPhoneCode'
+  if (!isRegister.value) return channel.value === 'email' ? 'portal.auth.loginEmailCode' : 'portal.auth.loginPhoneCode'
+  return channel.value === 'email' ? 'portal.auth.emailCode' : 'portal.auth.phoneCode'
+})
+// 面板标题随模式变化：重置密码 / 账号注册 / 登录。
+const panelTitle = computed(() => t(resetMode.value ? 'portal.auth.resetTitle' : isRegister.value ? 'portal.auth.registerTitle' : 'portal.auth.loginTitle'))
+// 渠道 tab 文案随模式变化。
+const channelLabelKeys = computed(() => {
+  if (resetMode.value) return { email: 'portal.auth.emailResetTab', phone: 'portal.auth.phoneResetTab' }
+  return isRegister.value
+    ? { email: 'portal.auth.emailRegister', phone: 'portal.auth.phoneRegister' }
+    : { email: 'portal.auth.emailLogin', phone: 'portal.auth.phoneLogin' }
+})
+
+// 进入重置密码：切换到重置表单并清空反馈。
+function startReset() {
+  resetMode.value = true
+  loginMethod.value = 'password'
+  feedback.value = null
+  inlineNotice.value = ''
+}
+
+function switchLoginMethod() {
+  loginMethod.value = loginMethod.value === 'password' ? 'code' : 'password'
+  feedback.value = null
+  inlineNotice.value = ''
+}
 // 供 aria-labelledby 使用的标题 id。
 const titleId = computed(() => `auth-${props.mode}-title`)
 // 反馈层内容：null 表示展示表单，否则展示成功/错误结果。
@@ -160,19 +207,11 @@ const emailCountdown = ref(0)
 const phoneCountdown = ref(0)
 // 收集所有倒计时计时器，卸载时统一清理，避免内存泄漏。
 const timers = new Set()
-const form = reactive({ email: '', emailCode: '', country: '+1', phone: '', phoneCode: '' })
-// 注册时可选择的国际区号：目前仅开放美国；名称与区号文案在语言包 portal.auth.country* 中维护。
+const form = reactive({ email: '', emailCode: '', country: '+86', phone: '', phoneCode: '', password: '', confirmPassword: '' })
+// 按设计稿默认中国大陆区号，同时保留原有美国区号选项。
 const countryOptions = [
+  { value: '+86', labelKey: 'portal.auth.countryChina' },
   { value: '+1', labelKey: 'portal.auth.countryUSA' },
-  // { value: '+86', labelKey: 'portal.auth.countryChina' },
-  // { value: '+44', labelKey: 'portal.auth.countryUK' },
-  // { value: '+61', labelKey: 'portal.auth.countryAustralia' },
-  // { value: '+852', labelKey: 'portal.auth.countryHongKong' },
-  // { value: '+853', labelKey: 'portal.auth.countryMacao' },
-  // { value: '+886', labelKey: 'portal.auth.countryTaiwan' },
-  // { value: '+65', labelKey: 'portal.auth.countrySingapore' },
-  // { value: '+81', labelKey: 'portal.auth.countryJapan' },
-  // { value: '+82', labelKey: 'portal.auth.countryKorea' },
 ]
 
 // 切换渠道时清空上一渠道的反馈与提示，避免结果残留。
@@ -187,12 +226,26 @@ function switchChannel(next) {
 function validationMessage() {
   if (channel.value === 'email') {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(form.email)) return t('portal.auth.invalidEmail')
-    if (!form.emailCode) return t('portal.auth.missingCode')
+    if (needsVerificationCode.value && !form.emailCode) return t('portal.auth.missingCode')
+  } else {
+    if (!/^\d{6,15}$/.test(form.phone)) return t('portal.auth.missingPhone')
+    if (needsVerificationCode.value) {
+      if (!form.phoneCode) return t('portal.auth.missingPhoneCode')
+      if (!smsSent.value) return t('portal.auth.requestSmsFirst')
+    }
+  }
+
+  if (resetMode.value || isRegister.value) {
+    if (resetMode.value) {
+      if (form.password.length < 6 || form.password.length > 18) return t('portal.auth.resetPasswordRuleError')
+    } else if (!/^(?=.*[A-Za-z])(?=.*\d)\S{8,}$/.test(form.password)) {
+      return t('portal.auth.passwordRuleError')
+    }
+    if (form.confirmPassword !== form.password) return t('portal.auth.passwordMismatch')
     return ''
   }
-  if (!/^\d{6,15}$/.test(form.phone)) return t('portal.auth.missingPhone')
-  if (!form.phoneCode) return t('portal.auth.missingPhoneCode')
-  if (!smsSent.value) return t('portal.auth.requestSmsFirst')
+
+  if (loginMethod.value === 'password' && !form.password) return t('portal.auth.loginPasswordMissing')
   return ''
 }
 
@@ -208,14 +261,41 @@ async function establishSession(account) {
 }
 
 // 登录/注册：校验通过后调用对应接口，成功后保存 accessToken 并进入登录态。
-// 登录接口的 email 字段既传邮箱也传“区号+手机号”（后端同一接口识别，clientId/grantType 由封装自动附加）。
+// 登录接口的 email 字段既传邮箱也传“区号+手机号”（后端同一接口识别）；
+// clientId 由接口封装附加，grantType 按验证码/密码登录自动区分。
 async function submit() {
   const account = channel.value === 'email' ? form.email : form.country + form.phone
-  const code = channel.value === 'email' ? form.emailCode : form.phoneCode
+  const code = needsVerificationCode.value ? (channel.value === 'email' ? form.emailCode : form.phoneCode) : ''
 
   const error = validationMessage()
   if (error) {
     showError(error)
+    return
+  }
+
+  // 重置密码：按所选渠道传手机号或邮箱，以及验证码、新密码和确认密码。
+  if (resetMode.value) {
+    submitting.value = true
+    try {
+      const resetPayload = {
+        ...(channel.value === 'email' ? { email: form.email } : { phone: account }),
+        newPwd: form.password,
+        confirmPwd: form.confirmPassword,
+        code,
+      }
+
+      await resetMemberPassword(resetPayload, { silent: true })
+      feedback.value = {
+        title: t('portal.auth.resetSuccessTitle'),
+        description: t('portal.auth.successDescription'),
+        action: t('portal.auth.resetSuccessAction'),
+        success: true,
+      }
+    } catch (requestError) {
+      showError(requestError.message)
+    } finally {
+      submitting.value = false
+    }
     return
   }
 
@@ -224,7 +304,11 @@ async function submit() {
 
     try {
       // silent：面板内有专属错误反馈层，关闭全局弹窗避免重复提示。
-      const loginResult = await login({ email: account, code }, { silent: true })
+      // 验证码登录只传 code，密码登录只传 password，grantType 由接口封装按密码区分。
+      const loginPayload = loginMethod.value === 'password'
+        ? { email: account, password: form.password }
+        : { email: account, code }
+      const loginResult = await login(loginPayload, { silent: true })
 
       if (loginResult?.accessToken) {
         setToken(loginResult.accessToken)
@@ -252,14 +336,15 @@ async function submit() {
 
   try {
     const signupPayload = channel.value === 'email'
-      ? { email: form.email, emailCode: form.emailCode, uvid: await ensureUvid() }
-      : { phone: form.country + form.phone, smsCode: form.phoneCode, uvid: await ensureUvid() }
+      ? { email: form.email, emailCode: form.emailCode, password: form.password, uvid: await ensureUvid() }
+      : { phone: form.country + form.phone, smsCode: form.phoneCode, password: form.password, uvid: await ensureUvid() }
 
     // silent：面板内有专属错误反馈层，关闭全局弹窗避免重复提示。
     await signupMember(signupPayload, { silent: true })
 
     try {
-      const loginResult = await login({ email: account, code }, { silent: true })
+      // 注册成功后用刚设置的密码自动登录（注册验证码可能已被消费，不再复用）。
+      const loginResult = await login({ email: account, password: form.password }, { silent: true })
 
       if (loginResult?.accessToken) {
         setToken(loginResult.accessToken)
@@ -269,7 +354,7 @@ async function submit() {
       feedback.value = {
         title: t('portal.auth.registerSuccessTitle'),
         description: t('portal.auth.successDescription'),
-        action: t('portal.auth.successAction'),
+        action: t('portal.auth.registerSuccessAction'),
         success: true,
       }
       emit('authenticated')
@@ -371,6 +456,8 @@ function handleFeedbackAction() {
 
 // 切换登录/注册时清空反馈与提示，避免上一次的结果残留。
 watch(() => props.mode, () => {
+  resetMode.value = false
+  loginMethod.value = 'password'
   feedback.value = null
   inlineNotice.value = ''
 })
@@ -388,93 +475,109 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-/* 面板主体：毛玻璃背景 + 圆角阴影，宽度自适应但不超出视口；文案统一道教书法字体。 */
+/* 登录、注册、找回密码按设计稿使用不同面板宽度与表单密度。 */
 .auth-panel {
   position: relative;
-  width: min(680px, calc(100vw - 32px));
-  padding: 42px 64px 38px;
+  isolation: isolate;
+  box-sizing: border-box;
+  width: min(460px, calc(100vw - 32px));
+  padding: 44px 40px 32px;
   overflow: hidden;
   color: #312b24;
   font-family: var(--font-calligraphy);
-  background: rgba(255, 255, 255, .94);
-  border: 1px solid rgba(220, 180, 132, .7);
-  border-radius: 16px;
-  box-shadow: 0 24px 70px rgba(12, 24, 32, .34);
-  backdrop-filter: blur(16px);
+  background: linear-gradient(155deg, rgba(218, 216, 211, .96) 0%, rgba(255, 255, 255, .98) 72%);
+  border: 1px solid #d6b28b;
+  border-radius: 18px;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, .32), inset 0 0 0 1px rgba(255, 255, 255, .6);
+  backdrop-filter: blur(12px);
 }
 
-/* 输入内容（邮箱/手机号/验证码）保持清晰无衬线，避免书法体数字难以辨认。 */
-.auth-field input,
-.auth-field select {
-  font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
-}
-
-/* 右下角的装饰底纹，pointer-events: none 避免挡住操作。 */
 .auth-panel::after {
   position: absolute;
-  right: -35px;
-  bottom: -28px;
-  width: 260px;
-  height: 120px;
+  z-index: -1;
+  inset: 0;
   content: '';
   pointer-events: none;
-  background: url('@/assets/images/Rectangle 5.png') right bottom / contain no-repeat;
-  opacity: .16;
+  background-image: url('@/assets/images/Rectangle 5.png'), url('@/assets/images/Rectangle 5.png');
+  background-repeat: no-repeat;
+  background-position: top center, bottom center;
+  background-size: 100% 78px, 100% 78px;
+  opacity: .2;
 }
 
-.auth-panel--register { padding-block: 38px 34px; }
+.auth-panel--register { width: min(370px, calc(100vw - 32px)); padding: 36px 30px 20px; }
+.auth-panel--reset { width: min(535px, calc(100vw - 32px)); padding: 54px 46px 42px; }
+.auth-panel--feedback { min-height: 322px; }
 
 .auth-panel__close {
   position: absolute;
   z-index: 2;
   top: 18px;
-  right: 20px;
+  right: 18px;
   display: grid;
-  width: 34px;
-  height: 34px;
+  width: 38px;
+  height: 38px;
   padding: 0;
   place-items: center;
   color: #c99b67;
   font-size: 24px;
   line-height: 1;
   cursor: pointer;
-  background: rgba(255, 255, 255, .82);
-  border: 1px solid #ead7c0;
+  background: rgba(255, 255, 255, .74);
+  border: 1px solid rgba(234, 215, 192, .72);
   border-radius: 50%;
+  transition: color .18s ease, background-color .18s ease;
 }
 
-.auth-panel__header { text-align: center; }
-.auth-panel__header > span,
+.auth-panel__header,
+.auth-tabs,
+.auth-panel form,
+.auth-panel__footer,
+.auth-feedback { position: relative; z-index: 1; }
+
+.auth-panel__header { min-height: 30px; text-align: center; }
+.auth-panel__emblem,
 .auth-feedback__seal {
+  position: absolute;
+  z-index: 0;
+  top: -28px;
+  left: 50%;
   display: block;
-  width: 54px;
-  height: 18px;
-  margin: -42px auto 12px;
-  background: radial-gradient(circle at 50% 100%, rgba(217, 65, 31, .85), rgba(217, 65, 31, 0) 70%);
+  width: 78px;
+  height: 78px;
+  object-fit: contain;
+  pointer-events: none;
+  transform: translateX(-50%);
 }
 
 .auth-panel__header h1,
 .auth-feedback h1 {
+  position: relative;
+  z-index: 1;
   margin: 0;
   font-family: var(--font-calligraphy);
-  font-size: 28px;
+  font-size: 25px;
   font-weight: 400;
   letter-spacing: 2px;
+  line-height: 1.3;
 }
 
 /* 邮箱/手机号渠道切换：文字 tab，激活项红字并带底部短横。 */
 .auth-tabs {
   display: flex;
   justify-content: center;
-  gap: 46px;
-  margin: 4px 0 24px;
+  gap: 42px;
+  margin: 16px 0 22px;
 }
 
 .auth-tabs button {
   position: relative;
-  padding: 4px 2px 10px;
-  color: #8a837b;
+  padding: 4px 2px 9px;
+  color: #312b24;
+  font-family: inherit;
   font-size: 15px;
+  line-height: 1.4;
+  white-space: nowrap;
   cursor: pointer;
   background: none;
   border: 0;
@@ -511,25 +614,52 @@ onBeforeUnmount(() => {
 
 .auth-field > span:first-child {
   display: block;
-  margin-bottom: 7px;
+  margin-bottom: 6px;
   color: #3d3934;
   font-size: 13px;
+  line-height: 1.3;
 }
 
+/* 输入内容（邮箱/手机号/验证码）保持清晰，避免书法体数字难以辨认。 */
 .auth-field input,
 .auth-field select {
+  box-sizing: border-box;
   width: 100%;
-  height: 48px;
+  height: 42px;
   padding: 0 18px;
   color: #302c28;
+  font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 14px;
   background: rgba(255, 255, 255, .95);
   border: 1px solid #d9af82;
   border-radius: 999px;
-  outline: 0;
+  outline: none;
   transition: border-color .2s ease, box-shadow .2s ease;
 }
 
 .auth-field input::placeholder { color: #aaa39b; }
+
+/* 字段标题行：登录密码行右侧放“忘记密码”入口。 */
+.auth-field__label-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.auth-field__forgot {
+  padding: 0;
+  color: #1d5a83;
+  font-family: var(--font-ui-international, Arial, sans-serif);
+  font-size: 13px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  background: none;
+  border: 0;
+  transition: color .15s ease;
+}
+
+.auth-field__forgot:hover { color: #c93617; }
 .auth-field input:focus,
 .auth-field select:focus { border-color: #c93617; box-shadow: 0 0 0 3px rgba(201, 54, 23, .11); }
 
@@ -537,22 +667,52 @@ onBeforeUnmount(() => {
 .auth-field__compound,
 .auth-field__phone {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 180px;
-  gap: 12px;
+  grid-template-columns: minmax(0, 1fr) minmax(122px, 32%);
+  gap: 8px;
 }
 
 .auth-field__compound > button {
-  padding: 0 16px;
+  min-width: 0;
+  padding: 0 10px;
   color: #fff;
+  font-family: var(--font-calligraphy);
+  font-size: 14px;
   white-space: nowrap;
   cursor: pointer;
-  background: linear-gradient(180deg, #e43b19, #c9290e);
-  border: 2px solid #e9bd89;
+  background: #c8320e url('@/assets/cuts/login-button-bg.png') center / 100% 100% no-repeat;
+  border: 0;
   border-radius: 999px;
 }
 
 .auth-field__compound > button:disabled { cursor: default; filter: grayscale(.25); opacity: .7; }
-.auth-field__phone { grid-template-columns: 154px minmax(0, 1fr); }
+.auth-field__phone {
+  grid-template-columns: 116px minmax(0, 1fr);
+  gap: 0;
+  height: 42px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, .95);
+  border: 1px solid #d9af82;
+  border-radius: 999px;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+.auth-field__phone:focus-within { border-color: #c93617; box-shadow: 0 0 0 3px rgba(201, 54, 23, .11); }
+.auth-field__phone select,
+.auth-field__phone input {
+  height: 100%;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+.auth-field__phone select {
+  padding: 0 8px 0 12px;
+  border-right: 1px solid #e5d2bc;
+  font-family: var(--font-calligraphy);
+  font-size: 12px;
+}
+.auth-field__phone input { min-width: 0; padding-inline: 12px; }
+.auth-field__phone select:focus,
+.auth-field__phone input:focus { border: 0; box-shadow: none; }
 
 .auth-panel__notice {
   margin: -4px 0 12px;
@@ -566,16 +726,16 @@ onBeforeUnmount(() => {
   position: relative;
   z-index: 1;
   width: 100%;
-  height: 50px;
+  height: 42px;
   color: #fff;
   font-family: var(--font-calligraphy);
   font-size: 20px;
   letter-spacing: 8px;
   cursor: pointer;
-  background: linear-gradient(180deg, #e44220, #ce2e0e);
-  border: 2px solid #edbe86;
+  background: #c8320e url('@/assets/cuts/login-button-bg.png') center / 100% 100% no-repeat;
+  border: 0;
   border-radius: 999px;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .2);
+  text-shadow: 0 1px 1px rgba(92, 24, 5, .25);
 }
 
 .auth-panel__submit:disabled { cursor: default; filter: grayscale(.25); opacity: .7; }
@@ -584,11 +744,14 @@ onBeforeUnmount(() => {
   position: relative;
   z-index: 1;
   display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  margin-top: 22px;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
   color: #8a837b;
-  font-size: 12px;
+  font-size: 13px;
+  line-height: 1.4;
+  text-align: center;
 }
 
 .auth-panel__footer p { margin: 0; }
@@ -600,45 +763,489 @@ onBeforeUnmount(() => {
   cursor: pointer;
   background: none;
   border: 0;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .auth-feedback {
-  position: relative;
-  z-index: 1;
-  padding: 30px 0 18px;
+  min-height: 220px;
+  padding: 8px 0 0;
   text-align: center;
 }
 
-.auth-feedback__seal { margin: -72px auto 24px; }
-.auth-feedback p { max-width: 410px; margin: 38px auto; color: #a7794e; font-size: 14px; line-height: 1.7; }
-.auth-feedback > button { width: min(320px, 100%); letter-spacing: 1px; }
+.auth-feedback__seal { top: -24px; }
+.auth-feedback h1 { padding-top: 0; }
+.auth-feedback p { max-width: 410px; margin: 36px auto 66px; color: #b18a62; font-size: 16px; line-height: 1.7; }
+.auth-feedback > button { display: block; width: min(250px, 100%); margin: 0 auto; letter-spacing: 1px; }
+
+.auth-panel--register .auth-panel__header { min-height: 28px; }
+.auth-panel--register .auth-panel__header h1 { font-size: 19px; letter-spacing: 1px; }
+.auth-panel--register .auth-tabs { gap: 28px; margin: 12px 0 20px; }
+.auth-panel--register .auth-field { margin-bottom: 12px; }
+.auth-panel--register .auth-field > span:first-child { margin-bottom: 4px; font-size: 12px; }
+.auth-panel--register .auth-field input,
+.auth-panel--register .auth-field select,
+.auth-panel--register .auth-field__phone { height: 34px; }
+.auth-panel--register .auth-field__compound > button { font-size: 12px; }
+.auth-panel--register .auth-panel__submit { height: 36px; font-size: 16px; letter-spacing: 4px; }
+.auth-panel--register .auth-panel__footer { flex-direction: row; flex-wrap: wrap; gap: 4px 10px; margin-top: 10px; font-size: 10px; }
+
+.auth-panel--reset .auth-tabs { margin: 20px 0 46px; }
+.auth-panel--reset .auth-field { margin-bottom: 30px; }
+.auth-panel--reset .auth-field input,
+.auth-panel--reset .auth-field select,
+.auth-panel--reset .auth-field__phone { height: 47px; }
+.auth-panel--reset .auth-panel__submit { height: 48px; }
+.auth-panel--reset .auth-field__compound > button { font-size: 15px; }
+
+html[data-locale-layout='international'] .auth-panel { font-family: var(--font-serif-cn); }
+html[data-locale-layout='international'] .auth-panel__header h1,
+html[data-locale-layout='international'] .auth-feedback h1,
+html[data-locale-layout='international'] .auth-panel__submit,
+html[data-locale-layout='international'] .auth-field__compound > button,
+html[data-locale-layout='international'] .auth-feedback > button { font-family: var(--font-serif-cn); letter-spacing: 1px; }
+html[data-locale-layout='international'] .auth-panel--register .auth-panel__header h1 { font-size: 17px; }
+html[data-locale-layout='international'] .auth-tabs { gap: 28px; }
+html[data-locale-layout='international'] .auth-panel--reset .auth-tabs { gap: 20px; }
 
 @media (hover: hover) and (pointer: fine) {
   .auth-panel__submit:hover,
   .auth-field__compound > button:hover:not(:disabled),
   .auth-feedback > button:hover { filter: brightness(1.08); }
+  .auth-panel__close:hover { color: #b34a28; background: #fff; }
 }
 
-/* 小屏压缩内边距、字号与按钮宽度。 */
+/* 小屏保留设计中的胶囊字段，并为验证码按钮和区号留足空间。 */
 @media (max-width: 600px) {
-  .auth-panel,
-  .auth-panel--register { width: min(440px, calc(100vw - 40px)); padding: 32px 20px 24px; border-radius: 14px; }
-  .auth-panel__close { top: 12px; right: 12px; }
+  .auth-panel { width: min(460px, calc(100vw - 32px)); padding: 38px 24px 28px; border-radius: 16px; }
+  .auth-panel--register { width: min(370px, calc(100vw - 32px)); padding: 32px 20px 18px; }
+  .auth-panel--reset { width: min(535px, calc(100vw - 32px)); padding: 44px 24px 30px; }
+  .auth-panel--feedback { min-height: 300px; }
+  .auth-panel__close { top: 12px; right: 12px; width: 34px; height: 34px; }
   .auth-panel__header h1,
-  .auth-feedback h1 { padding-inline: 30px; font-size: 23px; }
-  .auth-tabs { gap: 32px; margin-bottom: 18px; }
-  .auth-tabs button { font-size: 14px; }
-  .auth-field { margin-bottom: 12px; }
+  .auth-feedback h1 { padding-inline: 30px; font-size: 22px; }
+  .auth-panel--register .auth-panel__header h1 { font-size: 17px; }
+  .auth-tabs { gap: 26px; margin: 14px 0 18px; }
+  .auth-panel--register .auth-tabs { gap: 18px; margin: 10px 0 16px; }
+  .auth-panel--reset .auth-tabs { gap: 18px; margin: 16px 0 30px; }
+  .auth-field { margin-bottom: 14px; }
   .auth-field input,
-  .auth-field select { height: 46px; padding-inline: 14px; }
-  .auth-field__compound { grid-template-columns: minmax(0, 1fr) 124px; gap: 8px; }
-  .auth-field__phone { grid-template-columns: 122px minmax(0, 1fr); gap: 8px; }
-  .auth-field__compound > button { padding-inline: 8px; font-size: 12px; }
-  .auth-panel__submit { min-height: 48px; height: auto; padding: 10px 14px; font-size: 17px; line-height: 1.4; letter-spacing: 1px; }
-  .auth-panel__footer { flex-direction: column; gap: 7px; align-items: center; margin-top: 18px; text-align: center; }
+  .auth-field select { height: 40px; padding-inline: 12px; }
+  .auth-field__compound { grid-template-columns: minmax(0, 1fr) 112px; gap: 7px; }
+  .auth-field__phone { grid-template-columns: 108px minmax(0, 1fr); }
+  .auth-field__compound > button { padding-inline: 6px; font-size: 12px; }
+  .auth-panel--register .auth-field { margin-bottom: 10px; }
+  .auth-panel--register .auth-field input,
+  .auth-panel--register .auth-field select,
+  .auth-panel--register .auth-field__phone { height: 34px; }
+  .auth-panel--reset .auth-field { margin-bottom: 20px; }
+  .auth-panel--reset .auth-field input,
+  .auth-panel--reset .auth-field select,
+  .auth-panel--reset .auth-field__phone { height: 44px; }
+  .auth-panel__submit { height: 42px; font-size: 18px; letter-spacing: 4px; }
+  .auth-panel--register .auth-panel__submit { height: 36px; font-size: 15px; }
+  .auth-panel--reset .auth-panel__submit { height: 44px; }
+  .auth-panel__footer { gap: 8px; margin-top: 16px; font-size: 11px; }
+  .auth-panel--register .auth-panel__footer { gap: 4px 8px; margin-top: 8px; font-size: 9px; }
+  .auth-feedback { min-height: 220px; }
+  .auth-feedback p { margin: 30px auto 54px; font-size: 14px; }
 }
 
 /* 隐私政策弹窗：深色遮罩 + 白色圆角卡片，正文按设计稿居中排版。 */
+/* Figma auth frames: 680px panels with 60px controls and roomier typography. */
+.auth-panel {
+  width: min(680px, calc(100vw - 32px));
+  min-height: 723px;
+  padding: 24px 58px 35px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .78), rgba(255, 255, 255, .98) 32%, #fff);
+  border-color: rgba(194, 159, 121, .5);
+  border-radius: 20px;
+  box-shadow: 0 10px 10px rgba(0, 0, 0, .25);
+  backdrop-filter: none;
+}
+
+.auth-panel--register,
+.auth-panel--reset {
+  width: min(680px, calc(100vw - 32px));
+  min-height: 837px;
+  padding: 24px 58px 40px;
+}
+
+.auth-panel--register .auth-panel__header,
+.auth-panel--reset .auth-panel__header { height: 98px; min-height: 98px; }
+
+.auth-panel--register .auth-tabs,
+.auth-panel--reset .auth-tabs { margin: 24px 0 40px; }
+
+.auth-panel--register.auth-panel--phone,
+.auth-panel--reset.auth-panel--phone { min-height: 819px; }
+
+.auth-panel--register.auth-panel--phone .auth-panel__form,
+.auth-panel--reset.auth-panel--phone .auth-panel__form { gap: 24px; }
+
+.auth-panel.auth-panel--feedback {
+  width: min(680px, calc(100vw - 32px));
+  min-height: 410px;
+  padding: 24px 58px 40px;
+}
+
+.auth-panel__close {
+  top: 30px;
+  right: 30px;
+  width: 48px;
+  height: 48px;
+  font-size: 25px;
+}
+
+.auth-panel__header {
+  height: 98px;
+  min-height: 98px;
+}
+
+.auth-panel__emblem {
+  top: 0;
+  width: 138px;
+  height: 138px;
+}
+
+.auth-panel__header h1,
+.auth-feedback h1 {
+  position: absolute;
+  top: 50px;
+  left: 50%;
+  width: max-content;
+  max-width: calc(100% - 56px);
+  padding: 0;
+  font-size: 32px;
+  letter-spacing: 0;
+  line-height: 1.25;
+  transform: translateX(-50%);
+}
+
+.auth-tabs {
+  gap: 80px;
+  margin: 24px 0 24px;
+}
+
+.auth-tabs button {
+  padding: 0 2px 17px;
+  font-size: 24px;
+  line-height: 1.2;
+}
+
+.auth-tabs button::after {
+  bottom: 0;
+  width: 40px;
+  height: 5px;
+  border-radius: 10px;
+}
+
+.auth-panel--register .auth-tabs,
+.auth-panel--reset .auth-tabs {
+  margin-bottom: 40px;
+}
+
+.auth-panel__form {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  margin: 0;
+}
+
+.auth-panel__recaptcha {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.auth-field {
+  margin: 0;
+}
+
+.auth-field > span:first-child {
+  margin-bottom: 14px;
+  color: #111;
+  font-size: 18px;
+  line-height: 1.2;
+}
+
+.auth-field input,
+.auth-field select {
+  height: 60px;
+  padding-inline: 24px;
+  font-size: 18px;
+}
+
+.auth-field__compound {
+  grid-template-columns: minmax(0, 1fr) 180px;
+  gap: 10px;
+}
+
+.auth-field__compound > button {
+  min-height: 60px;
+  font-size: 18px;
+}
+
+.auth-field__phone {
+  grid-template-columns: 138px minmax(0, 1fr);
+  height: 60px;
+}
+
+.auth-field__phone select {
+  padding: 0 22px 0 24px;
+  font-family: inherit;
+  font-size: 16px;
+}
+
+.auth-field__phone input {
+  min-width: 0;
+  padding-inline: 14px 24px;
+}
+
+.auth-login-method-group {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.auth-panel__form--login > .auth-panel__login-code ~ .auth-login-method-group {
+  margin-top: -14px;
+}
+
+.auth-field__password-control {
+  display: flex;
+  height: 60px;
+  align-items: center;
+  gap: 12px;
+  padding: 0 24px;
+  background: #fff;
+  border: 1px solid #c29f79;
+  border-radius: 999px;
+}
+
+.auth-field__password-control input {
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+}
+
+.auth-field__password-control input:focus {
+  border: 0;
+  box-shadow: none;
+}
+
+.auth-field__forgot {
+  flex: 0 0 auto;
+  font-size: 18px;
+}
+
+.auth-login-method {
+  display: inline-flex;
+  align-self: flex-end;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  color: #2b59a2;
+  font-family: inherit;
+  font-size: 18px;
+  line-height: 1.35;
+  cursor: pointer;
+  background: none;
+  border: 0;
+}
+
+.auth-login-method__arrow {
+  font-family: Arial, sans-serif;
+  font-size: 24px;
+  line-height: .8;
+}
+
+.auth-panel__agreement {
+  margin-top: 10px;
+  color: rgba(105, 105, 105, .91);
+  font-size: 18px;
+  line-height: 1.3;
+  text-align: center;
+}
+
+.auth-panel__agreement button {
+  padding: 0;
+  color: #2b59a2;
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+  background: none;
+  border: 0;
+}
+
+.auth-panel__submit {
+  height: 60px;
+  margin-top: -14px;
+  font-size: 24px;
+  letter-spacing: 7px;
+}
+
+.auth-panel__footer {
+  margin-top: 40px;
+  font-size: 24px;
+  line-height: 1.2;
+}
+
+.auth-panel__footer p { margin: 0; }
+
+.auth-panel--register .auth-panel__header h1,
+.auth-panel--reset .auth-panel__header h1 { font-size: 32px; }
+
+.auth-panel--register .auth-field,
+.auth-panel--reset .auth-field { margin: 0; }
+
+.auth-panel--register .auth-field > span:first-child,
+.auth-panel--reset .auth-field > span:first-child {
+  margin-bottom: 14px;
+  font-size: 18px;
+}
+
+.auth-panel--register .auth-field input,
+.auth-panel--reset .auth-field input,
+.auth-panel--register .auth-field select,
+.auth-panel--reset .auth-field select,
+.auth-panel--register .auth-field__phone,
+.auth-panel--reset .auth-field__phone { height: 60px; }
+
+.auth-panel--register .auth-field__compound > button,
+.auth-panel--reset .auth-field__compound > button { font-size: 18px; }
+
+.auth-panel--register .auth-panel__submit,
+.auth-panel--reset .auth-panel__submit {
+  height: 60px;
+  margin-top: 0;
+  font-size: 24px;
+  letter-spacing: 7px;
+}
+
+.auth-panel--feedback .auth-panel__close { top: 30px; right: 30px; }
+
+.auth-feedback {
+  min-height: 286px;
+  padding: 50px 0 0;
+}
+
+.auth-feedback__seal { top: 0; width: 138px; height: 138px; }
+
+.auth-feedback h1 { top: 50px; }
+
+.auth-feedback p {
+  max-width: 560px;
+  margin: 92px auto 90px;
+  color: #c29f79;
+  font-size: 24px;
+  line-height: 1.4;
+}
+
+.auth-panel.auth-panel--feedback { padding-bottom: 36px; }
+
+.auth-panel.auth-panel--feedback-error { min-height: 380px; }
+
+.auth-panel--feedback-error .auth-feedback__seal { top: 28px; }
+
+.auth-panel--feedback-error .auth-feedback h1 { top: 78px; letter-spacing: 19.2px; }
+
+.auth-panel--feedback-error .auth-feedback p { margin: 116px auto 30px; }
+
+.auth-panel--feedback-error .auth-feedback > button { width: 180px; }
+
+.auth-feedback > button {
+  width: 320px;
+  height: 60px;
+  font-size: 24px;
+}
+
+html[data-locale-layout='international'] .auth-panel__header h1,
+html[data-locale-layout='international'] .auth-feedback h1 { font-size: 28px; }
+
+html[data-locale-layout='international'] .auth-tabs { gap: 48px; }
+
+html[data-locale-layout='international'] .auth-tabs button { font-size: 20px; }
+
+html[data-locale-layout='international'] .auth-panel__footer { font-size: 18px; }
+
+@media (max-width: 600px) {
+  .auth-panel,
+  .auth-panel--register,
+  .auth-panel--reset,
+  .auth-panel.auth-panel--feedback {
+    width: min(680px, calc(100vw - 24px));
+    min-height: 0;
+    padding: 20px 22px 28px;
+    border-radius: 16px;
+  }
+
+  .auth-panel--register.auth-panel--phone,
+  .auth-panel--reset.auth-panel--phone { min-height: 0; }
+
+  .auth-panel--register.auth-panel--phone .auth-panel__form,
+  .auth-panel--reset.auth-panel--phone .auth-panel__form { gap: 20px; }
+
+  .auth-panel__close { top: 14px; right: 14px; width: 34px; height: 34px; }
+  .auth-panel__header { height: 82px; min-height: 82px; }
+  .auth-panel--register .auth-panel__header,
+  .auth-panel--reset .auth-panel__header { height: 82px; min-height: 82px; }
+  .auth-panel__emblem { width: 100px; height: 100px; }
+  .auth-panel__header h1,
+  .auth-feedback h1 { top: 36px; max-width: calc(100% - 40px); font-size: 22px; }
+  .auth-panel--register .auth-panel__header h1,
+  .auth-panel--reset .auth-panel__header h1 { font-size: 20px; }
+  .auth-tabs { gap: 24px; margin: 18px 0 20px; }
+  .auth-tabs button { padding-bottom: 12px; font-size: 16px; }
+  .auth-panel--register .auth-tabs,
+  .auth-panel--reset .auth-tabs { margin-bottom: 24px; }
+  .auth-panel__form { gap: 20px; }
+  .auth-field > span:first-child { margin-bottom: 8px; font-size: 14px; }
+  .auth-panel--register .auth-field > span:first-child,
+  .auth-panel--reset .auth-field > span:first-child { margin-bottom: 8px; font-size: 14px; }
+  .auth-field input,
+  .auth-field select,
+  .auth-field__phone { height: 50px; font-size: 15px; }
+  .auth-panel--register .auth-field input,
+  .auth-panel--register .auth-field select,
+  .auth-panel--register .auth-field__phone,
+  .auth-panel--reset .auth-field input,
+  .auth-panel--reset .auth-field select,
+  .auth-panel--reset .auth-field__phone { height: 50px; font-size: 15px; }
+  .auth-field__compound { grid-template-columns: minmax(0, 1fr) 112px; gap: 7px; }
+  .auth-field__compound > button { min-height: 50px; padding-inline: 6px; font-size: 13px; }
+  .auth-panel--register .auth-field__compound > button,
+  .auth-panel--reset .auth-field__compound > button { min-height: 50px; font-size: 13px; }
+  .auth-field__phone { grid-template-columns: 118px minmax(0, 1fr); }
+  .auth-field__phone select { padding-inline: 12px; font-size: 13px; }
+  .auth-field__phone input { padding-inline: 10px; }
+  .auth-field__password-control { height: 50px; gap: 8px; padding-inline: 14px; }
+  .auth-field__forgot,
+  .auth-login-method,
+  .auth-panel__agreement { font-size: 13px; }
+  .auth-login-method-group { gap: 12px; }
+  .auth-panel__form--login > .auth-panel__login-code ~ .auth-login-method-group { margin-top: -8px; }
+  .auth-panel__submit,
+  .auth-panel--register .auth-panel__submit,
+  .auth-panel--reset .auth-panel__submit { height: 48px; font-size: 18px; letter-spacing: 4px; }
+  .auth-panel__footer { margin-top: 24px; font-size: 15px; }
+  .auth-feedback { min-height: 250px; padding-top: 36px; }
+  .auth-feedback__seal { width: 100px; height: 100px; }
+  .auth-feedback p { margin: 58px auto 46px; font-size: 16px; }
+  .auth-feedback > button { width: min(320px, 100%); height: 48px; font-size: 18px; }
+  .auth-panel--feedback-error .auth-feedback__seal { top: 0; }
+  .auth-panel--feedback-error .auth-feedback h1 { top: 36px; letter-spacing: 4px; }
+  .auth-panel--feedback-error .auth-feedback p { margin: 52px auto 30px; font-size: 15px; }
+  .auth-panel--feedback-error .auth-feedback > button { width: min(180px, 100%); }
+}
+
 .auth-policy-mask {
   position: fixed;
   z-index: 3000;

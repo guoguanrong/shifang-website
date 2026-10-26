@@ -48,13 +48,16 @@ onBeforeUnmount(() => {
   position: fixed;
   z-index: 2000;
   inset: 0;
-  display: grid;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   overflow-y: auto;
-  padding: clamp(76px, 12vh, 140px) 16px 48px;
-  place-items: start center;
-  background: rgba(16, 24, 28, .62);
-  backdrop-filter: blur(1.5px);
+  padding: 24px 16px;
+  background: rgba(0, 0, 0, .6);
+  backdrop-filter: blur(3px);
 }
+
+.auth-modal :deep(.auth-panel) { margin-block: auto; }
 
 /* 进出场：遮罩淡入淡出，面板同时轻微上移缩放。 */
 .auth-modal-enter-active,
@@ -67,7 +70,7 @@ onBeforeUnmount(() => {
 .auth-modal-leave-to :deep(.auth-panel) { opacity: 0; transform: translateY(16px) scale(.98); }
 
 @media (max-width: 600px) {
-  .auth-modal { padding: 76px 16px 24px; }
+  .auth-modal { padding: 20px 16px; }
 }
 </style>
 
