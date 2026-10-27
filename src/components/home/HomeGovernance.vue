@@ -45,22 +45,21 @@ const rightItems = computed(() => admonitions.value.slice(2, 4))
 .organization-section {
   position: relative;
   z-index: 3;
-  height: 1090px;
+  height: 1350px;
   overflow: hidden;
   color: #fff;
-  background: #101a31;
 }
 
 .organization-background {
   position: absolute;
-  top: -219px;
+  top: 0;
   left: 50%;
-  width: 1589px;
+  width: 100%;
   height: 1349px;
   max-width: none;
   object-fit: fill;
   pointer-events: none;
-  transform: translateX(-50%) rotate(-5.82deg);
+  transform: translateX(-50%) rotate(0);
 }
 
 .organization-content {
@@ -69,7 +68,8 @@ const rightItems = computed(() => admonitions.value.slice(2, 4))
   width: 1112px;
   max-width: calc(100% - 48px);
   margin: 0 auto;
-  padding-top: 236px;
+  padding-top: 336px;
+  box-sizing: border-box;
 }
 
 .admonitions-heading {

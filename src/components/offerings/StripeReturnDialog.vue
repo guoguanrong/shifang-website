@@ -13,7 +13,7 @@
           <p v-if="statusText">{{ statusText }}</p>
           <p>{{ t('offerings.completedService') }}</p>
           <p class="completed-blessing">{{ t('offerings.completedBlessing') }}！</p>
-          <CeremonialButton :label="t('offerings.completedBlessing')" @click="dialog.close()" />
+          <CeremonialButton :label="t(pending.kind === 'deity' ? 'offerings.completedBlessingDeity' : 'offerings.completedBlessingLamp')" @click="dialog.close()" />
         </div>
         <div v-else class="offering-completed" role="alert">
           <p>{{ message }}</p>

@@ -150,7 +150,7 @@ export default {
     title: 'Seasonal Guide',
     subtitle: 'Honor heaven and follow the seasons · Prevention is better than cure',
     items: [
-      { char: 'Chen', title: '2026 · Bingwu Year', desc: 'The Year of the Horse is a year of Tai Sui. Those born under the Horse meet Tai Sui directly; those born under the Rat clash with it. We suggest offering a Tai Sui Peace Lamp early in the year to resolve conflicts and pass the year in peace.', action: 'Learn How to Resolve' },
+      { char: 'Wu', title: '2026 · Bingwu Year', desc: 'The Year of the Horse is a year of Tai Sui. Those born under the Horse meet Tai Sui directly; those born under the Rat clash with it. We suggest offering a Tai Sui Peace Lamp early in the year to resolve conflicts and pass the year in peace.', action: 'Learn How to Resolve' },
       { char: 'Summer', title: 'Midsummer · Cooling the Heart', desc: 'In high summer, heart fire is strong. Keep the mind calm and desires few, avoid heat and seek coolness, eat light fruits and vegetables, and avoid greasy and spicy food. Sit in meditation at noon, walk in the cool of evening. Follow the seasons and pass the summer safely.', action: 'Summer Wellness' },
       { char: 'Exams', title: 'Exam Season · Wenchang', desc: 'The turn from spring to summer is the critical period for entrance and civil service examinations. Offering a Wenchang Wisdom Lamp brings wishes for success in the exams and a smooth career.', action: 'Light the Wenchang Lamp' },
       { char: 'Fortune', title: 'Yearly Fortune', desc: 'Learn your zodiac fortune for this year and plan ahead. Those who offend, clash with or are punished by Tai Sui should resolve it as early as possible.', action: 'View Your Fortune' },
@@ -201,9 +201,28 @@ export default {
     ],
   },
   // 机构发展时间轴。
+  homeActivity: {
+    en: 'Latest News',
+    title: 'Latest News',
+    subtitle: 'Voices and blessings from all walks of life',
+    tabs: {
+      news: 'Hall Updates',
+      testimonials: 'Devotee Stories',
+      messages: 'Community Voices',
+    },
+    badges: {
+      news: 'Updates',
+      testimonials: 'Stories',
+      messages: 'Voices',
+    },
+    more: 'View more',
+    loading: 'Loading latest content…',
+    empty: 'No content yet',
+    openDetail: 'Open: {title}',
+  },
   milestones: {
     en: 'Milestones',
-    title: 'Milestones',
+    title: 'Temple Thrives, Culture Endures',
     subtitle: 'The journey of ShiFang Hall',
     items: [
       { year: '2025', title: 'ShiFang Hall Platform Founded', desc: 'Initiated by people dedicated to the transmission of Taoist culture, with a mission to digitally preserve temple heritage and launch the Cloud Co-Build system.' },

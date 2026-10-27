@@ -151,7 +151,7 @@ export default {
     title: '時令指引',
     subtitle: '敬天順時，趨吉避凶 · 預防大於治療',
     items: [
-      { char: '辰', title: '2026 · 丙午年', desc: '馬年值太歲，屬馬者值太歲，屬鼠者沖太歲。建議年初供奉太歲祈安燈，化解沖煞，安度流年。', action: '了解化解方式' },
+      { char: '午', title: '2026 · 丙午年', desc: '馬年值太歲，屬馬者值太歲，屬鼠者沖太歲。建議年初供奉太歲祈安燈，化解沖煞，安度流年。', action: '了解化解方式' },
       { char: '夏', title: '盛夏 · 避暑養心', desc: '盛夏當令，心火旺盛。此時宜清心寡欲、避暑納涼，多食清淡疏果，少食油膩辛辣。午時靜坐養神，酉時散步納涼。順應天時，平安度夏。', action: '查看夏季養生' },
       { char: '考', title: '考試季 · 文昌', desc: '每年春夏之交為中高考、公考關鍵期。供奉文昌啟智燈，祈願金榜題名、仕途通達。', action: '點亮文昌燈' },
       { char: '運', title: '流年運勢', desc: '瞭解您今年的生肖運勢，提前佈局。犯太歲、沖太歲、刑太歲者應儘早化解。', action: '查看運勢' },
@@ -202,9 +202,28 @@ export default {
     ],
   },
   // 机构发展时间轴。
+  homeActivity: {
+    en: 'Latest News',
+    title: '最新訊息',
+    subtitle: '來自社會各界的聲音與祝福',
+    tabs: {
+      news: '殿內動態',
+      testimonials: '信眾實錄',
+      messages: '各界寄語',
+    },
+    badges: {
+      news: '殿內動態',
+      testimonials: '信眾實錄',
+      messages: '各界寄語',
+    },
+    more: '查看更多',
+    loading: '正在載入最新內容…',
+    empty: '暫無內容',
+    openDetail: '查看詳情：{title}',
+  },
   milestones: {
-    en: 'Milestones',
-    title: '里程碑事件',
+    en: 'Temple thrives, culture endures.',
+    title: '觀宇興 文脈延',
     subtitle: '十方殿的發展歷程',
     items: [
       { year: '2025年', title: '十方殿平台創立', desc: '由多位道教傳承人士聯合發起，致力於宮觀文化遺產的數位化傳承並上線雲端共築系統。' },

@@ -20,7 +20,7 @@
       <p class="shrine-caption"><span class="offering-notice-icon" aria-hidden="true"><img :src="noticeIcon"
             alt="" /></span><span>{{ deity.title }} · {{ t('offerings.shrineCaption') }}</span></p>
     </section>
-    <!-- 供奉方案与下单表单：选中的方案决定金额、周期与弹窗文案。 -->
+    <!-- 供奉方案与下单表单：选中的方案决定金额与弹窗文案。 -->
     <section class="deity-offering-order offering-paper">
       <OrnateSectionHeading :title="t('offerings.plansTitle')" />
       <p v-if="loading" class="worship-status" role="status">{{ t('offerings.worshipLoading') }}</p>
@@ -28,25 +28,35 @@
         {{ t(loadError ? 'offerings.worshipLoadFailed' : 'offerings.worshipUnavailable') }}
       </p>
       <div v-else class="deity-order-inner">
-        <div class="offering-plans" role="group" :aria-label="t('offerings.plansTitle')">
-          <button v-for="plan in plans" :key="plan.id" class="offering-plan" :class="plan.id" type="button"
-            :aria-pressed="selectedPlan === plan.id" @click="selectedPlan = plan.id">
-            <img :src="plan.image" alt="" /><span v-if="plan.id === 'yearly' && yearlySavings > 0"
-              class="plan-saving">{{ t('offerings.saving', { amount: formatPrice(yearlySavings) }) }}</span>
-            <span class="plan-title">{{ t(`offerings.${plan.id}`) }}</span><span class="plan-description">{{
-              t(`offerings.${plan.id}Text`) }}</span>
-            <span class="plan-price">${{ formatPrice(plan.amount) }}<small> / {{ t(`offerings.${plan.period}`)
-                }}</small></span>
+        <div v-if="plans.length" class="offering-plans" role="group" :aria-label="t('offerings.plansTitle')">
+          <button v-for="plan in plans" :key="plan.id" class="offering-plan" type="button"
+            :aria-pressed="selectedPlanId === plan.id" @click="selectPlan(plan)">
+            <span class="plan-price">${{ formatPrice(plan.price) }}</span>
+            <span class="plan-title">{{ plan.useType || plan.name || t('offerings.plansTitle') }}</span>
           </button>
         </div>
-        <OfferingOrderForm kind="deity" :amount="activePlan.amount" :period="t(`offerings.${activePlan.period}`)"
-          @submit="details = $event" />
+        <div class="custom-offering-amount">
+          <label for="deity-custom-amount">{{ t('offerings.customAmount') }}</label>
+          <div class="custom-offering-amount__input">
+            <span aria-hidden="true">$</span>
+            <input id="deity-custom-amount" v-model="customAmount" type="number" min="100" step="any"
+              inputmode="decimal" :placeholder="t('offerings.customAmountPlaceholder')"
+              :aria-invalid="customAmount !== '' && !customAmountValid"
+              :aria-describedby="customAmount !== '' && !customAmountValid ? 'deity-custom-amount-error' : undefined"
+              @input="onCustomAmountInput" />
+          </div>
+        </div>
+        <p v-if="customAmount !== '' && !customAmountValid" id="deity-custom-amount-error"
+          class="custom-offering-amount__error" role="status">
+          {{ t('offerings.customAmountRequired') }}
+        </p>
+        <OfferingOrderForm kind="deity" :amount="selectedAmount" :submit-disabled="!canSubmitOffering"
+          @submit="submitOffering" />
       </div>
     </section>
     <!-- details 非空即打开下单确认弹窗，关闭时置空。 -->
-    <OfferingDialog v-if="details" kind="deity" :title="deity.title" :amount="activePlan.amount"
-      :period="t(`offerings.${activePlan.period}`)" :plan-label="t(`offerings.${activePlan.id}`)"
-      :business-id="worship?.id" :cycle-type="activePlan.id === 'yearly' ? 1 : 2" :details="details"
+    <OfferingDialog v-if="details" kind="deity" :title="deity.title" :amount="selectedAmount"
+      :plan-label="selectedPlanLabel" :business-id="worship?.id" :details="details"
       @close="details = null" />
   </OfferingPageShell>
 </template>
@@ -66,11 +76,9 @@ import shrineEmblem from '@/assets/offerings/shrine-emblem.svg'
 import headingLeft from '@/assets/offerings/heading-left.svg'
 import headingRight from '@/assets/offerings/heading-right.svg'
 import noticeIcon from '@/assets/offerings/notice-icon.svg'
-import monthly from '@/assets/offerings/monthly.webp'
-import yearly from '@/assets/offerings/yearly.webp'
 import { getWorshipByGodName } from '@/api/worship'
 import { deityGodNames } from '@/data/deityWorship'
-const { t, tm } = useI18n()
+const { t, tm, locale } = useI18n()
 const route = useRoute()
 const selectedDeityId = computed(() => (
   typeof route.query.deity === 'string' && deityGodNames[route.query.deity]
@@ -84,18 +92,48 @@ const deity = computed(() => {
 const worship = ref(null)
 const loading = ref(false)
 const loadError = ref(false)
-const selectedPlan = ref('yearly')
-const plans = computed(() => [
-  { id: 'monthly', amount: Number(worship.value?.monthPrice ?? 0), period: 'month', image: monthly },
-  { id: 'yearly', amount: Number(worship.value?.yearPrice ?? 0), period: 'year', image: yearly },
-])
-const activePlan = computed(() => plans.value.find((plan) => plan.id === selectedPlan.value) || plans.value[0])
-const yearlySavings = computed(() => Math.max(0, plans.value[0].amount * 12 - plans.value[1].amount))
+const selectedPlanId = ref(null)
+const customAmount = ref('')
+const plans = computed(() => {
+  const items = Array.isArray(worship.value?.shopItemsList) ? worship.value.shopItemsList : []
+  return items
+    .filter((item) => Number(item?.id) > 0
+      && (item.type == null || Number(item.type) === 1)
+      && Number(item.status) !== 2 && Number.isFinite(Number(item.price)) && Number(item.price) > 0)
+    .slice()
+    .sort((left, right) => Number(left.seq || 0) - Number(right.seq || 0))
+})
+const activePlan = computed(() => plans.value.find((plan) => plan.id === selectedPlanId.value) || null)
+const customAmountValid = computed(() => {
+  const amount = Number(customAmount.value)
+  return customAmount.value !== '' && Number.isFinite(amount) && amount >= 100
+})
+const selectedAmount = computed(() => activePlan.value
+  ? Number(activePlan.value.price)
+  : customAmountValid.value ? Number(customAmount.value) : 0)
+const selectedPlanLabel = computed(() => activePlan.value?.useType || activePlan.value?.name || t('offerings.customAmount'))
+const canSubmitOffering = computed(() => activePlan.value
+  ? Number(activePlan.value.price) > 0
+  : customAmountValid.value)
 const details = ref(null)
 
 function formatPrice(value) {
   const price = Number(value)
-  return Number.isFinite(price) ? price.toLocaleString(undefined, { maximumFractionDigits: 2 }) : '0'
+  return Number.isFinite(price) ? price.toLocaleString(locale.value, { maximumFractionDigits: 2 }) : '0'
+}
+
+function selectPlan(plan) {
+  selectedPlanId.value = plan.id
+  customAmount.value = ''
+}
+
+function onCustomAmountInput() {
+  selectedPlanId.value = null
+}
+
+function submitOffering(formDetails) {
+  if (!canSubmitOffering.value) return
+  details.value = formDetails
 }
 
 let requestSequence = 0
@@ -105,7 +143,8 @@ async function loadWorship() {
   worship.value = null
   loadError.value = false
   details.value = null
-  selectedPlan.value = 'yearly'
+  selectedPlanId.value = null
+  customAmount.value = ''
 
   if (!godName) {
     loadError.value = true
@@ -115,7 +154,10 @@ async function loadWorship() {
   loading.value = true
   try {
     const result = await getWorshipByGodName(godName)
-    if (sequence === requestSequence) worship.value = result || null
+    if (sequence === requestSequence) {
+      worship.value = result || null
+      selectedPlanId.value = plans.value[plans.value.length - 1]?.id ?? null
+    }
   } catch {
     if (sequence === requestSequence) loadError.value = true
   } finally {
@@ -133,5 +175,166 @@ watch(selectedDeityId, loadWorship, { immediate: true })
   font-size: 16px;
   line-height: 1.6;
   text-align: center;
+}
+
+.deity-order-inner {
+  width: 100%;
+}
+
+.deity-order-inner .offering-plans {
+  display: grid;
+  width: min(100%, 1043px);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 41px;
+  margin: 0 auto;
+  padding-top: 0;
+}
+
+.deity-order-inner .offering-plan {
+  display: flex;
+  min-width: 0;
+  min-height: 160px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 18px 10px;
+  color: #333;
+  text-align: center;
+  background: linear-gradient(180deg, #fff 0%, #f8f5f1 100%);
+  border: 1px solid #c29f79;
+  border-radius: 20px;
+  box-shadow: inset 0 0 0 5px #fff, inset 0 0 0 6px #f3d5b5;
+  transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+
+.deity-order-inner .offering-plan[aria-pressed='true'] {
+  background: linear-gradient(180deg, #fff 0%, #f8f5f1 100%);
+  border: 5px solid #d7b591;
+  box-shadow: 0 4px 10px rgb(0 0 0 / 12%), inset 0 0 0 1px #f3d5b5;
+}
+
+.deity-order-inner .offering-plan:focus-visible {
+  outline: 2px solid #c73412;
+  outline-offset: 3px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .deity-order-inner .offering-plan:hover {
+    transform: translateY(-2px);
+  }
+}
+
+.deity-order-inner .plan-price {
+  margin: 0;
+  color: #cc3513;
+  font-family: var(--font-calligraphy);
+  font-size: 30px;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+
+.deity-order-inner .plan-title {
+  overflow: hidden;
+  max-width: 100%;
+  margin: 0;
+  font-family: var(--font-calligraphy);
+  font-size: 16px;
+  line-height: 1.35;
+  letter-spacing: 1px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.custom-offering-amount {
+  display: grid;
+  width: min(100%, 1054px);
+  grid-template-columns: max-content minmax(0, 1fr);
+  align-items: center;
+  gap: 20px;
+  margin: 30px auto 0;
+  color: #333;
+  font-family: var(--font-calligraphy);
+  font-size: 16px;
+  letter-spacing: 1px;
+}
+
+.custom-offering-amount__input {
+  display: flex;
+  min-width: 0;
+  max-width: 934px;
+  height: 60px;
+  align-items: center;
+  gap: 8px;
+  padding: 0 24px;
+  background: #fff;
+  border: 1px solid #c29f79;
+  border-radius: 999px;
+}
+
+.custom-offering-amount__input > span {
+  color: #333;
+}
+
+.custom-offering-amount__input input {
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  color: #333;
+  font: inherit;
+  letter-spacing: 0;
+  background: transparent;
+  border: 0;
+  outline: none;
+}
+
+.custom-offering-amount__input input::placeholder {
+  color: #a9a9a9;
+  opacity: 1;
+}
+
+.custom-offering-amount__input:focus-within {
+  border-color: #c73412;
+  box-shadow: 0 0 0 2px rgb(199 52 18 / 12%);
+}
+
+.custom-offering-amount__error {
+  width: min(100%, 1054px);
+  margin: 8px auto 0;
+  color: #a53a24;
+  font-size: 13px;
+}
+
+@media (max-width: 1100px) {
+  .deity-order-inner .offering-plans {
+    gap: 20px;
+  }
+}
+
+@media (max-width: 760px) {
+  .deity-order-inner .offering-plans {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .deity-order-inner .offering-plan {
+    min-height: 140px;
+  }
+
+  .deity-order-inner .plan-price {
+    font-size: 26px;
+  }
+
+  .custom-offering-amount {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-top: 24px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .deity-order-inner .offering-plan {
+    transition: none;
+  }
 }
 </style>

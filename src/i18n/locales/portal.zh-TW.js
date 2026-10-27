@@ -52,7 +52,7 @@ export default {
   pages: {
     testimonials: { breadcrumb: '信眾實錄', eyebrow: 'Testimonials · Full', title: '信眾實錄', subtitle: '更多真實案例 · 善願得償 · 福生無量', loading: '正在載入信眾實錄…', empty: '暫無可展示的實錄。', loadError: '實錄載入失敗，目前顯示示例內容。', pagination: '信眾實錄分頁', previous: '上一頁', next: '下一頁', pageInfo: '第 {current} / {total} 頁' },
     messages: { breadcrumb: '各界寄語', eyebrow: 'Messages · Full', title: '各界寄語', subtitle: '來自社會各界的聲音與祝福 · 完整列表', play: '播放寄語：{name}', openArticle: '閱讀寄語：{name}' },
-    news: { breadcrumb: '最新動態', eyebrow: 'Latest News · Full', title: '最新動態', subtitle: '了解更多十方殿的近期活動與資訊', date: '2026.04.15', source: '十方殿資訊', readMore: '閱讀全文', views: '次閱讀', openDetail: '閱讀新聞：{title}' },
+    news: { breadcrumb: '最新動態', eyebrow: 'Latest News · Full', title: '最新動態', subtitle: '了解更多十方殿的近期活動與資訊', date: '2026.04.15', source: '十方殿資訊', readMore: '閱讀全文', views: '次閱讀', openDetail: '閱讀新聞：{title}', loading: '正在載入最新動態…', pagination: '最新動態分頁', previous: '上一頁', next: '下一頁', pageInfo: '第 {current} / {total} 頁 · 共 {count} 則' },
     detail: { quoteLabel: '寄語', contentLabel: '詳細內容' },
     newsDetail: {
       section: '最新動態', eyebrow: 'Messages', title: '清明祈福道會 · 追思超度', date: '2026.04.08', views: '1,892 次閱讀',

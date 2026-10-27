@@ -139,6 +139,11 @@ export default {
       readMore: '阅读全文',
       views: '次阅读',
       openDetail: '阅读新闻：{title}',
+      loading: '正在加载最新动态…',
+      pagination: '最新动态分页',
+      previous: '上一页',
+      next: '下一页',
+      pageInfo: '第 {current} / {total} 页 · 共 {count} 条',
     },
     detail: {
       quoteLabel: '寄语',

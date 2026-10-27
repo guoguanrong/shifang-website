@@ -8,8 +8,8 @@
       <nav class="community-detail-breadcrumb" :aria-label="t('portal.common.home')">
         <RouterLink to="/">{{ t('portal.common.home') }}</RouterLink>
         <span aria-hidden="true">/</span>
-        <RouterLink :to="sectionTo">{{ section }}</RouterLink>
-        <span aria-hidden="true">/</span>
+        <!-- <RouterLink :to="sectionTo">{{ section }}</RouterLink> -->
+        <!-- <span aria-hidden="true">/</span> -->
         <span>{{ title }}</span>
       </nav>
 

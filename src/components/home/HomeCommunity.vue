@@ -17,77 +17,52 @@
   </section>
 
   <!-- 信众实录：头像和文案按索引组合。 -->
-  <section id="testimonials" class="testimonials-section">
-    <img :src="testimonialsBackground" alt="" />
+  <section id="news" class="activity-section">
     <div class="section-content">
-      <HomeSectionHeading :eyebrow="t('testimonials.en')" :title="t('testimonials.title')"
-        :description="t('testimonials.subtitle')" />
-      <div class="testimonials-grid">
-        <article v-for="(item, index) in testimonials" :key="item.id ?? `${item.tag}-${index}`">
-          <div>
-            <div v-if="item.fromApi" class="testimonial-avatar" aria-hidden="true">{{ item.initial }}</div>
-            <img v-else :src="avatars[index % avatars.length]" alt="" />
-            <span>
-              <b v-if="item.name || (item.fromApi ? item.type : item.tag)">
-                <template v-if="item.name">{{ item.name }}</template>
-                <em v-if="item.fromApi ? item.type : item.tag">{{ item.fromApi ? memoirTypeLabel(item.type) : item.tag }}</em>
-              </b>
-              <template v-if="item.role">{{ item.role }}</template>
+      <HomeSectionHeading :eyebrow="t('homeActivity.en')" :title="t('homeActivity.title')"
+        :description="t('homeActivity.subtitle')" />
+      <div class="activity-tabs" role="tablist" :aria-label="t('homeActivity.title')">
+        <button v-for="tab in activityTabs" :key="tab.key" type="button" role="tab"
+          :class="['activity-tab', 'activity-tab--' + tab.key, { active: activeActivityTab === tab.key }]"
+          :aria-selected="activeActivityTab === tab.key" aria-controls="home-activity-panel"
+          :tabindex="activeActivityTab === tab.key ? 0 : -1" @click="activeActivityTab = tab.key">
+          <img :src="tab.image" alt="" aria-hidden="true" />
+          <span>{{ tab.label }}</span>
+        </button>
+      </div>
+
+      <div id="home-activity-panel" class="activity-card-grid" role="tabpanel" :aria-busy="activityLoading">
+        <RouterLink v-for="item in activityItems" :key="item.id" :to="activityDetailRoute(item)"
+          class="activity-card" :aria-label="t('homeActivity.openDetail', { title: item.title })">
+          <img class="activity-card__image" :src="item.cover" alt="" />
+          <span class="activity-card__shade" aria-hidden="true"></span>
+          <span class="activity-card__badge" aria-hidden="true">
+            <img class="activity-card__badge-shape" :src="activityBadge" alt="" />
+            <span class="activity-card__badge-text" :style="{ '--badge-font-size': locale.startsWith('zh') ? '18px' : '10px' }">
+              {{ activeActivityBadge }}
             </span>
-          </div>
-          <p v-if="item.storyTitle" class="testimonial-story-title">{{ item.storyTitle }}</p>
-          <p class="quote">{{ item.quote }}</p>
-        </article>
+            <img class="activity-card__flower" :src="activityFlower" alt="" />
+          </span>
+          <img class="activity-card__lines" :src="activityLines" alt="" aria-hidden="true" />
+          <span v-if="item.isVideo" class="activity-card__play" aria-hidden="true">▶</span>
+          <span class="activity-card__copy">
+            <strong>{{ item.title }}</strong>
+            <span>{{ item.description }}</span>
+          </span>
+        </RouterLink>
+        <p v-if="activityLoading && !activityItems.length" class="activity-state" role="status">
+          {{ t('homeActivity.loading') }}
+        </p>
+        <p v-else-if="!activityLoading && !activityItems.length" class="activity-state" role="status">
+          {{ t('homeActivity.empty') }}
+        </p>
       </div>
-      <button class="section-more" type="button" @click="goToPage('testimonials')">{{ t('testimonials.more') }}
-        ⟶</button>
+
+      <button class="activity-more" type="button" @click="goToActivityList">
+        {{ t('homeActivity.more') }} <span aria-hidden="true">⟶</span>
+      </button>
     </div>
   </section>
-
-  <!-- 各界寄语：标签切换状态由 activeTab 维护。 -->
-  <section id="messages" class="messages-section">
-    <img :src="messagesBackground" alt="" />
-    <div class="section-content">
-      <HomeSectionHeading :eyebrow="t('messages.en')" :title="t('messages.title')"
-        :description="t('messages.subtitle')" />
-      <div class="tabs" role="tablist">
-        <button v-for="(tab, index) in messageTabs" :key="tab" type="button" :class="{ active: activeTab === index }"
-          @click="activeTab = index">{{ tab }}</button>
-      </div>
-      <!-- 接口无数据时展示「暂无寄语」，不再回退静态示例卡。 -->
-      <div v-if="displayedMessages.length" class="message-card-grid">
-        <article v-for="(card, index) in displayedMessages" :key="card.id ?? index" class="figma-message-card">
-          <img :src="card.cover" :alt="card.title" />
-          <button v-if="card.isVideo" type="button" :aria-label="`播放第${index + 1}条视频`" class="play-button"
-            @click="goToPage('messages')">▶</button>
-          <div>
-            <h3>{{ card.title }}</h3>
-            <p>{{ card.content }}</p>
-          </div>
-        </article>
-      </div>
-      <p v-else class="message-grid-empty">{{ t('messages.empty') }}</p>
-      <button class="section-more messages-more" type="button" @click="goToPage('messages')">{{ t('messages.more') }}
-        ⟶</button>
-    </div>
-  </section>
-
-  <!-- 最新动态列表。 -->
-  <section id="news" class="news-section">
-    <HomeSectionHeading :eyebrow="t('news.en')" :title="t('news.title')" :description="t('news.subtitle')" />
-    <div v-if="newsItems.length" class="news-grid">
-      <article v-for="(item, index) in newsItems" :key="item.id ?? item.title"><img
-        :src="item.cover || newsImages[index]" :alt="item.title"
-      />
-        <h3>{{ item.title }}</h3>
-        <p>{{ item.desc }}</p>
-      </article>
-    </div>
-    <p v-else class="news-empty" role="status">{{ t('news.empty') }}</p>
-    <button class="section-more" type="button" @click="goToPage('news')">{{ t('news.more') }} ⟶</button>
-  </section>
-
-  <!-- 里程碑按年份形成时间轴。 -->
   <section id="milestones" class="milestones-section"><img :src="milestonesBackground" alt="" />
     <div class="section-content">
       <HomeSectionHeading :eyebrow="t('milestones.en')" :title="t('milestones.title')"
@@ -123,17 +98,33 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
 import { getDynamicList } from '@/api/dynamic'
 import { getMemoirList } from '@/api/memoir'
 import { getWishesList } from '@/api/wishes'
 import HomeSectionHeading from './HomeSectionHeading.vue'
-import testimonialsBackground from '@/assets/images/bg-testimonials.webp'
-import messagesBackground from '@/assets/cuts/messages-bg.webp'
 import milestonesBackground from '@/assets/cuts/milestones-bg.png'
 import milestoneEmblem from '@/assets/cuts/milestone-emblem.png'
+import activityUpdate1 from '@/assets/home/activity/card-update-1.png'
+import activityUpdate2 from '@/assets/home/activity/card-update-2.png'
+import activityStory1 from '@/assets/home/activity/card-story-1.png'
+import activityStory2 from '@/assets/home/activity/card-story-2.png'
+import activityMessage1 from '@/assets/home/activity/card-message-1.png'
+import activityMessage2 from '@/assets/home/activity/card-message-2.png'
+import activityTabNews from '@/assets/home/activity/tab-dynamic.svg'
+import activityTabTestimonials from '@/assets/home/activity/tab-testimonial.svg'
+import activityTabMessages from '@/assets/home/activity/tab-message.svg'
+import activityBadge from '@/assets/home/activity/card-badge.svg'
+import activityFlower from '@/assets/home/activity/card-flower.png'
+import activityLines from '@/assets/home/activity/card-lines.png'
+import neutralNews1 from '@/assets/images/news-1.webp'
+import neutralNews2 from '@/assets/images/news-2.webp'
+import neutralNews3 from '@/assets/images/news-3.webp'
+import neutralPortrait1 from '@/assets/images/msg-card-1.webp'
+import neutralPortrait2 from '@/assets/images/msg-card-2.webp'
+import neutralPortrait3 from '@/assets/images/msg-card-3.webp'
 import sxbButtonTexture from '@/assets/home/sxb/panel.webp'
 import sxbEmblem from '@/assets/home/sxb/emblem.svg'
 import sxbTitleEmblem from '@/assets/home/sxb/union.svg'
@@ -141,92 +132,117 @@ import seasonal1 from '@/assets/images/seasonal-scroll-1.webp'
 import seasonal2 from '@/assets/images/seasonal-scroll-2.webp'
 import seasonal3 from '@/assets/images/seasonal-scroll-3.webp'
 import seasonal4 from '@/assets/images/seasonal-scroll-4.webp'
-import avatar1 from '@/assets/images/avatar-1.webp'
-import avatar2 from '@/assets/images/avatar-2.webp'
-import avatar3 from '@/assets/images/avatar-3.webp'
-import avatar4 from '@/assets/images/avatar-4.webp'
-import avatar5 from '@/assets/images/avatar-5.webp'
-import avatar6 from '@/assets/images/avatar-6.webp'
-import avatar7 from '@/assets/images/avatar-7.webp'
-import avatar8 from '@/assets/images/avatar-8.webp'
-import messageCard1 from '@/assets/images/msg-card-1.webp'
-import messageCard2 from '@/assets/images/msg-card-2.webp'
-import messageCard3 from '@/assets/images/msg-card-3.webp'
-import news1 from '@/assets/images/news-1.webp'
-import news2 from '@/assets/images/news-2.webp'
-import news3 from '@/assets/images/news-3.webp'
 
 const { t, tm, locale } = useI18n()
 const router = useRouter()
 // 分类标签顺序与语言包 messages.tabs 一一对应，取值为后端 category 字段的中文类别。
-const TAB_CATEGORIES = ['知名人士', '道内人士', '其他重要人士']
-// 当前寄语分类索引，切换时按类别重新拉取数据。
-const activeTab = ref(0)
-// 以下素材数组必须与对应语言包 items 数组保持相同顺序。
 const seasonalImages = [seasonal1, seasonal2, seasonal3, seasonal4]
-const avatars = [avatar1, avatar2, avatar3, avatar4, avatar5, avatar6, avatar7, avatar8]
-const messageCards = [messageCard1, messageCard2, messageCard3]
-const newsImages = [news1, news2, news3]
-// 所有列表通过 computed 获取，切换语言时无需手动刷新组件。
 const seasonalItems = computed(() => tm('seasonal.items'))
 
-// 四季卡片按钮的跳转路由：与 seasonalImages 同序（春/夏/秋/冬），填入路径（如 '/blessings'）即可生效，留空则不跳转。
 const SEASONAL_ROUTES = [
-  '/blessings', // 春
-  '', // 夏（道法养生暂隐藏，留空不跳转）
-  '/blessings', // 秋
-  '/blessings', // 冬
+  '/blessings',
+  '',
+  '/blessings',
+  '/blessings',
 ]
 
 function openSeasonal(index) {
   const target = SEASONAL_ROUTES[index]
   if (target) router.push(target)
 }
-const staticTestimonials = computed(() => tm('testimonials.items'))
-const apiTestimonials = ref([])
-const testimonials = computed(() => apiTestimonials.value.length ? apiTestimonials.value : staticTestimonials.value)
-const messageTabs = computed(() => tm('messages.tabs'))
-const messages = computed(() => tm('messages.items'))
-const apiMessages = ref([])
-// 无数据时展示空状态图，不再回退静态示例卡。
-const displayedMessages = computed(() => apiMessages.value)
-// 最新动态：只展示接口数据；无数据或加载失败时保持为空，显示“暂无动态”，不再回退语言包静态条目。
-const apiNews = ref([])
 
-async function loadNews() {
+const activityFallbackImages = computed(() => locale.value === 'zh-CN'
+  ? {
+    news: [activityUpdate1, activityUpdate2],
+    testimonials: [activityStory1, activityStory2],
+    messages: [activityMessage2, activityMessage2],
+  }
+  : {
+    news: [neutralNews1, neutralNews2, neutralNews3],
+    testimonials: [neutralPortrait1, neutralPortrait2, neutralPortrait3],
+    messages: [neutralPortrait1, neutralPortrait2, neutralPortrait3],
+  })
+const activityTabArt = {
+  news: activityTabNews,
+  testimonials: activityTabTestimonials,
+  messages: activityTabMessages,
+}
+const activityTabs = computed(() => [
+  { key: 'news', label: t('homeActivity.tabs.news'), badge: t('homeActivity.badges.news'), image: activityTabArt.news },
+  { key: 'testimonials', label: t('homeActivity.tabs.testimonials'), badge: t('homeActivity.badges.testimonials'), image: activityTabArt.testimonials },
+  { key: 'messages', label: t('homeActivity.tabs.messages'), badge: t('homeActivity.badges.messages'), image: activityTabArt.messages },
+])
+const activeActivityTab = ref('news')
+const activityItems = ref([])
+const activityLoading = ref(false)
+let activityRequestId = 0
+
+const activeActivityBadge = computed(() => (
+  activityTabs.value.find((tab) => tab.key === activeActivityTab.value)?.badge || ''
+))
+// 三个分类的「查看更多」统一进入 /news，列表页按 kind 调用对应接口渲染。
+function goToActivityList() {
+  router.push({ name: 'news', query: { kind: activeActivityTab.value } })
+}
+
+async function loadActivity() {
+  const tab = activeActivityTab.value
+  const requestId = ++activityRequestId
+  activityItems.value = []
+  activityLoading.value = true
+
   try {
-    const result = await getDynamicList({ page: 1, pageSize: 3, show: true }, { silent: true })
+    let result
+    if (tab === 'news') {
+      result = await getDynamicList({ page: 1, pageSize: 6, show: true }, { silent: true })
+    } else if (tab === 'testimonials') {
+      result = await getMemoirList({ page: 1, pageSize: 6, show: true }, { silent: true })
+    } else {
+      result = await getWishesList({ page: 1, pageSize: 6, show: true }, { silent: true })
+    }
+
+    if (requestId !== activityRequestId) return
     const list = Array.isArray(result) ? result : result?.list
-    apiNews.value = Array.isArray(list)
-      ? list.slice(0, 3).map((item, index) => ({
-        id: item.id ?? `news-${index}`,
-        title: item.title || '',
-        desc: item.content || '',
-        cover: parseWishImages(item.cover)[0] || newsImages[index % newsImages.length],
+    const fallbacks = activityFallbackImages.value[tab]
+    activityItems.value = Array.isArray(list)
+      ? list.slice(0, 6).filter((item) => item?.id !== null && item?.id !== undefined).map((item, index) => ({
+        id: item.id,
+        title: item.title || item.username || '',
+        description: item.content || item.detail || '',
+        cover: parseWishImages(tab === 'messages' ? item.imgArrUrls : item.cover)[0]
+          || fallbacks[index % fallbacks.length],
+        kind: tab,
+        name: item.username || '',
+        role: item.job || '',
+        category: item.category || '',
+        content: item.content || '',
+        detail: item.detail || '',
+        wishes: item.wishes || '',
+        videoUrl: item.videoUrl || '',
+        isVideo: tab === 'messages' && (Number(item.type) === 1 || Boolean(item.videoUrl)),
+        createTime: item.createTime || '',
+        readNum: item.readNum ?? null,
       }))
       : []
   } catch {
-    apiNews.value = []
+    if (requestId === activityRequestId) activityItems.value = []
+  } finally {
+    if (requestId === activityRequestId) activityLoading.value = false
   }
 }
 
-const newsItems = computed(() => apiNews.value)
+function activityDetailRoute(item) {
+  const query = { id: String(item.id) }
+  if (item.kind && item.kind !== 'news') query.kind = item.kind
+  return { name: 'news-detail', query }
+}
+
+watch(activeActivityTab, loadActivity, { immediate: true })
+
 const milestones = computed(() => tm('milestones.items'))
-// 时间轴徽章作为 CSS 背景变量使用，避免在模板中增加装饰节点。
-const milestoneEmblemBackground = `url("${milestoneEmblem}")`
-const sxbButtonTextureBackground = `url("${sxbButtonTexture}")`
-const sxbTitleEmblemBackground = `url("${sxbTitleEmblem}")`
-
-function memoirTypeLabel(type) {
-  const labels = {
-    peace: { en: 'Peace', 'zh-CN': '平安', 'zh-TW': '平安' },
-    health: { en: 'Health', 'zh-CN': '健康', 'zh-TW': '健康' },
-    wealth: { en: 'Prosperity', 'zh-CN': '财运', 'zh-TW': '財運' },
-  }
-  const language = locale.value.startsWith('zh-TW') ? 'zh-TW' : locale.value.startsWith('zh') ? 'zh-CN' : 'en'
-  return labels[String(type).toLowerCase()]?.[language] || type
-}
-
+const milestoneEmblemBackground = 'url("' + milestoneEmblem + '")'
+const sxbButtonTextureBackground = 'url("' + sxbButtonTexture + '")'
+const sxbTitleEmblemBackground = 'url("' + sxbTitleEmblem + '")'
 function parseWishImages(value) {
   let imageList = []
 
@@ -244,54 +260,6 @@ function parseWishImages(value) {
   return imageList.map((image) => typeof image === 'string' ? image : image?.url).filter(Boolean)
 }
 
-onMounted(async () => {
-  try {
-    const result = await getMemoirList({ page: 1, pageSize: 8, show: true }, { silent: true })
-    const list = Array.isArray(result) ? result : result?.list
-    apiTestimonials.value = Array.isArray(list)
-      ? list.map((item) => ({
-        id: item.id,
-        name: item.username || '',
-        type: item.type || '',
-        role: item.job || '',
-        storyTitle: item.title || '',
-        quote: item.content || '',
-        initial: String(item.username || '?').trim().slice(0, 1).toUpperCase(),
-        fromApi: true,
-      }))
-      : []
-  } catch {
-    apiTestimonials.value = []
-  }
-})
-
-// 按当前分类标签加载寄语（仅展示已发布的）。
-async function loadMessages() {
-  try {
-    const result = await getWishesList(
-      { page: 1, pageSize: 6, show: true, category: TAB_CATEGORIES[activeTab.value] },
-      { silent: true },
-    )
-    const list = Array.isArray(result) ? result : result?.list
-    apiMessages.value = Array.isArray(list)
-      ? list.slice(0, 6).map((item, index) => ({
-        id: item.id ?? `wish-${index}`,
-        cover: parseWishImages(item.imgArrUrls)[0] || messageCards[index % messageCards.length],
-        title: item.title || messages.value[index]?.name || '',
-        content: item.content || item.detail || messages.value[index]?.quote || '',
-        isVideo: Number(item.type) === 1 || Boolean(item.videoUrl),
-      }))
-      : []
-  } catch {
-    apiMessages.value = []
-  }
-}
-
-onMounted(loadMessages)
-// 切换分类标签时加载对应类别的寄语。
-watch(activeTab, loadMessages)
-onMounted(loadNews)
-
 function goToPage(name) {
   router.push({ name })
 }
@@ -303,7 +271,6 @@ function goToPage(name) {
   min-height: 843px;
   padding-top: 0;
   background: transparent;
-  margin-top: 500px;
 }
 
 .seasonal-section :deep(.section-heading) {
@@ -443,25 +410,305 @@ function goToPage(name) {
   }
 }
 
-.testimonials-section,
-.messages-section,
+.activity-section {
+  position: relative;
+  z-index: 1;
+  padding: 72px 24px 38px;
+  overflow: hidden;
+  background: #f5f1ea;
+}
+
+.activity-section .section-content {
+  width: min(100%, 1240px);
+  /* 宽屏下内容区靠 margin 居中，否则整块会贴着左侧（与里程碑区块保持一致）。 */
+  margin-inline: auto;
+}
+
+.activity-section :deep(.section-heading) {
+  margin-bottom: 36px;
+}
+
+.activity-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+  margin: 0 0 43px;
+}
+
+.activity-tab {
+  position: relative;
+  display: inline-grid;
+  min-width: 118px;
+  min-height: 36px;
+  place-items: center;
+  padding: 0 22px;
+  color: #fed8ae;
+  font-family: var(--font-calligraphy);
+  font-size: 16px;
+  letter-spacing: 1.6px;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  isolation: isolate;
+  transition: transform .2s ease, filter .2s ease;
+}
+
+.activity-tab img {
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  transform: translateX(-50%);
+}
+
+.activity-tab--messages {
+  min-width: 140px;
+}
+
+.activity-tab--news img {
+  filter: brightness(1.55) saturate(1.2);
+}
+
+.activity-tab--news[aria-selected='true'] img {
+  filter: none;
+}
+
+.activity-tab--testimonials[aria-selected='true'] img,
+.activity-tab--messages[aria-selected='true'] img {
+  filter: brightness(.62) saturate(1.15);
+}
+
+.activity-tab span {
+  position: relative;
+  z-index: 1;
+  white-space: nowrap;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .activity-tab:hover {
+    transform: translateY(-1px);
+  }
+}
+
+.activity-card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 40px 50px;
+}
+
+.activity-card {
+  position: relative;
+  display: block;
+  aspect-ratio: 19 / 14;
+  min-width: 0;
+  overflow: hidden;
+  color: #fff;
+  text-decoration: none;
+  background: #6d4b30;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgb(61 44 25 / 12%);
+  isolation: isolate;
+  transition: transform .28s ease, box-shadow .28s ease;
+}
+
+.activity-card:focus-visible {
+  outline: 2px solid #bf5a31;
+  outline-offset: 3px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .activity-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 32px rgb(61 44 25 / 20%);
+  }
+
+  .activity-card:hover .activity-card__image {
+    transform: scale(1.04);
+  }
+}
+
+.activity-card__image,
+.activity-card__shade {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.activity-card__image {
+  object-fit: cover;
+  transition: transform .45s ease;
+}
+
+.activity-card__shade {
+  z-index: 1;
+  background: linear-gradient(180deg, rgb(21 19 15 / 0%) 41%, rgb(24 21 18 / 36%) 62%, rgb(20 19 18 / 92%) 100%);
+}
+
+.activity-card__badge {
+  position: absolute;
+  z-index: 2;
+  top: 13.6%;
+  left: 10.5%;
+  display: block;
+  width: 38px;
+  height: 133px;
+}
+
+.activity-card__badge-shape {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.activity-card__badge-text {
+  position: absolute;
+  top: 13px;
+  left: 10px;
+  display: block;
+  width: 18px;
+  height: 88px;
+  overflow: hidden;
+  color: #805c2b;
+  font-family: 'Songti SC', 'Noto Serif CJK SC', serif;
+  font-size: var(--badge-font-size);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 1.8px;
+  text-align: center;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  white-space: nowrap;
+}
+
+.activity-card__flower {
+  position: absolute;
+  top: 108px;
+  left: 9px;
+  display: block;
+}
+
+.activity-card__lines {
+  position: absolute;
+  z-index: 2;
+  top: calc(13.6% + 52px);
+  left: calc(10.5% + 46px);
+  display: block;
+}
+
+.activity-card__play {
+  position: absolute;
+  z-index: 2;
+  top: 37%;
+  left: 50%;
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  padding-left: 3px;
+  color: #fff;
+  font-size: 14px;
+  background: rgb(29 78 110 / 72%);
+  border: 1px solid rgb(255 255 255 / 86%);
+  border-radius: 50%;
+  transform: translateX(-50%);
+}
+
+.activity-card__copy {
+  position: absolute;
+  z-index: 2;
+  right: 20px;
+  bottom: 18px;
+  left: 20px;
+  display: grid;
+  gap: 7px;
+}
+
+.activity-card__copy strong {
+  display: -webkit-box;
+  overflow: hidden;
+  font-family: var(--font-calligraphy);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.25;
+  letter-spacing: 1.4px;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.activity-card__copy > span {
+  display: -webkit-box;
+  overflow: hidden;
+  color: rgb(255 255 255 / 93%);
+  font-size: 12px;
+  line-height: 1.65;
+  letter-spacing: .7px;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.activity-state {
+  grid-column: 1 / -1;
+  display: grid;
+  min-height: 280px;
+  place-items: center;
+  margin: 0;
+  color: #8f806f;
+  font-size: 15px;
+  letter-spacing: 1px;
+}
+
+.activity-more {
+  display: flex;
+  min-width: 134px;
+  min-height: 36px;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  margin: 30px auto 0;
+  padding: 6px 20px;
+  color: #713421;
+  font-family: var(--font-calligraphy);
+  font-size: 15px;
+  letter-spacing: 1px;
+  background: #f8ead7;
+  border: 1px solid #bd694d;
+  border-radius: 99px;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 78%);
+  cursor: pointer;
+  transition: background-color .2s ease, transform .2s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .activity-more:hover {
+    background-color: #fbe0bf;
+    transform: translateY(-2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .activity-tab,
+  .activity-card,
+  .activity-card__image,
+  .activity-more {
+    transition: none;
+  }
+}
 .milestones-section {
   position: relative;
   isolation: isolate;
   overflow: hidden;
+  z-index: 4;
+  height: 626px;
+  padding-top: 69px;
+  background: #f8f5ed;
 }
 
-.testimonials-section {
-  z-index: 1;
-  /* 高度随内容自适应（卡片行数随接口数据变化）；底部预留 175px 供下方寄语
-     区块（margin-top: -175px）叠压过渡，内容行数少时卡片也不会被遮挡。 */
-  padding: 72px 6vw 275px;
-  background: #fff;
-}
-
-.testimonials-section>img,
-.messages-section>img,
-.milestones-section>img {
+.milestones-section > img {
   position: absolute;
   z-index: -2;
   inset: 0;
@@ -470,370 +717,12 @@ function goToPage(name) {
   object-fit: cover;
 }
 
-.testimonials-section>img {
-  display: none;
-}
-
-.testimonials-section::before {
-  position: absolute;
-  z-index: -1;
-  right: 0;
-  bottom: 0;
-  width: 600px;
-  height: 610px;
-  content: '';
-  /* background: url('@/assets/cuts/temple-stage-bg.webp') right bottom / 950px auto no-repeat; */
-  opacity: .34;
-  transform: scaleX(-1);
-}
-
-.section-content {
-  max-width: 1440px;
-  margin: auto;
-}
-
-.testimonials-section :deep(.section-heading) {
-  margin-bottom: 35px;
-}
-
-.testimonials-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 446.67px);
-  gap: 20px 50px;
-}
-
-.testimonials-grid article {
-  position: relative;
-  height: 220px;
-  padding: 24px 25px 18px;
-  color: #333;
-  background: rgba(249, 245, 237, .58);
-  border: 1px solid #e8b57f;
-  border-radius: 12px;
-}
-
-.testimonials-grid article>div {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.testimonials-grid img {
-  width: 70px;
-  height: 70px;
-  object-fit: cover;
-  border-radius: 50%;
-}
-
-.testimonial-avatar {
-  display: grid;
-  width: 70px;
-  height: 70px;
-  flex: 0 0 70px;
-  place-items: center;
-  color: #9a321a;
-  font-size: 24px;
-  background: #f1e3cd;
-  border: 1px solid #d9b786;
-  border-radius: 50%;
-}
-
-.testimonials-grid span {
-  display: grid;
-  gap: 6px;
-  font-size: 13px;
-}
-
-.testimonials-grid b {
-  font-size: 18px;
-  font-weight: 400;
-}
-
-.testimonials-grid em {
-  display: inline-block;
-  min-width: 58px;
-  margin-left: 8px;
-  padding: 2px 10px;
-  color: #cc3513;
-  font-size: 13px;
-  font-style: normal;
-  text-align: center;
-  border: 1px solid #cc3513;
-  border-radius: 99px;
-}
-
-.quote {
-  margin: 15px 0 0;
-  font-family: var(--font-calligraphy);
-  font-size: 15px;
-  line-height: 1.65;
-}
-
-.testimonial-story-title {
-  margin: 11px 0 -8px;
-  overflow: hidden;
-  font-size: 14px;
-  font-weight: 600;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.section-more {
-  display: block;
-  min-width: 140px;
-  margin: 47px auto 0;
-  padding: 7px 22px;
-  color: #fff;
-  font-family: var(--font-calligraphy);
-  font-size: 15px;
-  background: #cc3513;
-  border: 3px double #f2d2af;
-  border-radius: 99px;
-  cursor: pointer;
-}
-
-.messages-section {
-  z-index: 2;
-  /* 高度随内容自适应（卡片行数随各类别数据变化），上方负 margin 叠压关系不变。 */
-  margin-top: -175px;
-  padding: 104px 6vw 64px;
-  background: #a50908;
-}
-
-.messages-section>img {
-  object-fit: cover;
-}
-
-.messages-section :deep(.section-heading) {
-  margin-bottom: 12px;
-}
-
-.messages-section :deep(.section-heading h2),
-.messages-section :deep(.section-heading .description) {
-  color: #fff;
-}
-
-.tabs {
-  display: flex;
-  justify-content: center;
-  gap: 13px;
-  margin-bottom: 39px;
-}
-
-/* 纯 CSS 绘制：深红底 + 金边胶囊，与 #a50908 背景拉开层次。 */
-.tabs button {
-  min-width: 118px;
-  min-height: 36px;
-  padding: 7px 18px;
-  color: #fff;
-  font-family: var(--font-calligraphy);
-  font-size: 16px;
-  background-color: #7f0001;
-  border: 1px solid #f2d2af;
-  border-radius: 999px;
-  cursor: pointer;
-  transition: background-color .2s ease, border-color .2s ease, box-shadow .2s ease, transform .2s ease;
-}
-
-/* hover：背景提亮、金边变浅、加阴影，区别于默认态。 */
-.tabs button:hover {
-  background-color: #a51c1c;
-  border-color: #ffe6c8;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, .18);
-  transform: translateY(-1px);
-}
-
-/* 选中态：浅底深红字 + 金边，与默认态强对比；hover 锁定同一组样式，避免选中按钮再变色。 */
-.tabs .active,
-.tabs .active:hover {
-  color: #a50908;
-  background-color: #f9f5ed;
-  border-color: #f2d2af;
-  box-shadow: none;
-  transform: none;
-}
-
-.message-card-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 32px;
-}
-
-/* 寄语无数据时的空状态提示。 */
-.message-grid-empty {
-  min-height: 240px;
-  display: grid;
-  place-items: center;
-  margin: 0;
-  color: #c8c3bb;
-  font-size: 15px;
-  letter-spacing: 1px;
-}
-
-.figma-message-card {
-  position: relative;
-  overflow: hidden;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 10px 24px rgba(80, 10, 5, .18);
-}
-
-.figma-message-card>img {
-  display: block;
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
-}
-
-.figma-message-card>div {
-  min-height: 109px;
-  padding: 16px 20px 18px;
-}
-
-.figma-message-card h3 {
-  margin: 0 0 9px;
-  color: #333;
-  font-family: var(--font-calligraphy);
-  font-size: 18px;
-  font-weight: 400;
-}
-
-.figma-message-card p {
-  display: -webkit-box;
-  margin: 0;
-  overflow: hidden;
-  color: #575656;
-  font-size: 14px;
-  line-height: 1.55;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-}
-
-.play-button {
-  position: absolute;
-  top: 75px;
-  left: 50%;
-  display: grid;
-  width: 42px;
-  height: 42px;
-  place-items: center;
-  padding-left: 4px;
-  color: #fff;
-  font-size: 15px;
-  background: rgba(28, 48, 72, .78);
-  border: 1px solid #fff;
-  border-radius: 50%;
-  transform: translateX(-50%);
-  cursor: pointer;
-}
-
-.messages-more {
-  width: 140px;
-  height: 36px;
-  padding: 0 18px;
-  margin-top: 39px;
-  color: #713421;
-  line-height: 30px;
-  background: #f8ead7;
-  border-color: #bd694d;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .78);
-}
-
-.news-section {
-  position: relative;
-  z-index: 3;
-  height: 638px;
-  margin-top: -15px;
-  padding: 42px 6vw 0;
-  overflow: hidden;
-  background: #fff;
-}
-
-.news-section :deep(.section-heading) {
-  margin-bottom: 29px;
-}
-
-.news-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 50px;
-  max-width: 1440px;
-  margin: auto;
-}
-
-/* 无动态时的空状态占位。 */
-.news-empty {
-  display: grid;
-  place-items: center;
-  min-height: 200px;
-  max-width: 1440px;
-  margin: auto;
-  color: #a89a85;
-  font-size: 15px;
-  letter-spacing: 3px;
-}
-
-.news-grid article {
-  position: relative;
-  height: 280px;
-  overflow: hidden;
-  color: #fff;
-  background: #163464;
-  border-radius: 14px;
-}
-
-.news-grid article::after {
-  position: absolute;
-  inset: 0;
-  content: '';
-  background: linear-gradient(180deg, transparent 45%, rgba(0, 0, 0, .82));
-}
-
-.news-grid img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.news-grid h3,
-.news-grid p {
-  position: absolute;
-  z-index: 1;
-  right: 20px;
-  left: 20px;
-  margin: 0;
-}
-
-.news-grid h3 {
-  bottom: 60px;
-  font-family: var(--font-calligraphy);
-  font-size: 18px;
-  font-weight: 400;
-}
-
-.news-grid p {
-  bottom: 18px;
-  overflow: hidden;
-  font-size: 12px;
-  line-height: 1.7;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
-.news-section .section-more {
-  margin-top: 30px;
-}
-
-.milestones-section {
-  z-index: 4;
-  height: 626px;
-  padding-top: 69px;
-  background: #f8f5ed;
-}
-
 .milestones-section .section-content {
+  position: relative;
+  z-index: 1;
   width: 100%;
   max-width: 1440px;
+  margin-inline: auto;
 }
 
 .milestones-section :deep(.section-heading) {
@@ -945,9 +834,7 @@ function goToPage(name) {
 @media (max-width: 1439px) {
 
   .seasonal-section,
-  .testimonials-section,
-  .messages-section,
-  .news-section {
+  .activity-section {
     height: auto;
     min-height: 0;
     margin-top: 0;
@@ -973,9 +860,8 @@ function goToPage(name) {
     background-size: cover;
   }
 
-  .testimonials-grid,
-  .message-card-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .activity-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
 }
@@ -1046,10 +932,37 @@ function goToPage(name) {
     padding: 25px;
   }
 
-  .testimonials-grid,
-  .message-card-grid,
-  .news-grid {
+  .activity-card-grid {
     grid-template-columns: 1fr;
+  }
+
+  .activity-section {
+    padding: 56px 16px 32px;
+  }
+
+  .activity-tabs {
+    gap: 6px;
+    margin-bottom: 28px;
+  }
+
+  .activity-tab,
+  .activity-tab--messages {
+    min-width: 0;
+    padding: 0 15px;
+    font-size: 14px;
+    letter-spacing: 1px;
+  }
+
+  .activity-card__badge {
+    left: 9%;
+  }
+
+  .activity-card__lines {
+    left: calc(9% + 46px);
+  }
+
+  .activity-card__copy strong {
+    font-size: 17px;
   }
 
   .quote {

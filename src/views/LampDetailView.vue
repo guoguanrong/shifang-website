@@ -73,22 +73,13 @@
               <button type="button" class="lamp-plan-option" :class="{ 'is-selected': selectedPlan === 'monthly' }"
                 :aria-pressed="selectedPlan === 'monthly'" @click="selectPlan('monthly')">
                 <strong>{{ t('lampDetail.packageInfo.monthly') }}</strong>
-                <small>{{ t('lampDetail.packageInfo.monthlyPrice') }}</small>
+                <small>{{ t('lampDetail.packageInfo.monthlyPrice', { price: formatMoney(planPrices.monthly) }) }}</small>
               </button>
               <button type="button" class="lamp-plan-option" :class="{ 'is-selected': selectedPlan === 'yearly' }"
                 :aria-pressed="selectedPlan === 'yearly'" @click="selectPlan('yearly')">
                 <strong>{{ t('lampDetail.packageInfo.yearly') }}</strong>
-                <small>{{ t('lampDetail.packageInfo.yearlyPrice') }}</small>
+                <small>{{ t('lampDetail.packageInfo.yearlyPrice', { price: formatMoney(planPrices.yearly) }) }}</small>
               </button>
-              <label class="lamp-plan-option is-custom" :class="{ 'is-selected': selectedPlan === 'custom' }">
-                <strong>$</strong>
-                <input id="lamp-custom-amount" v-model="customAmount" type="number" min="0.01" step="0.01"
-                  inputmode="decimal" :placeholder="t('lampDetail.packageInfo.customAmount')"
-                  :aria-label="t('lampDetail.packageInfo.customAmount')"
-                  :aria-invalid="selectedPlan === 'custom' && !customAmountValid"
-                  :aria-describedby="selectedPlan === 'custom' && !customAmountValid ? 'lamp-custom-amount-error' : undefined"
-                  @focus="selectPlan('custom')" @input="selectPlan('custom')" />
-              </label>
             </dd>
           </div>
           <div class="lamp-package-row lamp-package-select-row">
@@ -208,14 +199,18 @@ const materials = computed(() => {
 const selectedPlan = ref('daily')
 const durationInput = ref(1)
 const customAmount = ref('')
+// 日/月/年供价格都取点灯详情接口（LightVo：dayPrice / monthPrice / yearPrice），
+// 缺失或非正数时回退到默认价，避免接口未配置时按钮无价格。
 const planPrices = computed(() => {
-  const configuredDailyPrice = Number(currentLight.value?.price)
+  const light = currentLight.value || {}
+  const pick = (value, fallback) => {
+    const price = Number(value)
+    return Number.isFinite(price) && price > 0 ? price : fallback
+  }
   return {
-    daily: currentLight.value?.price !== undefined && currentLight.value?.price !== null && Number.isFinite(configuredDailyPrice) && configuredDailyPrice > 0
-      ? configuredDailyPrice
-      : 10,
-    monthly: 288,
-    yearly: 3300,
+    daily: pick(light.dayPrice ?? light.price, 10),
+    monthly: pick(light.monthPrice, 288),
+    yearly: pick(light.yearPrice, 3300),
   }
 })
 const durationCount = computed(() => {

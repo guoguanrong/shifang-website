@@ -21,7 +21,7 @@
           aria-haspopup="menu"
           aria-controls="about-dropdown"
           :aria-expanded="aboutMenuOpen"
-          @click="aboutMenuOpen = !aboutMenuOpen"
+          @click="handleAboutTriggerClick"
         >
           {{ navigationItems[0] }}
           <span class="dropdown-chevron" aria-hidden="true" />
@@ -134,6 +134,19 @@ function openAboutMenuOnHover(event) {
 
 function closeAboutMenuOnHover(event) {
   if (event.pointerType === 'mouse') aboutMenuOpen.value = false
+}
+
+// 点击「关于我们」进入首页的关于我们版块；
+// 菜单未展开时（触屏首次点按、键盘回车）先展开二级菜单，避免触屏用户点不到子项。
+function handleAboutTriggerClick() {
+  if (!aboutMenuOpen.value) {
+    aboutMenuOpen.value = true
+    return
+  }
+
+  aboutMenuOpen.value = false
+  menuOpen.value = false
+  navigateTo('about')
 }
 
 // 页面离开顶部后为固定导航增加滚动态外观。

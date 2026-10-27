@@ -13,7 +13,7 @@
           <p>{{ t('offerings.completedDedication', { name: order.name, deity: title }) }}</p>
           <p>{{ t('offerings.completedService') }}</p>
           <p class="completed-blessing">{{ t('offerings.completedBlessing') }}！</p>
-          <CeremonialButton :label="t('offerings.completedBlessing')" @click="dialog.close()" />
+          <CeremonialButton :label="t(kind === 'deity' ? 'offerings.completedBlessingDeity' : 'offerings.completedBlessingLamp')" @click="dialog.close()" />
         </div>
         <!-- 未支付时：先展示订单摘要，再按 stage 展示表单或确认信息。 -->
         <template v-else>
@@ -57,6 +57,10 @@
                 <dt>{{ t(kind === 'deity' ? 'offerings.wishLabel' : 'offerings.wish') }}</dt>
                 <dd>{{ order.wish }}</dd>
               </div>
+              <div v-if="order.email">
+                <dt>{{ t('offerings.email') }}</dt>
+                <dd>{{ order.email }}</dd>
+              </div>
             </dl>
             <p class="payment-caption">{{ t(kind === 'deity' ? 'offerings.deityPaymentPrompt' : 'offerings.paymentPrompt') }}</p>
             <div class="payment-options" role="group" :aria-label="t('offerings.paymentMethod')">
@@ -95,7 +99,7 @@ import emblem from '@/assets/events/section-emblem.svg'
 import confirmEmblem from '@/assets/offerings/confirm-emblem.svg'
 import '@/styles/deity-offering-dialog.css'
 // paymentConfirmed 仅供后续经过服务端核验的支付结果驱动，不能在支付按钮点击时置为 true。
-const props = defineProps({ title: String, amount: Number, period: String, planLabel: String, paymentConfirmed: Boolean, businessId: [Number, String], cycleType: Number, kind: { type: String, default: 'lamp' }, details: { type: Object, default: null } })
+const props = defineProps({ title: String, amount: Number, period: String, planLabel: String, paymentConfirmed: Boolean, businessId: [Number, String], kind: { type: String, default: 'lamp' }, details: { type: Object, default: null } })
 const emit = defineEmits(['close'])
 const { t } = useI18n()
 const titleId = useId()
@@ -160,17 +164,18 @@ async function pay() {
       uvid: ensureVisitorId(),
       username: order.value.name,
       mobile: member?.phone || undefined,
-      email: member?.email || undefined,
+      // 已登录优先用账号邮箱，否则用表单填写的选填邮箱。
+      email: member?.email || order.value.email || undefined,
       birthday: order.value.birth || undefined,
       prayWish: order.value.wish || undefined,
       amount: props.amount,
       number: 1,
-      cycleType: deity ? props.cycleType : undefined,
     }, { silent: true })
     const orderNo = orderNumber(created)
     if (!orderNo) throw new Error(t('offerings.paymentFailed'))
 
-    const pendingPayment = { flow: 'offering', title: props.title, name: order.value.name }
+    // kind 一并写入回跳记录，支付完成弹窗按灯供 / 神像供奉区分按钮文案。
+    const pendingPayment = { flow: 'offering', kind: props.kind, title: props.title, name: order.value.name }
     const paymentResult = payment.value === 'paypal'
       ? await createPaypalPayment({ orderNo, amount: Number(props.amount), pageUrl: window.location.href }, { silent: true })
       : await createStripePayment({ orderNo, amount: Number(props.amount), pageUrl: window.location.href }, { silent: true })

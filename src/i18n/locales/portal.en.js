@@ -53,7 +53,7 @@ export default {
   pages: {
     testimonials: { breadcrumb: 'Testimonials', eyebrow: 'Testimonials · Full', title: 'Devotee Stories', subtitle: 'More true stories · Wishes fulfilled · Blessings without measure', loading: 'Loading stories…', empty: 'No stories to display.', loadError: 'Stories could not be loaded. Showing sample stories.', pagination: 'Testimonials pagination', previous: 'Previous', next: 'Next', pageInfo: 'Page {current} of {total}' },
     messages: { breadcrumb: 'Messages', eyebrow: 'Messages · Full', title: 'Messages from All Walks', subtitle: 'Voices and blessings from all walks of life · Full list', play: 'Play message from {name}', openArticle: 'Read message from {name}' },
-    news: { breadcrumb: 'Latest News', eyebrow: 'Latest News · Full', title: 'Latest News', subtitle: 'More recent events and updates from ShiFang Hall', date: 'Apr 15, 2026', source: 'ShiFang News', readMore: 'Read article', views: 'views', openDetail: 'Read news: {title}' },
+    news: { breadcrumb: 'Latest News', eyebrow: 'Latest News · Full', title: 'Latest News', subtitle: 'More recent events and updates from ShiFang Hall', date: 'Apr 15, 2026', source: 'ShiFang News', readMore: 'Read article', views: 'views', openDetail: 'Read news: {title}', loading: 'Loading latest news…', pagination: 'Latest news pagination', previous: 'Previous page', next: 'Next page', pageInfo: 'Page {current} of {total} · {count} items' },
     detail: { quoteLabel: 'Note', contentLabel: 'Full Story' },
     newsDetail: {
       section: 'Latest News', eyebrow: 'Messages', title: 'Qingming Blessing Ceremony · In Remembrance', date: 'Apr 8, 2026', views: '1,892 views',
