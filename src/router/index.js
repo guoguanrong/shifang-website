@@ -155,7 +155,7 @@ const router = createRouter({
     },
     // 神祇详情 · 其余神祇：通过 :deityId 动态匹配，枚举值保证非法地址走兜底重定向。
     {
-      path: '/deities/:deityId(beidou|taisui|sanguan|wenchang|kuixing|zhaogongming|wanglingguan|guansheng|dongyue|leizun|fanli|tudigong)',
+      path: '/deities/:deityId(beidou|taisui|sanguan|wenchang|kuixing|zhaogongming|wanglingguan|guansheng|dongyue|leizun|fanli|tudigong|foxian)',
       name: 'deity-detail',
       props: true,
       meta: { navigation: 'deities' },

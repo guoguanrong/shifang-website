@@ -1,5 +1,6 @@
 export default {
   "confirm": "福生無量天尊",
+  "lotsConfirm": "我已知曉",
   "understood": "知道了",
   "preview": "目前為互動演示，非正式測算結果。",
   "zodiacPreview": "目前展示設計稿中的星次範例，暫未依據所選生辰測算。",

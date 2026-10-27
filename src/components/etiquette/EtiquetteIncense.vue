@@ -13,7 +13,9 @@
     </header>
 
     <div class="incense-grid">
-      <article v-for="(step, index) in steps" :key="step.title" class="incense-card">
+      <article v-for="(step, index) in steps" :key="step.title" class="incense-card"
+        :class="{ 'is-hovered': hovered === index }" @pointerenter="hovered = index" @pointerleave="hovered = null"
+        @focusin="hovered = index" @focusout="hovered = null">
         <img
           class="incense-card-photo"
           :class="{ 'is-mirrored': index === 0 || index === 2 }"
@@ -26,7 +28,8 @@
             <h3>{{ step.title }}</h3>
             <p>{{ stepSlogan(step.slogan) }}</p>
           </div>
-          <p v-if="index === 0" class="incense-card-description">{{ step.desc }}</p>
+          <!-- 默认只展示箭头；鼠标悬停（或键盘聚焦）任一卡时，该卡以步骤说明文字替换箭头。 -->
+          <p v-if="hovered === index" class="incense-card-description">{{ step.desc }}</p>
           <img v-else class="incense-step-arrow" :src="stepArrow" alt="" aria-hidden="true" />
         </div>
       </article>
@@ -35,7 +38,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import headingMedallion from '@/assets/etiquette/incense-redesign/medallion.webp'
 import headingMask from '@/assets/etiquette/incense-redesign/medallion-mask.svg'
@@ -48,6 +51,8 @@ import stepArrow from '@/assets/etiquette/incense-redesign/arrow.svg'
 
 const { t, tm, locale } = useI18n()
 const steps = computed(() => tm('etiquette.incense.steps'))
+// 当前悬停（或聚焦）的卡片索引：用于把该卡的箭头切换为步骤说明文字。
+const hovered = ref(null)
 const cardPhotos = [incensePhoto, raisePhoto, placePhoto]
 const headingMaskImage = `url("${headingMask}")`
 
@@ -178,19 +183,18 @@ function stepSlogan(slogan) {
 
 .incense-card-photo.is-mirrored { transform: scaleX(-1); }
 
-@media (hover: hover) and (pointer: fine) {
-  .incense-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 16px 32px rgba(35, 29, 21, .28);
-  }
+/* 悬停/聚焦：卡片上浮、图片微放大；说明文字出现时遮罩同步加深保证可读性。 */
+.incense-card.is-hovered {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 32px rgba(35, 29, 21, .28);
+}
 
-  .incense-card:hover .incense-card-photo:not(.is-mirrored) {
-    transform: scale(1.045);
-  }
+.incense-card.is-hovered .incense-card-photo:not(.is-mirrored) {
+  transform: scale(1.045);
+}
 
-  .incense-card:hover .incense-card-photo.is-mirrored {
-    transform: scaleX(-1) scale(1.045);
-  }
+.incense-card.is-hovered .incense-card-photo.is-mirrored {
+  transform: scaleX(-1) scale(1.045);
 }
 
 .incense-card-shade {
@@ -198,6 +202,18 @@ function stepSlogan(slogan) {
   background: linear-gradient(180deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, .8) 80.006%);
   pointer-events: none;
 }
+
+/* 悬停加深层：让展开的步骤说明在照片上依然清晰。 */
+.incense-card-shade::after {
+  position: absolute;
+  inset: 0;
+  content: '';
+  background: rgba(0, 0, 0, .18);
+  opacity: 0;
+  transition: opacity .3s ease;
+}
+
+.incense-card.is-hovered .incense-card-shade::after { opacity: 1; }
 
 .incense-card-copy {
   position: absolute;
@@ -242,6 +258,23 @@ function stepSlogan(slogan) {
   line-height: 20px;
   letter-spacing: 1.6px;
   text-wrap: pretty;
+  animation: incense-desc-in .26s ease both;
+}
+
+@keyframes incense-desc-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .incense-card-description { animation: none; }
 }
 
 .incense-step-arrow {

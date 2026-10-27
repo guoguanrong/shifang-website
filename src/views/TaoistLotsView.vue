@@ -28,7 +28,8 @@
       <p>{{ t('blessings.details.lots.guide') }}</p>
     </section>
     <BlessingTestResultDialog v-if="requested" kind="lots" :selection="selected" :stick="selectedStick"
-      :result="divinationResult" return-focus=".lot-draw .ceremonial-button" @close="requested = false" />
+      :result="divinationResult" :confirm-label="t('blessings.details.results.lotsConfirm')"
+      return-focus=".lot-draw .ceremonial-button" @close="requested = false" />
   </BlessingTestLayout>
 </template>
 
