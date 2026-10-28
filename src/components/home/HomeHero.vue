@@ -16,11 +16,11 @@
       </div>
     </div>
 
-    <!-- 无需 JavaScript 的锚点入口，键盘用户也可以直接访问神殿规划。 -->
-    <a class="scroll-hint" href="#temple-plan">
+    <!-- 向下探索：改用按钮 + JS 平滑滚动，避免 URL 被追加锚点。 -->
+    <button class="scroll-hint" type="button" @click="emit('scroll-down')">
       {{ t('hero.scroll') }}
       <span class="scroll-hint-arrow" aria-hidden="true">↓</span>
-    </a>
+    </button>
   </section>
 </template>
 
@@ -49,6 +49,8 @@ import heroButtonSecondaryEn from '@/assets/hero/buttons/hero-button-secondary-e
 
 // 首屏全部可见文案都随当前语言实时切换。
 const { t, locale } = useI18n()
+// “向下探索”交给首页处理平滑滚动，不通过锚点改变 URL。
+const emit = defineEmits(['scroll-down'])
 
 // 背景图映射：视口档位 × 语言，切换语言时同步切换首屏文案。
 const HERO_IMAGES = {
@@ -244,12 +246,23 @@ function topage2() {
   z-index: 1;
   bottom: 164px;
   left: 50%;
+  padding: 0;
   color: #2E4C7C;
+  font-family: inherit;
   font-size: 14px;
   letter-spacing: 0;
   text-decoration: none;
+  background: none;
+  border: 0;
+  cursor: pointer;
   transform: translateX(-50%);
   animation: hint-in .8s .45s cubic-bezier(.22, .61, .36, 1) both;
+}
+
+.scroll-hint:focus-visible {
+  outline: 2px solid #2E4C7C;
+  outline-offset: 4px;
+  border-radius: 4px;
 }
 .scroll-hint::after { display: block; width: 1px; height: 60px; margin: 12px auto 0; content: ''; background: currentColor; }
 

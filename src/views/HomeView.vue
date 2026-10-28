@@ -2,7 +2,7 @@
   <main class="home-page">
     <!-- 首页顶部导航和首屏视觉区。 -->
     <HomeHeader @select-locale="setLocale" @navigate="scrollToSection" />
-    <HomeHero @primary-action="scrollToSection('temple-plan')" />
+    <HomeHero @scroll-down="scrollToSection('about')" />
 
     <!-- 首页主体内容按设计稿顺序组合，各组件内部维护自己的展示数据。 -->
     <HomeAboutMission />
