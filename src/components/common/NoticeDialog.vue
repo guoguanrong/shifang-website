@@ -1,20 +1,19 @@
 <template>
-  <!-- 通用提示弹窗：标题 + 单条说明 + 确认按钮，用于表单校验等轻量提示。 -->
+  <!-- 通用金额/信息提示弹窗：标题 + 祝福语 + 补充说明 + 确认按钮，视觉沿用捐赠提示弹窗。 -->
   <Teleport to="body">
-    <dialog ref="dialog" class="blessing-service-dialog" tabindex="-1" :aria-labelledby="titleId"
-      @close="emit('close')" @click="onBackdrop">
-      <div class="service-dialog-content">
-        <button class="service-dialog-close" type="button" :aria-label="t('offerings.close')" @click="dialog.close()">
+    <dialog ref="dialog" class="offering-dialog is-deity-confirmation donation-dialog donation-dialog-message notice-dialog"
+      tabindex="-1" :aria-labelledby="titleId" @close="emit('close')" @click="onBackdrop">
+      <div class="offering-dialog-content">
+        <button class="dialog-close" type="button" :aria-label="t('offerings.close')" @click="dialog.close()">
           <img :src="closeIcon" alt="" />
         </button>
-        <header class="service-dialog-heading">
+        <div class="dialog-heading">
           <img :src="emblem" alt="" aria-hidden="true" />
           <h2 :id="titleId">{{ title }}</h2>
-        </header>
-        <div class="service-dialog-copy">
-          <p>{{ message }}</p>
         </div>
-        <div class="service-dialog-actions">
+        <div class="donation-validation" role="status">
+          <p>{{ message }}</p>
+          <p v-if="hint">{{ hint }}</p>
           <CeremonialButton :label="confirmLabel" @click="dialog.close()" />
         </div>
       </div>
@@ -26,13 +25,15 @@
 import { onBeforeUnmount, onMounted, ref, useId } from 'vue'
 import { useI18n } from 'vue-i18n'
 import CeremonialButton from '@/components/common/CeremonialButton.vue'
-import closeIcon from '@/assets/blessing-details/service-dialog-close.svg'
-import emblem from '@/assets/blessing-details/service-dialog-emblem.svg'
-import '@/styles/blessing-service-dialog.css'
+import closeIcon from '@/assets/donation/close.svg'
+import emblem from '@/assets/donation/confirm-emblem.svg'
+import '@/styles/deity-offering-dialog.css'
+import '@/styles/donation-dialog.css'
 
 defineProps({
   title: { type: String, required: true },
   message: { type: String, required: true },
+  hint: { type: String, default: '' },
   confirmLabel: { type: String, required: true },
 })
 const emit = defineEmits(['close'])
@@ -64,3 +65,11 @@ function onBackdrop(event) {
   if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) dialog.value.close()
 }
 </script>
+
+<style scoped>
+/* 焦点交给对话框容器后，Safari 会为容器绘制默认焦点圈，这里不展示。 */
+.notice-dialog:focus,
+.notice-dialog:focus-visible {
+  outline: none;
+}
+</style>

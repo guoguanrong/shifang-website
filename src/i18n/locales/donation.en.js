@@ -11,7 +11,7 @@ export default {
     "nameHint": "This name will be used for the donor inscription.",
     "amountTitle": "Donation Amount",
     "amountMessage": "Give joyfully and within your means.",
-    "amountHint": "Due to payment channel fees, the minimum donation is $50.",
+    "amountHint": "Due to payment channel fees, the minimum donation is $10.",
     "acknowledge": "Understood",
     "thanksTitle": "Thank You",
     "thanks": "Thank you for your kindness!",

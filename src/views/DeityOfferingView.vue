@@ -39,7 +39,7 @@
           <label for="deity-custom-amount">{{ t('offerings.customAmount') }}</label>
           <div class="custom-offering-amount__input">
             <span aria-hidden="true">$</span>
-            <input id="deity-custom-amount" v-model="customAmount" type="number" min="50" step="any"
+            <input id="deity-custom-amount" v-model="customAmount" type="number" min="10" step="any"
               inputmode="decimal" :placeholder="t('offerings.customAmountPlaceholder')"
               :aria-invalid="customAmount !== '' && !customAmountValid"
               @input="onCustomAmountInput" />
@@ -54,8 +54,8 @@
       @close="details = null" />
     <!-- 金额校验改为支付时弹窗提示，不在输入框下方常驻报错。 -->
     <NoticeDialog v-if="amountNoticeVisible" :title="t('offerings.amountNoticeTitle')"
-      :message="t('offerings.customAmountRequired')" :confirm-label="t('offerings.amountNoticeConfirm')"
-      @close="amountNoticeVisible = false" />
+      :message="t('offerings.amountNoticeMessage')" :hint="t('offerings.amountNoticeHint')"
+      :confirm-label="t('offerings.amountNoticeConfirm')" @close="amountNoticeVisible = false" />
   </OfferingPageShell>
 </template>
 <script setup>
@@ -105,7 +105,7 @@ const plans = computed(() => {
 const activePlan = computed(() => plans.value.find((plan) => plan.id === selectedPlanId.value) || null)
 const customAmountValid = computed(() => {
   const amount = Number(customAmount.value)
-  return customAmount.value !== '' && Number.isFinite(amount) && amount >= 50
+  return customAmount.value !== '' && Number.isFinite(amount) && amount >= 10
 })
 const selectedAmount = computed(() => activePlan.value
   ? Number(activePlan.value.price)
