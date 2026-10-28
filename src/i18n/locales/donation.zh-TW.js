@@ -11,7 +11,7 @@ export default {
     "nameHint": "善款將以此名登記功德碑",
     "amountTitle": "金額提示",
     "amountMessage": "隨喜功德，量力發心。",
-    "amountHint": "因支付通道存在手續費，善款最低 $10 起",
+    "amountHint": "因支付通道存在手續費，善款最低 $50 起",
     "acknowledge": "知道了",
     "thanksTitle": "感恩善念",
     "thanks": "感恩您的善念！",

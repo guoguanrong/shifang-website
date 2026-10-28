@@ -18,7 +18,7 @@ export default {
     "yearly": "按年奉燈",
     "yearlyPrice": "${price}/年",
     "customAmount": "輸入自訂金額",
-    "customAmountRequired": "請輸入大於 $0 的自訂金額",
+    "customAmountRequired": "請輸入不低於 $50 的金額。",
     "selectDays": "選擇奉燈時長",
     "oneDay": "1天",
     "day": "天",

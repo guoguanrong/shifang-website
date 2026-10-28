@@ -94,8 +94,8 @@ const goods = computed(() => shopItems.value.filter((item) => Number(item.type) 
 const moneyOptions = computed(() => shopItems.value.filter((item) => Number(item.type) !== 2 && item.price > 0))
 const selectedMoneyItem = computed(() => moneyOptions.value.find((item) => item.id === selectedMoneyId.value) || null)
 const selectedGood = computed(() => goods.value[itemIndex.value] || null)
-// 支付通道存在手续费，善款最低 $10 起。
-const MIN_MONEY_AMOUNT = 10
+// 支付通道存在手续费，善款最低 $50 起。
+const MIN_MONEY_AMOUNT = 50
 const invalidAmount = computed(() => customAmount.value !== '' && (!/^\d{1,9}$/.test(customAmount.value) || Number(customAmount.value) < MIN_MONEY_AMOUNT || Number(customAmount.value) > 999999999))
 const total = computed(() => mode.value === 'goods'
   ? selectedGood.value ? selectedGood.value.price * quantity.value : null

@@ -18,7 +18,7 @@ export default {
     "yearly": "Annual lamp",
     "yearlyPrice": "${price}/year",
     "customAmount": "Enter custom amount",
-    "customAmountRequired": "Enter a custom amount greater than $0.",
+    "customAmountRequired": "Enter an amount of at least $50.",
     "selectDays": "Offering duration",
     "oneDay": "1 day",
     "day": "day",

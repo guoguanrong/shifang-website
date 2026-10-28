@@ -109,12 +109,14 @@ const stage = ref(props.details ? 'confirm' : 'form')
 const order = ref(props.details || {})
 // 选中的支付方式与「支付暂未开放」提示。
 const { user, ensureVisitorId } = useUserSession()
-const payment = ref('paypal')
+// 当前仅开放 Stripe；PayPal 配置与支付分支保留，恢复双支付时取消注释即可。
+// const methods = [{ id: 'paypal', image: paypal, label: 'PayPal' }, { id: 'stripe', label: 'Stripe' }]
+const methods = [{ id: 'stripe', label: 'Stripe' }]
+// 默认选中项直接取展示列表的第一项，避免默认值与实际展示不一致时误调其他支付接口。
+const payment = ref(methods[0].id)
 const unavailable = ref(false)
 const paying = ref(false)
 const payError = ref('')
-// const methods = [{ id: 'paypal', image: paypal, label: 'PayPal' }, { id: 'stripe', label: 'Stripe' }]
-const methods = [{ id: 'stripe', label: 'Stripe' }]
 // 记住打开前的焦点与页面滚动状态，关闭后原样恢复。
 let previousOverflow
 let previousFocus

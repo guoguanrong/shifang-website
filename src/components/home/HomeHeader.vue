@@ -116,7 +116,7 @@ const aboutMenuItems = computed(() => [
   { label: t('seasonal.title'), target: 'seasonal' },
   // { label: t('testimonials.title'), target: 'testimonials' },
   // { label: t('messages.title'), target: 'messages' },
-  { label: t('news.title'), target: 'news' },
+  { label: t('homeActivity.title'), target: 'news' },
   { label: t('milestones.title'), target: 'milestones' },
 ])
 

@@ -39,25 +39,23 @@
           <label for="deity-custom-amount">{{ t('offerings.customAmount') }}</label>
           <div class="custom-offering-amount__input">
             <span aria-hidden="true">$</span>
-            <input id="deity-custom-amount" v-model="customAmount" type="number" min="100" step="any"
+            <input id="deity-custom-amount" v-model="customAmount" type="number" min="50" step="any"
               inputmode="decimal" :placeholder="t('offerings.customAmountPlaceholder')"
               :aria-invalid="customAmount !== '' && !customAmountValid"
-              :aria-describedby="customAmount !== '' && !customAmountValid ? 'deity-custom-amount-error' : undefined"
               @input="onCustomAmountInput" />
           </div>
         </div>
-        <p v-if="customAmount !== '' && !customAmountValid" id="deity-custom-amount-error"
-          class="custom-offering-amount__error" role="status">
-          {{ t('offerings.customAmountRequired') }}
-        </p>
-        <OfferingOrderForm kind="deity" :amount="selectedAmount" :submit-disabled="!canSubmitOffering"
-          @submit="submitOffering" />
+        <OfferingOrderForm kind="deity" :amount="selectedAmount" @submit="submitOffering" />
       </div>
     </section>
     <!-- details 非空即打开下单确认弹窗，关闭时置空。 -->
     <OfferingDialog v-if="details" kind="deity" :title="deity.title" :amount="selectedAmount"
       :plan-label="selectedPlanLabel" :business-id="worship?.id" :details="details"
       @close="details = null" />
+    <!-- 金额校验改为支付时弹窗提示，不在输入框下方常驻报错。 -->
+    <NoticeDialog v-if="amountNoticeVisible" :title="t('offerings.amountNoticeTitle')"
+      :message="t('offerings.customAmountRequired')" :confirm-label="t('offerings.amountNoticeConfirm')"
+      @close="amountNoticeVisible = false" />
   </OfferingPageShell>
 </template>
 <script setup>
@@ -68,6 +66,7 @@ import OfferingPageShell from '@/components/offerings/OfferingPageShell.vue'
 import OfferingOrderForm from '@/components/offerings/OfferingOrderForm.vue'
 import OfferingDialog from '@/components/offerings/OfferingDialog.vue'
 import OrnateSectionHeading from '@/components/common/OrnateSectionHeading.vue'
+import NoticeDialog from '@/components/common/NoticeDialog.vue'
 import shrine from '@/assets/offerings/shrine.webp'
 import altar from '@/assets/offerings/altar.webp'
 import candle from '@/assets/offerings/candle.svg'
@@ -106,16 +105,14 @@ const plans = computed(() => {
 const activePlan = computed(() => plans.value.find((plan) => plan.id === selectedPlanId.value) || null)
 const customAmountValid = computed(() => {
   const amount = Number(customAmount.value)
-  return customAmount.value !== '' && Number.isFinite(amount) && amount >= 100
+  return customAmount.value !== '' && Number.isFinite(amount) && amount >= 50
 })
 const selectedAmount = computed(() => activePlan.value
   ? Number(activePlan.value.price)
   : customAmountValid.value ? Number(customAmount.value) : 0)
 const selectedPlanLabel = computed(() => activePlan.value?.useType || activePlan.value?.name || t('offerings.customAmount'))
-const canSubmitOffering = computed(() => activePlan.value
-  ? Number(activePlan.value.price) > 0
-  : customAmountValid.value)
 const details = ref(null)
+const amountNoticeVisible = ref(false)
 
 function formatPrice(value) {
   const price = Number(value)
@@ -132,7 +129,11 @@ function onCustomAmountInput() {
 }
 
 function submitOffering(formDetails) {
-  if (!canSubmitOffering.value) return
+  // 支付时校验：既没有选中方案、自定义金额也不合法时，弹窗提示最低金额。
+  if (!activePlan.value && !customAmountValid.value) {
+    amountNoticeVisible.value = true
+    return
+  }
   details.value = formDetails
 }
 
@@ -296,13 +297,6 @@ watch(selectedDeityId, loadWorship, { immediate: true })
 .custom-offering-amount__input:focus-within {
   border-color: #c73412;
   box-shadow: 0 0 0 2px rgb(199 52 18 / 12%);
-}
-
-.custom-offering-amount__error {
-  width: min(100%, 1054px);
-  margin: 8px auto 0;
-  color: #a53a24;
-  font-size: 13px;
 }
 
 @media (max-width: 1100px) {

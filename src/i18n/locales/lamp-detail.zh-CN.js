@@ -18,7 +18,7 @@ export default {
     "yearly": "按年奉灯",
     "yearlyPrice": "${price}/年",
     "customAmount": "输入自定义金额",
-    "customAmountRequired": "请输入大于 $0 的自定义金额",
+    "customAmountRequired": "请输入不低于 $50 的金额。",
     "selectDays": "选择奉灯时长",
     "oneDay": "1天",
     "day": "天",

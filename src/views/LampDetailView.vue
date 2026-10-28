@@ -222,7 +222,7 @@ const durationCount = computed(() => {
 })
 const customAmountValid = computed(() => {
   const amount = Number(customAmount.value)
-  return customAmount.value !== '' && Number.isFinite(amount) && amount > 0
+  return customAmount.value !== '' && Number.isFinite(amount) && amount >= 50
 })
 const unitPrice = computed(() => selectedPlan.value === 'custom'
   ? (customAmountValid.value ? Number(customAmount.value) : 0)
