@@ -34,8 +34,7 @@
             <p>{{ element.text.replace('\n', ' · ') }}<template v-if="selection === 2"> {{ t(`${prefix}.five.waterAdvice`) }}</template></p>
           </template>
           <template v-else-if="kind === 'lots'">
-            <p v-if="lotGrade" class="lot-grade-badge" :data-level="result?.level || ''">{{ lotGrade }}</p>
-            <p>{{ result?.poemText || t(`${prefix}.lots.readings.${lotKey}`) }}</p>
+            <p class="lot-poem">「{{ result?.poemText || t(`${prefix}.lots.readings.${lotKey}`) }}」</p>
           </template>
           <p v-else-if="kind === 'fortune'">{{ result?.fortuneText || t(`${prefix}.fortune.${selection === 1 ? 'oxReading' : 'unavailable'}`) }}</p>
           <p v-else>{{ t(`${prefix}.notice.message`) }}</p>
@@ -54,6 +53,7 @@
 import { computed, onBeforeUnmount, onMounted, ref, useId } from 'vue'
 import { useI18n } from 'vue-i18n'
 import CeremonialButton from '@/components/common/CeremonialButton.vue'
+import { LOT_GRADE_BY_STICK } from '@/utils/lotLevels'
 import closeIcon from '@/assets/blessing-tests/result-close.svg'
 import emblem from '@/assets/blessing-tests/result-emblem.svg'
 import '@/styles/blessing-service-dialog.css'
@@ -65,8 +65,6 @@ const props = defineProps({
   stick: { type: String, default: 'f' },
   returnFocus: { type: String, default: '' },
   result: { type: Object, default: null },
-  // 可选：传入后覆盖确认按钮文案，仅影响调用方页面（如求签页使用“我已知晓”）。
-  confirmLabel: { type: String, default: '' },
 })
 const emit = defineEmits(['close'])
 const { t, tm } = useI18n()
@@ -83,17 +81,10 @@ const zodiacCharacter = computed(() => {
   // 实际返回为字符串（"灵动智慧 · 上善若水"）；兼容文档定义的数组形态。
   return Array.isArray(value) ? value.filter(Boolean).join('，') : String(value)
 })
-// These IDs correspond to the text printed on the six exported stick images.
-const lotKey = computed(() => ({ a: 'great', b: 'highest', c: 'lower', d: 'lowest', e: 'good', f: 'balanced' })[props.stick] || 'balanced')
+// 签图 ID 与签等级统一在 @/utils/lotLevels 维护（b 上上、a 上吉、e 中吉、f 中平、c 下平、d 下下）。
+const lotKey = computed(() => LOT_GRADE_BY_STICK[props.stick] || 'balanced')
 // 后端新增签等级：level 1-6（上上/上吉/中吉/中平/下平/下下）→ 语言包 grades 键，保证三语言一致。
-const LOT_LEVEL_KEYS = { 1: 'highest', 2: 'great', 3: 'good', 4: 'balanced', 5: 'lower', 6: 'lowest' }
-const lotLevelKey = computed(() => LOT_LEVEL_KEYS[Number(props.result?.level)] || null)
-// 签等级名：优先按 level 取语言包；后端未返回 level 时回退接口 name，再回退静态签等级。
-const lotGrade = computed(() => {
-  if (props.kind !== 'lots' || !props.result) return ''
-  if (lotLevelKey.value) return t(`${prefix}.lots.grades.${lotLevelKey.value}`)
-  return props.result.name || t(`${prefix}.lots.grades.${lotKey.value}`)
-})
+// 注：结果弹窗标题直接用接口 title（已含签等级），level 主要用于抽签页签筒标签展示。
 const title = computed(() => {
   if (props.kind === 'five') return t(`${prefix}.five.title`, { element: element.value.title })
   if (props.kind === 'lots') {
@@ -108,10 +99,10 @@ const title = computed(() => {
   }
   return t(`${prefix}.${props.kind}.title`)
 })
-// 底部按钮文案：提示类固定“知道了”；其余默认语言包 confirm，调用方可传入专属文案覆盖。
+// 底部按钮文案：提示类固定“知道了”；其余测算结果统一“愿福相伴”。
 const confirmText = computed(() => {
   if (props.kind === 'notice') return t(`${prefix}.understood`)
-  return props.confirmLabel || t(`${prefix}.confirm`)
+  return t(`${prefix}.confirmBlessing`)
 })
 // 底部祝福语：求签/运势接口成功时取接口的祝福文案。
 const blessingText = computed(() => {
@@ -120,7 +111,7 @@ const blessingText = computed(() => {
       || t(`${prefix}.fortune.blessing`)
   }
   if (props.kind === 'lots' && props.result) {
-    return [props.result.blessing1, props.result.blessing2].filter(Boolean).join(' ')
+    return [props.result.blessing1, props.result.blessing2].filter(Boolean).join('\n')
       || t(`${prefix}.lots.blessing`)
   }
   return t(`${prefix}.${props.kind}.blessing`)

@@ -6,10 +6,10 @@
     <!-- 供奉按钮带上神明 id 跳转，供奉页据此回显对应神明；.stop 避免触发卡片自身的点击。 -->
     <button class="secondary" type="button" @click.stop="router.push({ name: 'deity-offering', query: { deity: props.deityId } })">{{ t('deities.actions.offer') }}</button>
     <p v-if="lightError" class="light-error" role="status">{{ lightError }}</p>
-    <p v-if="worship" class="offering-prices">
+    <!-- <p v-if="worship" class="offering-prices">
       {{ t('deities.monthlyPrice') }} ${{ formatPrice(worship.monthPrice) }} · {{ t('deities.yearlyPrice') }} ${{ formatPrice(worship.yearPrice) }}
-    </p>
-    <p v-else-if="worshipLoaded" class="offering-unavailable">{{ t('deities.worshipUnavailable') }}</p>
+    </p> -->
+    <!-- <p v-else-if="worshipLoaded" class="offering-unavailable">{{ t('deities.worshipUnavailable') }}</p> -->
   </div>
 </template>
 

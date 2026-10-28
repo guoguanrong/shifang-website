@@ -286,22 +286,38 @@ const items = computed(() => tm('blessings.services').map((item, index) => ({
   transform: translateY(1px);
 }
 
-:global(html[data-locale-layout='international']) .service-card h2 {
+/* 英文布局：内容区固定高度，标题限宽换行不溢出卡片，正文自适应，按钮统一贴卡片底部。
+   注意：选择器必须整段写进 :global(...)，否则编译后只剩 html[...] 选择器，
+   会把 top/height 等样式错加到 <html> 上（导致页面高度异常、滚动条失效）。 */
+:global(html[data-locale-layout='international'] .service-card__copy) {
+  top: 246px;
+  height: 209px;
+  gap: 14px;
+}
+
+:global(html[data-locale-layout='international'] .service-card h2) {
   display: block;
   width: 100%;
-  min-height: 50px;
-  font-size: 18px;
-  line-height: 1.12;
+  min-height: 24px;
+  font-size: 20px;
+  line-height: 1.2;
   overflow-wrap: anywhere;
   text-align: center;
   white-space: normal;
 }
 
-:global(html[data-locale-layout='international']) .service-card p {
-  min-height: 80px;
-  font-size: 13px;
-  line-height: 17px;
+:global(html[data-locale-layout='international'] .service-card p) {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  font-size: 12.5px;
+  line-height: 18px;
   letter-spacing: 0;
+}
+
+/* 按钮不再跟随正文长度浮动，四张卡片底部对齐。 */
+:global(html[data-locale-layout='international'] .service-card__action) {
+  margin-top: auto;
 }
 
 :global(html[data-locale-layout='international'] .service-card .ceremonial-button) {

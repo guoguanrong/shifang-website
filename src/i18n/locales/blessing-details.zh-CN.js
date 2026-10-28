@@ -3,11 +3,11 @@ export default {
     "talismanTitle": "福生无量",
     "enableTitle": "开通提醒",
     "cancelTitle": "取消提醒",
-    "talismanRequested": "祈福卡已恭请（演示）",
+    "talismanRequested": "护身符已恭请",
     "talismanConsecration": "道长诵经开光加持后即可下载使用",
     "talismanWallpaper": "设为手机桌布，随身护佑",
-    "enabled": "节气提醒已开通（演示）",
-    "seasonalText": "每逢节气，为您推送养生建议与祈福指引。正式接入后，提醒将发送至您绑定的手机。",
+    "enabled": "节气提醒已开通",
+    "seasonalText": "每逢节气，为您推送养生建议与祈福指引。节气提醒将以邮件形式发送。",
     "cancelQuestion": "确定取消节气提醒吗？",
     "cancelText": "取消后将不再收到节气推送",
     "blessing": "福生无量天尊！",
@@ -15,7 +15,9 @@ export default {
     "download": "下载图片文件",
     "downloadUnavailable": "正式祈福卡文件尚未提供，暂不可下载。",
     "confirm": "确定",
-    "preview": "页面演示：尚未实际领取或开通短信提醒，状态仅在当前页面有效。"
+    "confirmSeasonal": "愿福相伴",
+    "confirmTalisman": "愿福相伴",
+    "preview": "页面演示：尚未实际领取祈福卡或开通节气提醒，状态仅在当前页面有效。"
   },
   "unavailable": "服务开通流程尚未接入，暂未领取祈福卡或订阅提醒。",
   "talisman": {

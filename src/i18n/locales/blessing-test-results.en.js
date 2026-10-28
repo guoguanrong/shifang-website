@@ -1,6 +1,7 @@
 export default {
   "confirm": "Blessings of the Heavenly Worthy",
   "lotsConfirm": "I Understand",
+  "confirmBlessing": "May Blessings Walk With You",
   "understood": "Got It",
   "preview": "Interactive preview; not a completed personal reading.",
   "zodiacPreview": "This is the star-reading example from the design. It has not been calculated from your selected birth date.",

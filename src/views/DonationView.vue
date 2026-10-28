@@ -94,7 +94,9 @@ const goods = computed(() => shopItems.value.filter((item) => Number(item.type) 
 const moneyOptions = computed(() => shopItems.value.filter((item) => Number(item.type) !== 2 && item.price > 0))
 const selectedMoneyItem = computed(() => moneyOptions.value.find((item) => item.id === selectedMoneyId.value) || null)
 const selectedGood = computed(() => goods.value[itemIndex.value] || null)
-const invalidAmount = computed(() => customAmount.value !== '' && (!/^\d{1,9}$/.test(customAmount.value) || Number(customAmount.value) < 50 || Number(customAmount.value) > 999999999))
+// 支付通道存在手续费，善款最低 $10 起。
+const MIN_MONEY_AMOUNT = 10
+const invalidAmount = computed(() => customAmount.value !== '' && (!/^\d{1,9}$/.test(customAmount.value) || Number(customAmount.value) < MIN_MONEY_AMOUNT || Number(customAmount.value) > 999999999))
 const total = computed(() => mode.value === 'goods'
   ? selectedGood.value ? selectedGood.value.price * quantity.value : null
   : invalidAmount.value ? null : Number(customAmount.value || amount.value))
@@ -228,7 +230,8 @@ function setTarget(id) {
 // 提交前依次校验：自填金额是否合法、非匿名时是否填写姓名、表单其余字段是否通过。
 function openConfirmation(details) {
   if (!selectedTarget.value || (mode.value === 'goods' && !selectedGood.value)) return
-  if (mode.value === 'money' && invalidAmount.value) {
+  // 支付时再次校验金额：自填金额非法或快捷金额低于 $10 时提示。
+  if (mode.value === 'money' && (invalidAmount.value || !total.value || total.value < MIN_MONEY_AMOUNT)) {
     dialogState.value = 'amount'
     return
   }

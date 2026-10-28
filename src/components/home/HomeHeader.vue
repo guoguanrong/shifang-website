@@ -104,20 +104,20 @@ async function focusLogin() {
 const navigationStyle = { '--navigation-decoration': `url("${navigationDecoration}")` }
 
 // target 是实际导航标识，显示名称从当前语言包按相同顺序读取。
-const navigationTargets = ['about', 'culture', 'deities', 'etiquette', 'community', 'cloud-build', 'blessings', 'events']
+const navigationTargets = ['about', 'culture', 'deities', 'etiquette', 'community', 'blessings', 'events']
 const navigationItems = computed(() => navigationTargets.map((_, index) => t(`nav.items[${index}]`)))
 const aboutMenuItems = computed(() => [
   { label: t('about.title'), target: 'about' },
   { label: t('templePlan.title'), target: 'temple-plan' },
-  { label: t('mission.title'), target: 'mission' },
+  // { label: t('mission.title'), target: 'mission' },
   { label: t('admonitions.title'), target: 'organization' },
   // 资金监管入口暂不显示；当前此处链接到首页玄门四箴。
   // { label: t('supervision.title'), target: 'supervision' },
   { label: t('seasonal.title'), target: 'seasonal' },
-  { label: t('testimonials.title'), target: 'testimonials' },
-  { label: t('messages.title'), target: 'messages' },
+  // { label: t('testimonials.title'), target: 'testimonials' },
+  // { label: t('messages.title'), target: 'messages' },
   { label: t('news.title'), target: 'news' },
-  // { label: t('milestones.title'), target: 'milestones' },
+  { label: t('milestones.title'), target: 'milestones' },
 ])
 
 // 点击导航外部或按 Escape 时关闭“关于我们”下拉菜单。

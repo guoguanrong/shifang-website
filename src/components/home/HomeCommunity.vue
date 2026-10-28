@@ -17,7 +17,7 @@
   </section>
 
   <!-- 信众实录：头像和文案按索引组合。 -->
-  <section id="news" class="activity-section">
+  <!-- <section id="news" class="activity-section">
     <div class="section-content">
       <HomeSectionHeading :eyebrow="t('homeActivity.en')" :title="t('homeActivity.title')"
         :description="t('homeActivity.subtitle')" />
@@ -62,8 +62,20 @@
         {{ t('homeActivity.more') }} <span aria-hidden="true">⟶</span>
       </button>
     </div>
-  </section>
-  <section id="milestones" class="milestones-section"><img :src="milestonesBackground" alt="" />
+  </section> -->
+
+  <div id="news">
+    <HomeSectionHeading :eyebrow="t('homeActivity.en')" :title="t('homeActivity.title')"
+      :description="t('homeActivity.subtitle')" />
+
+    <div class="home-events">
+      <EventCardsSection class="recent" kind="recent" :title="t('events.recentTitle')" :items="recentActivities"
+        :images="recentImages" :loading="recentLoading" :more-to="{ name: 'event-schedule' }" />
+    </div>
+  </div>
+
+
+  <section id="milestones" class="milestones-section">
     <div class="section-content">
       <HomeSectionHeading :eyebrow="t('milestones.en')" :title="t('milestones.title')"
         :description="t('milestones.subtitle')" />
@@ -98,12 +110,15 @@
 </template>
 
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { RouterLink, useRouter } from 'vue-router'
 import { getDynamicList } from '@/api/dynamic'
 import { getMemoirList } from '@/api/memoir'
 import { getWishesList } from '@/api/wishes'
+import { getActivityList } from '@/api/activity'
+import EventCardsSection from '@/components/events/EventCardsSection.vue'
+import { formatSchedule, splitList, text } from '@/utils/activityDisplay'
 import HomeSectionHeading from './HomeSectionHeading.vue'
 import milestonesBackground from '@/assets/cuts/milestones-bg.png'
 import milestoneEmblem from '@/assets/cuts/milestone-emblem.png'
@@ -132,6 +147,8 @@ import seasonal1 from '@/assets/images/seasonal-scroll-1.webp'
 import seasonal2 from '@/assets/images/seasonal-scroll-2.webp'
 import seasonal3 from '@/assets/images/seasonal-scroll-3.webp'
 import seasonal4 from '@/assets/images/seasonal-scroll-4.webp'
+import recent1 from '@/assets/events/recent-1.webp'; import recent2 from '@/assets/events/recent-2.webp'; import recent3 from '@/assets/events/recent-3.webp'; import recent4 from '@/assets/events/recent-4.webp'; import recent5 from '@/assets/events/recent-5.webp'; import recent6 from '@/assets/events/recent-6.webp'
+import future1 from '@/assets/events/future-1.webp'; import future2 from '@/assets/events/future-2.webp'; import future3 from '@/assets/events/future-3.webp'; import future4 from '@/assets/events/future-4.webp'; import future5 from '@/assets/events/future-5.webp'; import future6 from '@/assets/events/future-6.webp'
 
 const { t, tm, locale } = useI18n()
 const router = useRouter()
@@ -263,6 +280,52 @@ function parseWishImages(value) {
 function goToPage(name) {
   router.push({ name })
 }
+
+// 道会活动列表：与道会页共用接口、卡片组件与路由（近期回顾 / 未来预告）。
+const PAGE_SIZE = 6
+const recentImages = [recent1, recent2, recent3, recent4, recent5, recent6]
+const futureImages = [future1, future2, future3, future4, future5, future6]
+const recentLoading = ref(true)
+const futureLoading = ref(true)
+const recentActivities = ref([])
+const futureActivities = ref([])
+
+function mapActivity(item, index, images) {
+  const pictures = splitList(item.pictureUrls)
+  return {
+    id: item.id ?? null,
+    title: text(item.title),
+    date: text(item.subTitle) || formatSchedule(item),
+    desc: text(item.intro),
+    tags: splitList(item.tag),
+    image: pictures[0] || images[index % images.length],
+  }
+}
+
+async function loadActivities(isFuture, images) {
+  const result = await getActivityList({ isFuture, page: 1, pageSize: PAGE_SIZE }, { silent: true })
+  const list = Array.isArray(result) ? result : result?.list
+  if (!Array.isArray(list)) return []
+  return list
+    .filter((item) => Number(item?.type) !== 2)
+    .map((item, index) => mapActivity(item, index, images))
+}
+
+async function loadEventSection(isFuture, images, target, loading) {
+  try {
+    target.value = await loadActivities(isFuture, images)
+  } catch {
+    // 接口失败或 data 为 null 时按暂无数据处理。
+    target.value = []
+  } finally {
+    loading.value = false
+  }
+}
+
+onMounted(() => {
+  loadEventSection(0, recentImages, recentActivities, recentLoading)
+  loadEventSection(1, futureImages, futureActivities, futureLoading)
+})
 </script>
 
 <style scoped>
@@ -306,6 +369,8 @@ function goToPage(name) {
 
 .seasonal-card {
   position: relative;
+  display: flex;
+  flex-direction: column;
   min-height: 509px;
   color: #111;
 }
@@ -318,15 +383,20 @@ function goToPage(name) {
   object-fit: fill;
 }
 
-/* 卡片内容改为流式布局：文案变长时依次撑开徽章、标题、正文与按钮。 */
+/* 卡片内容纵向排列：徽章、标题、正文、按钮自上而下对齐；正文不拉伸，避免按钮被挤到卷轴外。 */
 .seasonal-card>div {
   position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
   padding: 64px 24px 60px;
   text-align: center;
 }
 
 .seasonal-card strong {
   display: grid;
+  flex: 0 0 auto;
   width: 86px;
   height: 86px;
   margin: 0 auto;
@@ -345,6 +415,7 @@ function goToPage(name) {
 
 .seasonal-card h3 {
   display: inline-flex;
+  flex: 0 0 auto;
   align-items: center;
   min-width: 81px;
   max-width: 100%;
@@ -360,6 +431,8 @@ function goToPage(name) {
 }
 
 .seasonal-card p {
+  flex: 0 0 auto;
+  width: 100%;
   min-height: 121px;
   margin: 35px auto 0;
   font-family: var(--font-calligraphy);
@@ -370,6 +443,7 @@ function goToPage(name) {
 
 .seasonal-card button {
   display: block;
+  flex: 0 0 auto;
   width: 158px;
   height: 36px;
   margin: 13px auto 0;
@@ -640,7 +714,7 @@ function goToPage(name) {
   -webkit-line-clamp: 1;
 }
 
-.activity-card__copy > span {
+.activity-card__copy>span {
   display: -webkit-box;
   overflow: hidden;
   color: rgb(255 255 255 / 93%);
@@ -691,6 +765,7 @@ function goToPage(name) {
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .activity-tab,
   .activity-card,
   .activity-card__image,
@@ -698,17 +773,18 @@ function goToPage(name) {
     transition: none;
   }
 }
+
 .milestones-section {
   position: relative;
   isolation: isolate;
   overflow: hidden;
   z-index: 4;
-  height: 626px;
+  height: 566px;
   padding-top: 69px;
   background: #f8f5ed;
 }
 
-.milestones-section > img {
+.milestones-section>img {
   position: absolute;
   z-index: -2;
   inset: 0;
@@ -977,7 +1053,7 @@ function goToPage(name) {
 .sxb-box {
   position: relative;
   z-index: 4;
-  padding: 60px 24px 88px;
+  padding: 0px 24px 88px;
   background: #f8f5ed;
 }
 
@@ -1036,7 +1112,7 @@ function goToPage(name) {
   margin: 0;
 }
 
-.sxb-copy p + p {
+.sxb-copy p+p {
   margin-top: 24px;
 }
 
@@ -1075,7 +1151,7 @@ function goToPage(name) {
   pointer-events: none;
 }
 
-.sxb-cta > span {
+.sxb-cta>span {
   position: relative;
   z-index: 1;
 }
@@ -1119,23 +1195,110 @@ html[data-locale-layout='international'] .sxb-copy {
   text-align: left;
 }
 
-html[data-locale-layout='international'] .sxb-cta { font-size: 18px; }
+html[data-locale-layout='international'] .sxb-cta {
+  font-size: 18px;
+}
 
 @media (max-width: 760px) {
-  .sxb-box { padding: 40px 16px 60px; }
-  .sxb-card { gap: 0; padding: 30px 24px; border-radius: 24px; }
-  .sxb-heading { min-height: 100px; }
-  .sxb-heading-emblem { width: 118px; height: 100px; }
-  .sxb-heading h2 { margin-top: 25px; font-size: 26px; letter-spacing: 1.5px; }
-  .sxb-copy { font-size: 14px; line-height: 1.8; letter-spacing: .5px; }
-  .sxb-copy p + p { margin-top: 18px; }
-  .sxb-cta { height: 52px; margin-top: 28px; font-size: 20px; }
+  .sxb-box {
+    padding: 40px 16px 60px;
+  }
+
+  .sxb-card {
+    gap: 0;
+    padding: 30px 24px;
+    border-radius: 24px;
+  }
+
+  .sxb-heading {
+    min-height: 100px;
+  }
+
+  .sxb-heading-emblem {
+    width: 118px;
+    height: 100px;
+  }
+
+  .sxb-heading h2 {
+    margin-top: 25px;
+    font-size: 26px;
+    letter-spacing: 1.5px;
+  }
+
+  .sxb-copy {
+    font-size: 14px;
+    line-height: 1.8;
+    letter-spacing: .5px;
+  }
+
+  .sxb-copy p+p {
+    margin-top: 18px;
+  }
+
+  .sxb-cta {
+    height: 52px;
+    margin-top: 28px;
+    font-size: 20px;
+  }
 }
 
 @media (max-width: 430px) {
-  .sxb-card { padding-inline: 18px; }
-  .sxb-heading h2 { font-size: 23px; }
-  html[data-locale-layout='international'] .sxb-heading h2 { font-size: 22px; }
-  html[data-locale-layout='international'] .sxb-cta { font-size: 16px; }
+  .sxb-card {
+    padding-inline: 18px;
+  }
+
+  .sxb-heading h2 {
+    font-size: 23px;
+  }
+
+  html[data-locale-layout='international'] .sxb-heading h2 {
+    font-size: 22px;
+  }
+
+  html[data-locale-layout='international'] .sxb-cta {
+    font-size: 16px;
+  }
+}
+
+/* 首页道会活动：只保留内容区域（卡片列表），隐藏子组件自带的两个章节标题。 */
+.home-events :deep(.event-section > .ornate-heading) {
+  display: none;
+}
+
+.home-events :deep(.event-section.recent),
+.home-events :deep(.event-section.future) {
+  position: relative;
+  top: auto;
+  left: auto;
+  width: min(1240px, calc(100% - 48px));
+  padding: 0;
+  margin: 80px auto 0;
+  transform: none;
+}
+
+.home-events :deep(.event-grid) {
+  grid-template-columns: repeat(3, minmax(0, 380px));
+  justify-content: space-between;
+  gap: 30px 40px;
+  margin-top: 0;
+}
+
+@media (max-width: 1100px) {
+  .home-events :deep(.event-grid) {
+    grid-template-columns: repeat(2, minmax(0, 380px));
+    justify-content: center;
+  }
+}
+
+@media (max-width: 850px) {
+  .home-events :deep(.event-section.recent),
+  .home-events :deep(.event-section.future) {
+    width: calc(100% - 40px);
+    margin-top: 58px;
+  }
+
+  .home-events :deep(.event-grid) {
+    grid-template-columns: minmax(0, 380px);
+  }
 }
 </style>

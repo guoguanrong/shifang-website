@@ -179,9 +179,12 @@ const meritSymbolImages = computed(() => tm('lampDetail.merits').map((item, inde
   return set[locale.value] || set['zh-CN'] || ''
 }))
 const materialImages = [lampMaterialImage, incenseMaterialImage, waterMaterialImage, prayerMaterialImage]
+// 暂时隐藏点灯详情接口（/light/get/{id}）返回的物料数据，仅展示语言包默认物料。
+// 恢复接口数据时将 HIDE_API_MATERIALS 改回 false 即可。
+const HIDE_API_MATERIALS = true
 const materials = computed(() => {
   const defaults = tm('lampDetail.materials')
-  const configuredMaterials = currentLight.value?.shopItemsList
+  const configuredMaterials = HIDE_API_MATERIALS ? [] : currentLight.value?.shopItemsList
   const source = Array.isArray(configuredMaterials) ? configuredMaterials : []
   const count = Math.max(defaults.length, source.length)
 

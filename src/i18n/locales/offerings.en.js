@@ -152,7 +152,7 @@ export default {
   "shrineCaption": "A sacred dedication · A continuing light",
   "plansTitle": "Choose Your Offering",
   "customAmount": "Custom amount",
-  "customAmountPlaceholder": "No upper limit, minimum $100",
+  "customAmountPlaceholder": "No amount limit",
   "customAmountRequired": "Enter an amount of at least $100.",
   "monthly": "Monthly Offering",
   "yearly": "Annual Offering",

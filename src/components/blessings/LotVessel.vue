@@ -36,13 +36,14 @@ function finishReveal(name, event) {
 const assets = import.meta.glob('/src/assets/blessing-tests/{lot-*,ring-*,stick-*}', { eager: true, query: '?url', import: 'default' })
 const art = name => assets[`/src/assets/blessing-tests/${name}`]
 // Coordinates are relative to the 562 × 554 Figma illustration, keeping each rotated leaf separate.
+// 六支签按扇形从左到右排列，最后一支（上上）在最右侧、最后绘制，避免被其他签遮住。
 const sticks = [
   ['a', 269, 60, 49.609, 256, 49.609, 256, 0],
-  ['b', 280.24, 60.74, 88.889, 267.937, 51.025, 263.31, 8.39],
   ['c', 270.72, 66.73, 126.284, 262.687, 50.307, 259.605, 17.56],
   ['d', 207.51, 60.74, 101.682, 264.416, 50.307, 259.605, -11.65],
   ['e', 163, 66.45, 147.172, 262.968, 51.025, 263.31, -22.31],
   ['f', 277.91, 60.74, 91.467, 264.319, 50.307, 259.605, 9.27],
+  ['b', 275.61, 60.74, 153.7, 261.29, 51.025, 263.31, 24],
 ].map(([name, left, top, width, height, leafWidth, leafHeight, angle]) => ({
   name,
   box: { left: `${left}px`, top: `${top}px`, width: `${width}px`, height: `${height}px`, '--draw-x': `${284 - left - width / 2}px` },

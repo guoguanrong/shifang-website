@@ -51,8 +51,8 @@
           <span class="auth-field__compound">
             <input v-if="channel === 'email'" v-model.trim="form.emailCode" inputmode="numeric" maxlength="6" autocomplete="one-time-code" :placeholder="t('portal.auth.emailCodePlaceholder')" />
             <input v-else v-model.trim="form.phoneCode" inputmode="numeric" maxlength="6" autocomplete="one-time-code" :placeholder="t('portal.auth.phoneCodePlaceholder')" />
-            <button type="button" :disabled="channel === 'email' ? emailCountdown > 0 : phoneCountdown > 0 || sendingSms" @click="sendCode(channel)">
-              {{ channel === 'phone' && sendingSms ? t('portal.auth.sendingCode') : (channel === 'email' ? emailCountdown : phoneCountdown) ? t('portal.auth.resendCode', { seconds: channel === 'email' ? emailCountdown : phoneCountdown }) : t('portal.auth.sendCode') }}
+            <button type="button" :disabled="codeButtonDisabled" @click="sendCode(channel)">
+              {{ codeButtonText }}
             </button>
           </span>
         </label>
@@ -198,6 +198,7 @@ const inlineNotice = ref('')
 // 登录请求进行中，避免重复提交。
 const submitting = ref(false)
 const sendingSms = ref(false)
+const sendingEmail = ref(false)
 // 是否已发送短信验证码：发送接口以 code===1000 表示成功（不再返回数据），本地仅作标记供表单校验。
 const smsSent = ref(false)
 const recaptchaContainer = ref(null)
@@ -205,6 +206,15 @@ let recaptchaVerifier = null
 // 邮箱与手机验证码的剩余倒计时秒数，0 表示可以重新发送。
 const emailCountdown = ref(0)
 const phoneCountdown = ref(0)
+// 验证码按钮状态：发送中 / 倒计时剩余秒数 / 可发送。
+const sendingCode = computed(() => (channel.value === 'email' ? sendingEmail.value : sendingSms.value))
+const codeButtonRemaining = computed(() => (channel.value === 'email' ? emailCountdown.value : phoneCountdown.value))
+const codeButtonDisabled = computed(() => sendingCode.value || codeButtonRemaining.value > 0)
+const codeButtonText = computed(() => {
+  if (sendingCode.value) return t('portal.auth.sendingCode')
+  if (codeButtonRemaining.value > 0) return t('portal.auth.resendCode', { seconds: codeButtonRemaining.value })
+  return t('portal.auth.sendCode')
+})
 // 收集所有倒计时计时器，卸载时统一清理，避免内存泄漏。
 const timers = new Set()
 const form = reactive({ email: '', emailCode: '', country: '+86', phone: '', phoneCode: '', password: '', confirmPassword: '' })
@@ -369,22 +379,41 @@ async function submit() {
   }
 }
 
-// 发送后进入 60 秒倒计时，归零时自动清除该计时器。
-function startCountdown(target) {
+// 每个渠道各维护一个计时器与结束时间：重复发送时先清掉旧计时器，
+// 避免多个 interval 同时递减造成倒计时跳秒；按结束时间计算剩余秒数，切后台也不会走偏。
+const countdownTimers = { email: null, phone: null }
+const countdownEnds = { email: 0, phone: 0 }
+
+function stopCountdown(kind) {
+  const timer = countdownTimers[kind]
+  if (timer === null) return
+  window.clearInterval(timer)
+  timers.delete(timer)
+  countdownTimers[kind] = null
+}
+
+// 发送后进入 60 秒倒计时，归零时自动清除该渠道的计时器。
+function startCountdown(kind) {
+  const target = kind === 'email' ? emailCountdown : phoneCountdown
+  stopCountdown(kind)
+  const endAt = Date.now() + 60_000
+  countdownEnds[kind] = endAt
   target.value = 60
   const timer = window.setInterval(() => {
-    target.value -= 1
-    if (target.value <= 0) {
-      window.clearInterval(timer)
-      timers.delete(timer)
-    }
+    const remaining = Math.max(0, Math.ceil((countdownEnds[kind] - Date.now()) / 1000))
+    target.value = remaining
+    if (remaining === 0) stopCountdown(kind)
   }, 1000)
+  countdownTimers[kind] = timer
   timers.add(timer)
 }
 
 // 发送验证码：先校验对应的邮箱/手机号，再分别调用邮箱/短信接口。
 async function sendCode(kind) {
   inlineNotice.value = ''
+  // 发送中或倒计时未结束时直接拦截，防止连点产生多个请求与多个倒计时。
+  if (kind === 'email' && (sendingEmail.value || emailCountdown.value > 0)) return
+  if (kind === 'phone' && (sendingSms.value || phoneCountdown.value > 0)) return
   if (kind === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(form.email)) {
     showError(t('portal.auth.invalidEmail'))
     return
@@ -395,13 +424,16 @@ async function sendCode(kind) {
   }
 
   if (kind === 'email') {
+    sendingEmail.value = true
     try {
       // silent：面板内有专属错误反馈层，关闭全局弹窗避免重复提示。
       await sendEmailCode(form.email, { silent: true })
     } catch (requestError) {
+      sendingEmail.value = false
       showError(requestError.message)
       return
     }
+    sendingEmail.value = false
   }
 
   if (kind === 'phone') {
@@ -441,7 +473,7 @@ async function sendCode(kind) {
     }
   }
 
-  startCountdown(kind === 'email' ? emailCountdown : phoneCountdown)
+  startCountdown(kind)
   inlineNotice.value = t('portal.auth.codeSent')
 }
 
@@ -470,6 +502,8 @@ watch(() => `${form.country}${form.phone}`, () => {
 // 卸载时清掉仍在运行的倒计时。
 onBeforeUnmount(() => {
   timers.forEach((timer) => window.clearInterval(timer))
+  countdownTimers.email = null
+  countdownTimers.phone = null
   recaptchaVerifier?.clear()
 })
 </script>

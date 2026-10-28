@@ -29,7 +29,7 @@
       <label for="donation-custom">{{ t('donation.custom') }}</label>
       <div class="donation-field"><span aria-hidden="true">$</span>
         <input id="donation-custom" :value="customAmount" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="9"
-          :placeholder="t('donation.customPlaceholder')" :aria-invalid="invalidAmount" :aria-describedby="invalidAmount ? 'donation-amount-error' : undefined"
+          :placeholder="t('donation.customPlaceholder')" :aria-invalid="invalidAmount"
           @input="onCustomAmount($event.target.value)" />
       </div>
     </div>
@@ -39,7 +39,6 @@
         <option v-for="value in [1, 2, 5, 10, 20, 50, 100]" :key="value" :value="value">{{ t('donation.quantityValue', { count: value }) }}</option>
       </select>
     </div>
-    <p v-if="mode === 'money' && invalidAmount" id="donation-amount-error" class="donation-error" role="status">{{ t('donation.amountError') }}</p>
   </section>
 </template>
 

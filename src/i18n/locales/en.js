@@ -46,7 +46,7 @@ export default {
   // 顶部导航与账户操作。
   nav: {
     logo: 'ShiFang Hall',
-    items: ['About', 'Origins', 'Sacred Statues', 'Etiquette', 'Co-Build', 'Cloud', 'Blessings', 'Events'],
+    items: ['About', 'Origins', 'Sacred Statues', 'Etiquette', 'Co-Build', 'Blessings', 'Events'],
     lang: 'English',
     login: 'Log In',
   },
@@ -202,9 +202,9 @@ export default {
   },
   // 机构发展时间轴。
   homeActivity: {
-    en: 'Latest News',
-    title: 'Latest News',
-    subtitle: 'Voices and blessings from all walks of life',
+    en: 'Taoist Rituals',
+    title: 'Taoist Gatherings',
+    subtitle: 'Join freely · Practice together · Led by Taoist priests',
     tabs: {
       news: 'Hall Updates',
       testimonials: 'Devotee Stories',
@@ -238,9 +238,9 @@ export default {
     exploreTitle: 'Explore',
     explore: ['Cultural Origins', 'Sacred Statue Guide', 'Worship Etiquette', 'Blessings', 'Taoist Gatherings'],
     joinTitle: 'Participate',
-    join: ['Become a Guardian', 'Cloud Co-Creation'],
+    join: ['Become a Guardian', 'Co-Build'],
     aboutTitle: 'About',
-    about: ['About Us', 'Temple Planning', 'Mission & Vision', 'Four Taoist Admonitions', 'Latest News', 'Milestones'],
+    about: ['About Us', 'Temple Planning', 'Four Taoist Admonitions', 'Seasonal Guide', 'Latest Updates', 'Temple Thrives, Culture Endures'],
     android: 'Android',
     ios: 'iOS',
     wechat: 'WeChat Support',

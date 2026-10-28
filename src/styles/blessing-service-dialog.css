@@ -229,6 +229,12 @@
   outline-offset: 3px;
 }
 
+/* 弹窗打开时焦点落在对话框容器上，Safari 会为该容器绘制默认焦点圈，这里不展示。 */
+.blessing-service-dialog:focus,
+.blessing-service-dialog:focus-visible {
+  outline: none;
+}
+
 html[data-locale-layout='international'] .service-dialog-heading h2 {
   letter-spacing: 0;
   padding-left: 0;

@@ -18,7 +18,7 @@
         :image="item.image || images[index % images.length]" :details="t('events.details')" />
     </div>
     <EmptyData v-else :label="t('events.empty')" />
-    <RouterLink v-if="!loading && items.length" class="more-button" :to="moreTo">{{ t('events.more') }} <span>→</span></RouterLink>
+    <RouterLink v-if="!loading && items.length" class="more-button" :to="moreTo">{{ t('events.more') }} </RouterLink>
   </section>
 </template>
 <script setup>

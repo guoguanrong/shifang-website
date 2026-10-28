@@ -3,11 +3,11 @@ export default {
     "talismanTitle": "Boundless Blessings",
     "enableTitle": "Enable Reminders",
     "cancelTitle": "Cancel Reminders",
-    "talismanRequested": "Blessing card requested (demo)",
+    "talismanRequested": "Your protective talisman is ready",
     "talismanConsecration": "Download it after ritual consecration by the priests.",
     "talismanWallpaper": "Set it as your phone wallpaper and carry it with you.",
-    "enabled": "Seasonal reminders enabled (demo)",
-    "seasonalText": "Receive seasonal wellbeing suggestions and prayer guidance. Once connected, reminders will be sent to your linked mobile number.",
+    "enabled": "Seasonal reminders enabled",
+    "seasonalText": "Receive seasonal wellbeing suggestions and prayer guidance. Seasonal reminders will be sent by email.",
     "cancelQuestion": "Cancel seasonal reminders?",
     "cancelText": "You will no longer receive seasonal notifications.",
     "blessing": "May blessings be boundless!",
@@ -15,7 +15,9 @@ export default {
     "download": "Download Image File",
     "downloadUnavailable": "The official blessing card file is not available for download yet.",
     "confirm": "Confirm",
-    "preview": "Page demo only: no blessing card has been issued and no SMS service activated. This state lasts only on this page."
+    "confirmSeasonal": "May Blessings Walk With You",
+    "confirmTalisman": "May Blessings Walk With You",
+    "preview": "Page demo only: no blessing card has been issued and no seasonal reminders are active. This state lasts only on this page."
   },
   "unavailable": "This service is not connected yet. No blessing card has been issued and no reminder subscription has been created.",
   "talisman": {

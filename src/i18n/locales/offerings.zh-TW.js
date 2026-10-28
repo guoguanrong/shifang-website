@@ -152,7 +152,7 @@ export default {
   "shrineCaption": "金身供奉 · 香火相續",
   "plansTitle": "供奉方案",
   "customAmount": "自訂金額",
-  "customAmountPlaceholder": "金額不限，最低 $100",
+  "customAmountPlaceholder": "金額不限",
   "customAmountRequired": "請輸入不低於 $100 的金額。",
   "monthly": "單月供奉",
   "yearly": "包年供奉",

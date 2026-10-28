@@ -339,13 +339,13 @@ html[data-locale-layout='international'] .supervision-grid p {
   line-height: 1.4;
 }
 
-/* Community cards */
+/* Community cards：与卡片纵向弹性布局保持一致，去除旧绝对定位（top/left）残留 */
 html[data-locale-layout='international'] .seasonal-section .seasonal-card > div {
-  padding: 0;
+  /* 底部留出卷轴纸面下沿：按钮贴内容区底部时仍位于纸面内（约 399px，纸面下沿约 407px） */
+  padding: 64px 18px 110px;
 }
 
 html[data-locale-layout='international'] .seasonal-section .seasonal-card strong {
-  top: 70px;
   width: 74px;
   height: 74px;
   padding: 7px;
@@ -355,42 +355,36 @@ html[data-locale-layout='international'] .seasonal-section .seasonal-card strong
 }
 
 html[data-locale-layout='international'] .seasonal-section .seasonal-card h3 {
-  top: 155px;
-  width: 180px;
-  height: auto;
+  width: auto;
+  max-width: 100%;
   min-height: 32px;
-  margin: 0;
+  margin: 8px auto 0;
   padding: 4px 8px;
-  font-size: 14px;
-  line-height: 1.2;
+  font-size: 13px;
+  line-height: 1.25;
   text-align: center;
   white-space: normal;
 }
 
 html[data-locale-layout='international'] .seasonal-section .seasonal-card p {
-  top: 202px;
-  left: 32px;
-  display: -webkit-box;
-  width: 182px;
-  height: 140px;
+  flex: 1 1 auto;
+  width: 100%;
+  height: auto;
   min-height: 0;
+  margin: 22px auto 0;
   overflow: hidden;
-  font-size: 14px;
-  line-height: 1.2;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 9;
+  font-size: 13px;
+  line-height: 1.4;
 }
 
 html[data-locale-layout='international'] .seasonal-section .seasonal-card button {
-  top: 351px;
-  width: 164px;
+  width: 170px;
+  height: 38px;
   padding: 0 8px;
   font-family: var(--font-ui-international);
   font-size: 12px;
-  line-height: 1.2;
-}
-html[data-locale-layout='international'] .seasonal-section .seasonal-card:nth-child(2) p {
-  top: 202px;
+  line-height: 36px;
+  white-space: nowrap;
 }
 html[data-locale-layout='international'] .testimonials-grid article {
   padding: 19px 20px 16px;

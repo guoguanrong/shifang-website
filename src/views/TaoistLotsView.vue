@@ -28,8 +28,7 @@
       <p>{{ t('blessings.details.lots.guide') }}</p>
     </section>
     <BlessingTestResultDialog v-if="requested" kind="lots" :selection="selected" :stick="selectedStick"
-      :result="divinationResult" :confirm-label="t('blessings.details.results.lotsConfirm')"
-      return-focus=".lot-draw .ceremonial-button" @close="requested = false" />
+      :result="divinationResult" return-focus=".lot-draw .ceremonial-button" @close="requested = false" />
   </BlessingTestLayout>
 </template>
 
@@ -44,6 +43,7 @@ import CeremonialButton from '@/components/common/CeremonialButton.vue'
 import { getDivination, getDrawLots } from '@/api/pray'
 import { useUserSession } from '@/composables/useUserSession'
 import { useAuthModal } from '@/composables/useAuthModal'
+import { lotGradeKeyForLevel, lotStickForLevel } from '@/utils/lotLevels'
 import heading from '@/assets/blessing-tests/heading.svg'
 import career from '@/assets/blessing-tests/career.png'
 import wealth from '@/assets/blessing-tests/wealth.png'
@@ -77,8 +77,12 @@ onMounted(refreshDrawState)
 // 登录成功后重新查询每日一签状态（未登录时查询会失败，按未抽处理）。
 watch(isLoggedIn, value => { if (value) refreshDrawState() })
 
+// 等级与签图的对应关系统一维护在 @/utils/lotLevels（含上上签 level 1 → stick-b）。
+
 // 抽取：立即播放摇签动画，签文请求与动画并行；揭签动画结束后等签文就绪再开结果。
 let divinationPromise = null
+// 每次抽取的序号：用于忽略切换类别/重新抽取后迟到的异步回调。
+let drawSequence = 0
 function startDraw() {
   // 未登录先引导登录，登录后再抽取即可继续。
   if (!isLoggedIn.value) {
@@ -87,21 +91,31 @@ function startDraw() {
   }
   if (drawing.value || revealing.value || alreadyDrawn.value) return
   requested.value = false
+  const sequence = ++drawSequence
   selectedStick.value = ['a', 'b', 'c', 'd', 'e', 'f'][Math.floor(Math.random() * 6)]
   // 求签类型与签筒类别一一对应：1.事业 2.财运 3.健康 4.姻缘。
   // 非静默：后端每日一签限制（code 1006 "今日已抽签"）会立即以全局浮层提示。
   divinationPromise = getDivination({ type: selected.value + 1 })
-    .then(result => { divinationResult.value = result })
+    .then(result => {
+      if (sequence === drawSequence) divinationResult.value = result
+    })
     .catch(error => {
       if (Number(error?.code) === 1006 && String(error?.message || '').includes('已抽签')) {
         alreadyDrawn.value = true
       }
-      divinationResult.value = null
+      if (sequence === drawSequence) divinationResult.value = null
     })
   drawing.value = true
 }
-function finishDraw() {
+// 摇签结束后等签文返回，再按 level 选中对应签枝，保证抽中的签与后端结果一致。
+async function finishDraw() {
   if (!drawing.value) return
+  const sequence = drawSequence
+  try { await divinationPromise } catch { /* 接口失败时保留占位签枝 */ }
+  // 等待期间用户可能已切换类别/重新抽取，此时不再继续揭签。
+  if (sequence !== drawSequence || !drawing.value) return
+  const stick = lotStickForLevel(divinationResult.value?.level)
+  if (stick) selectedStick.value = stick
   drawing.value = false
   revealing.value = true
 }
@@ -127,7 +141,7 @@ function selectCategory(index) {
 
 // 签筒标签：摇签/揭晓动画期间显示所求类别，结果揭晓后显示本次签等级（如"上上签"）。
 const vesselLabel = computed(() => {
-  const levelKey = ({ 1: 'highest', 2: 'great', 3: 'good', 4: 'balanced', 5: 'lower', 6: 'lowest' })[Number(divinationResult.value?.level)]
+  const levelKey = lotGradeKeyForLevel(divinationResult.value?.level)
   if (!drawing.value && !revealing.value && levelKey) return t('blessings.details.results.lots.grades.' + levelKey)
   return categories.value[selected.value]?.short || ''
 })

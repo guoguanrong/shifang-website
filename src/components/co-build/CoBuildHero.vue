@@ -174,7 +174,8 @@ onMounted(loadGoals)
 .co-build-hero {
   isolation: isolate;
   position: relative;
-  height: max(1240px, var(--hero-height, 1240px));
+  /* 整体高度在脚本计算的 hero-height 基础上收回 100px（恢复时删去 calc 即可）。 */
+  height: max(1140px, calc(var(--hero-height, 1240px) - 70px));
   overflow: hidden;
   background: #f8f5ed;
 }

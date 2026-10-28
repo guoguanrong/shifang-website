@@ -59,7 +59,7 @@ const meritSeals = computed(() => tm('coBuild.merits.items').map((item, index) =
 .merits-section {
   position: relative;
   overflow: hidden;
-  padding: 0 20px 80px;
+  padding: 0 20px 10px;
   background: #f8f5ed;
 }
 

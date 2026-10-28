@@ -51,8 +51,8 @@ const router = useRouter()
 // 菜单显示文案来自语言包，目标数组负责定义实际跳转位置。
 const exploreTargets = ['culture', 'deities', 'etiquette', 'blessings', 'events']
 // 与语言包 footer.about 数组按下标一一对应；资金监管暂未上线，两处需同步增删。
-const aboutTargets = ['about', 'temple-plan', 'mission', 'organization', 'news', 'milestones']
-const joinTargets = ['co-build', 'cloud-build']
+const aboutTargets = ['about', 'temple-plan', 'organization', 'seasonal', 'news', 'milestones']
+const joinTargets = ['co-build', 'donation']
 const exploreItems = computed(() => tm('footer.explore'))
 const joinItems = computed(() => tm('footer.join'))
 const aboutItems = computed(() => tm('footer.about'))
@@ -61,7 +61,7 @@ const policyTargets = ['/contact', '/legal', '/privacy', '/compliance']
 
 async function navigate(sectionId) {
   // 已实现的内容页使用独立路由；信众实录 / 各界寄语 / 最新动态仍以首页版块为准，平滑滚动定位。
-  const routeByTarget = { culture: 'culture-origins', deities: 'deities', etiquette: 'etiquette', 'co-build': 'co-build', 'cloud-build': 'cloud-build', blessings: 'blessings', events: 'events' }
+  const routeByTarget = { culture: 'culture-origins', deities: 'deities', etiquette: 'etiquette', 'co-build': 'co-build', 'cloud-build': 'cloud-build', donation: 'donation', blessings: 'blessings', events: 'events' }
   if (routeByTarget[sectionId]) {
     await router.push({ name: routeByTarget[sectionId] })
     return

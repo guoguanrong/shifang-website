@@ -71,7 +71,7 @@ defineExpose({ scrollToModule: scrollToSection })
   left: 50%;
   width: 100%;
   min-width: 1440px;
-  height: 1792px;
+  height: 1000px;
   max-width: none;
   object-fit: fill;
   pointer-events: none;

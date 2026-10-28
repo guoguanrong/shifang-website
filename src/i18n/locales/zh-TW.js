@@ -47,7 +47,7 @@ export default {
   // 顶部导航与账户操作。
   nav: {
     logo: '十方殿',
-    items: ['關於我們', '文化溯源', '聖像名錄', '道養儀章', '共建十方', '雲端共築', '祈福納祥', '道會活動'],
+    items: ['關於我們', '文化溯源', '聖像名錄', '道養儀章', '共建十方', '祈福納祥', '道會活動'],
     lang: '繁體中文',
     login: '登入',
   },
@@ -203,9 +203,9 @@ export default {
   },
   // 机构发展时间轴。
   homeActivity: {
-    en: 'Latest News',
-    title: '最新訊息',
-    subtitle: '來自社會各界的聲音與祝福',
+    en: 'Taoist Rituals',
+    title: '道會活動',
+    subtitle: '隨心參加 · 共修共福 · 道長親自主持',
     tabs: {
       news: '殿內動態',
       testimonials: '信眾實錄',
@@ -239,9 +239,9 @@ export default {
     exploreTitle: '探索',
     explore: ['文化溯源', '聖像名錄', '道養儀章', '祈福納祥', '道會活動'],
     joinTitle: '參與',
-    join: ['成為護道人', '雲端共築'],
+    join: ['成為護道人', '共建十方'],
     aboutTitle: '關於',
-    about: ['關於我們', '神殿規劃', '使命願景', '玄門四箴', '最新動態', '里程碑事件'],
+    about: ['關於我們', '神殿規劃', '玄門四箴', '時令指引', '最新訊息', '觀宇興 文脈延'],
     android: '安卓下載',
     ios: '蘋果下載',
     wechat: '客服微信',

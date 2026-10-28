@@ -1,8 +1,8 @@
 <template>
   <!-- 祈福服务弹窗：kind 决定符咒/节气文案，cancel 为真时切换成「取消确认」话术。 -->
   <Teleport to="body">
-    <dialog ref="dialog" class="blessing-service-dialog" :class="{ 'is-talisman': kind === 'talisman', 'is-cancel': cancel }"
-      :aria-labelledby="titleId" :aria-describedby="previewId" @close="emit('close')" @click="onBackdrop">
+    <dialog ref="dialog" class="blessing-service-dialog" tabindex="-1" :class="{ 'is-talisman': kind === 'talisman', 'is-cancel': cancel }"
+      :aria-labelledby="titleId" :aria-describedby="kind === 'talisman' ? undefined : previewId" @close="emit('close')" @click="onBackdrop">
       <div class="service-dialog-content">
         <button class="service-dialog-close" type="button" :aria-label="t('offerings.close')" @click="dialog.close()"><img :src="closeIcon" alt="" /></button>
         <header class="service-dialog-heading"><img :src="emblem" alt="" aria-hidden="true" />
@@ -21,16 +21,18 @@
             <p>{{ t('blessingDetails.dialog.seasonalText') }}</p>
           </template>
         </div>
-        <p class="service-dialog-blessing">{{ t(`blessingDetails.dialog.${kind === 'talisman' ? 'blessing' : 'seasonalBlessing'}`) }}</p>
+        <!-- 电子祈福卡弹窗不展示底部祝福语；节气提醒 / 取消提醒保留。 -->
+        <p v-if="kind !== 'talisman'" class="service-dialog-blessing">{{ t('blessingDetails.dialog.seasonalBlessing') }}</p>
         <!-- 下载电子祈福卡图片：同源静态资源，直接触发浏览器保存。 -->
         <button v-if="kind === 'talisman'" class="service-dialog-download" type="button" @click="downloadTalisman">
           {{ t('blessingDetails.dialog.download') }}
         </button>
         <div class="service-dialog-actions">
-          <CeremonialButton :label="t(cancel ? 'blessingDetails.dialog.confirm' : 'offerings.completedBlessing')" @click="emit('confirm')" />
+          <CeremonialButton :label="t(cancel ? 'blessingDetails.dialog.confirm' : kind === 'talisman' ? 'blessingDetails.dialog.confirmTalisman' : 'blessingDetails.dialog.confirmSeasonal')" @click="emit('confirm')" />
           <button v-if="cancel" type="button" class="service-dialog-reconsider" @click="dialog.close()">{{ t('offerings.reconsider') }}</button>
         </div>
-        <p :id="previewId" class="service-dialog-preview">{{ t('blessingDetails.dialog.preview') }}</p>
+        <!-- 电子祈福卡弹窗不展示底部演示说明，与设计稿保持一致。 -->
+        <!-- <p v-if="kind !== 'talisman'" :id="previewId" class="service-dialog-preview">{{ t('blessingDetails.dialog.preview') }}</p> -->
       </div>
     </dialog>
   </Teleport>
@@ -70,6 +72,9 @@ onMounted(() => {
   previousOverflow = document.body.style.overflow
   document.body.style.overflow = 'hidden'
   dialog.value.showModal()
+  // Safari 打开弹窗时会把焦点自动落在首个可聚焦元素（关闭按钮）上并绘制蓝色焦点圈，
+  // 这里把焦点交给对话框容器本身；键盘用户按 Tab 仍可聚焦关闭按钮并看到焦点样式。
+  dialog.value.focus({ preventScroll: true })
 })
 onBeforeUnmount(() => {
   dialog.value?.close()
