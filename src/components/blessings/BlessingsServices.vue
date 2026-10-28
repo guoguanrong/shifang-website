@@ -1,32 +1,59 @@
 <template>
-  <section class="services" aria-label="Blessing services">
-    <article v-for="(item, index) in items" :key="item.title" class="service-card">
-      <img class="service-icon" :class="`icon-${index + 1}`" :src="icons[index]" alt="" />
-      <h2>{{ item.title }}</h2>
-      <p><span v-for="line in item.lines" :key="line">{{ line }}</span></p>
-      <CeremonialButton :label="item.action" @click="go(index)" />
+  <section class="services" :aria-label="t('blessings.servicesAria')">
+    <article v-for="item in items" :key="item.title" class="service-card">
+      <img class="service-card__union" :src="cardUnion" width="295" height="518" alt="" aria-hidden="true" />
+      <img class="service-card__ornament" :src="cardOrnament" alt="" aria-hidden="true" />
+
+      <div class="service-card__icon" :class="`service-card__icon--${item.iconType}`" aria-hidden="true">
+        <div class="service-card__icon-window">
+          <img :src="item.icon" alt="" />
+        </div>
+      </div>
+
+      <div class="service-card__copy">
+        <h2>{{ item.title }}</h2>
+        <p>
+          <span v-for="line in item.lines" :key="line">{{ line }}</span>
+        </p>
+
+        <div class="service-card__action">
+          <img class="service-card__shadow" :src="buttonShadow" alt="" aria-hidden="true" />
+          <span v-for="side in ['left', 'right']" :key="`diamond-${side}`" class="service-card__diamond"
+            :class="`is-${side}`" aria-hidden="true"><span /></span>
+          <img v-for="side in ['left', 'right']" :key="`dot-${side}`" class="service-card__dot"
+            :class="`is-${side}`" :src="buttonDot" alt="" aria-hidden="true" />
+          <CeremonialButton :label="item.action" :to="{ name: item.route }" />
+        </div>
+      </div>
     </article>
   </section>
 </template>
+
 <script setup>
 import { computed } from 'vue'
-import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import CeremonialButton from '@/components/common/CeremonialButton.vue'
-import lamp from '@/assets/blessings/service-lamp.png'
-import talisman from '@/assets/blessings/service-talisman.png'
-import calendar from '@/assets/blessings/service-calendar.png'
-const icons = [lamp, talisman, calendar]
-// 按服务卡顺序对应线上点灯、电子护身符和节气提醒。
-const serviceRoutes = ['lamp-offerings', 'digital-talisman', 'seasonal-reminders']
-const router = useRouter()
-const { tm } = useI18n()
-const items = computed(() => tm('blessings.services'))
-function go(index) {
-  const name = serviceRoutes[index]
-  if (name) router.push({ name })
-}
+import cardUnion from '@/assets/blessings/services-v2/card-union.png'
+import cardOrnament from '@/assets/blessings/services-v2/card-ornament.svg'
+import lamp from '@/assets/blessings/services-v2/lamp.png'
+import talisman from '@/assets/blessings/services-v2/talisman.png'
+import calendar from '@/assets/blessings/services-v2/calendar.png'
+import buttonShadow from '@/assets/blessings/services-v2/button-shadow.svg'
+import buttonDot from '@/assets/blessings/services-v2/button-dots.svg'
+
+const icons = [lamp, talisman, talisman, calendar]
+const iconTypes = ['lamp', 'talisman', 'talisman', 'calendar']
+const serviceRoutes = ['lamp-offerings', 'deities', 'digital-talisman', 'seasonal-reminders']
+const { t, tm } = useI18n()
+
+const items = computed(() => tm('blessings.services').map((item, index) => ({
+  ...item,
+  icon: icons[index],
+  iconType: iconTypes[index],
+  route: serviceRoutes[index],
+})))
 </script>
+
 <style scoped>
 .services {
   position: absolute;
@@ -34,7 +61,7 @@ function go(index) {
   top: 254px;
   left: 50%;
   display: grid;
-  grid-template-columns: repeat(3, 400px);
+  grid-template-columns: repeat(4, 295px);
   gap: 20px;
   width: 1240px;
   transform: translateX(-50%);
@@ -42,115 +69,271 @@ function go(index) {
 
 .service-card {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  isolation: isolate;
+  width: 295px;
   height: 518px;
-  padding: 0 26px;
   text-align: center;
-  background: url('@/assets/blessings/service-card.webp') center/400px 518px no-repeat;
   transition: transform .25s ease, filter .25s ease;
 }
 
-.service-icon {
-  width: auto;
-  object-fit: contain;
-  margin-top: 70px;
-  height: 150px;
-  transition: transform .25s ease;
+.service-card__union,
+.service-card__ornament {
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  left: 0;
+  display: block;
+  pointer-events: none;
 }
 
-.service-icon.icon-2 {
-  width: 161px;
+.service-card__union {
+  width: 295px;
+  height: 518px;
+}
+
+.service-card__ornament {
+  top: 6px;
+  left: 6px;
+}
+
+.service-card__icon {
+  position: absolute;
+  z-index: 1;
+  top: 76px;
+  left: 50%;
+  width: 200px;
   height: 142px;
-  margin-top: 74px;
-  margin-bottom: 4px;
+  transform: translateX(-50%);
+  transition: translate .25s ease;
 }
 
-.service-icon.icon-3 {
-  width: 239px;
-  height: 148px;
-  margin-top: 78px;
-  margin-bottom: -4px;
+.service-card__icon--lamp { height: 132px; }
+
+.service-card__icon-window {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 137px;
+  height: 142px;
+  overflow: hidden;
+  transform: translateX(-50%);
+}
+
+.service-card__icon--lamp .service-card__icon-window {
+  width: 166px;
+  height: 132px;
+}
+
+.service-card__icon--calendar .service-card__icon-window {
+  top: 50%;
+  width: 200px;
+  height: auto;
+  aspect-ratio: 216 / 131;
+  transform: translate(-50%, -50%);
+}
+
+.service-card__icon-window img {
+  position: absolute;
+  display: block;
+  max-width: none;
+}
+
+.service-card__icon--lamp img {
+  top: -5.63%;
+  left: 0;
+  width: 108.02%;
+  height: 105.63%;
+}
+
+.service-card__icon--talisman img {
+  top: 0;
+  left: -17.86%;
+  width: 118.19%;
+  height: 100%;
+}
+
+.service-card__icon--calendar img {
+  top: -.85%;
+  left: -6.48%;
+  width: 110.65%;
+  height: 113.15%;
+}
+
+.service-card__copy {
+  position: absolute;
+  z-index: 2;
+  top: 261px;
+  left: 50%;
+  display: flex;
+  width: 251px;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  transform: translateX(-50%);
 }
 
 .service-card h2 {
-  margin: 34px 0 10px;
-  color: #050505;
-  font: 32px/1 var(--font-calligraphy);
-  letter-spacing: 1px;
+  margin: 0;
+  color: #000;
+  font: 32px/1.2 var(--font-calligraphy);
+  letter-spacing: 0;
+  white-space: nowrap;
 }
 
 .service-card p {
   display: flex;
+  width: 100%;
+  min-height: 80px;
   flex-direction: column;
-  min-height: 90px;
   margin: 0;
   color: #333;
-  font: 17px/20px var(--font-calligraphy);
+  font: 16px/20px var(--font-calligraphy);
   letter-spacing: 1.6px;
 }
 
-.service-card :deep(.ceremonial-button) {
-  margin-top: auto;
-  margin-bottom: 65px;
+.service-card__action {
+  position: relative;
+  z-index: 0;
+  width: 158px;
+  height: 36px;
 }
 
-/* 悬停时整卡上浮并投影，图标同步轻抬放大，与站内其他卡片的交互手感一致。
-   卡片主体是带透明边的 PNG 边框，用 drop-shadow 而非 box-shadow，避免出现方形阴影。 */
+.service-card__shadow {
+  position: absolute;
+  z-index: 0;
+  top: 24px;
+  left: 12px;
+  display: block;
+  pointer-events: none;
+}
+
+.service-card__diamond {
+  position: absolute;
+  z-index: 2;
+  top: 15px;
+  display: grid;
+  width: 5.568px;
+  height: 5.568px;
+  place-items: center;
+  pointer-events: none;
+}
+
+.service-card__diamond.is-left { left: .81px; }
+.service-card__diamond.is-right { right: .87px; }
+
+.service-card__diamond span {
+  width: 3.938px;
+  height: 3.938px;
+  background: linear-gradient(180deg, #f8f5f1, #caab89);
+  transform: rotate(45deg);
+}
+
+.service-card__dot {
+  position: absolute;
+  z-index: 2;
+  top: 17px;
+  display: block;
+  max-width: none;
+  pointer-events: none;
+}
+
+.service-card__dot.is-left { left: 7.56px; }
+.service-card__dot.is-right { right: 7.56px; }
+
+.service-card :deep(.ceremonial-button) {
+  position: relative;
+  z-index: 1;
+  width: 158px;
+  min-width: 158px;
+  height: 36px;
+  padding: 0 12px;
+  color: #fff;
+  font: 16px/1 var(--font-calligraphy);
+  letter-spacing: 0;
+  background-color: #cc3513;
+  background-image: url('@/assets/blessings/services-v2/button-texture.png');
+  background-position: center;
+  background-size: 100% 100%;
+  border-color: #c29f79;
+  box-shadow: none;
+}
+
+.service-card :deep(.ceremonial-button::before) {
+  inset: 2.8px 3px;
+  border-color: rgba(242, 210, 175, .75);
+}
+
+.service-card :deep(.ceremonial-button::after) { content: none; }
+
 @media (hover: hover) and (pointer: fine) {
   .service-card:hover {
     filter: drop-shadow(0 16px 18px rgba(90, 58, 30, .18));
     transform: translateY(-6px);
   }
 
-  .service-card:hover .service-icon {
-    transform: translateY(-6px) scale(1.05);
-  }
+  .service-card:hover .service-card__icon { translate: 0 -4px; }
 }
 
-/* 键盘 Tab 到卡片内按钮时保持同样的抬升，避免只有鼠标用户看得到反馈。 */
 .service-card:focus-within {
   filter: drop-shadow(0 16px 18px rgba(90, 58, 30, .18));
   transform: translateY(-6px);
 }
 
-.service-card:focus-within .service-icon {
-  transform: translateY(-6px) scale(1.05);
+.service-card:focus-within .service-card__icon { translate: 0 -4px; }
+
+.service-card :deep(.ceremonial-button:active) {
+  filter: brightness(.95);
+  transform: translateY(1px);
 }
 
 :global(html[data-locale-layout='international']) .service-card h2 {
-  font-size: 25px;
+  display: block;
+  width: 100%;
+  min-height: 50px;
+  font-size: 18px;
+  line-height: 1.12;
+  overflow-wrap: anywhere;
+  text-align: center;
+  white-space: normal;
 }
 
 :global(html[data-locale-layout='international']) .service-card p {
-  font-size: 14px;
-  letter-spacing: .4px;
+  min-height: 80px;
+  font-size: 13px;
+  line-height: 17px;
+  letter-spacing: 0;
 }
 
-@media (max-width:1100px) {
+:global(html[data-locale-layout='international'] .service-card .ceremonial-button) {
+  padding-inline: 8px;
+  font-size: 12px;
+  letter-spacing: .1px;
+}
+
+@media (max-width: 1239px) {
   .services {
     position: relative;
     top: auto;
-    left: auto;
-    grid-template-columns: repeat(2, minmax(280px, 400px));
+    left: 0;
+    grid-template-columns: repeat(2, 295px);
     justify-content: center;
-    width: auto;
+    width: 100vw;
     padding: 0 24px;
+    margin-top: 254px;
+    margin-inline: 0;
     transform: none;
   }
 }
 
-@media (max-width:700px) {
-  .services {
-    grid-template-columns: minmax(280px, 400px);
-    padding: 0 12px;
-  }
+@media (max-width: 900px) {
+  .services { margin-top: 0; }
+}
 
-  .service-card {
-    width: 100%;
-    max-width: 400px;
-    background-size: 100% 100%;
+@media (max-width: 680px) {
+  .services {
+    grid-template-columns: 295px;
+    row-gap: 24px;
+    padding: 0 12px;
   }
 }
 </style>

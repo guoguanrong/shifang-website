@@ -86,17 +86,17 @@ import DeityHierarchy from '@/components/deities/DeityHierarchy.vue'
 import featuredDeity from '@/assets/deities/featured-deity.svg'
 import featuredBorder from '@/assets/deities/featured-deity.svg'
 import leizunPortrait from '@/assets/deities/detail/leizun.webp'
-import { deityImages } from '@/components/deities/deityImages'
+import { deityDetailImages, deityImages } from '@/components/deities/deityImages'
 
 const props = defineProps({ deityId: { type: String, default: 'doumu' } })
 const { t, tm } = useI18n()
 const deity = computed(() => props.deityId === 'doumu'
   ? tm('deities.featured')
   : tm('deities.cards').find((item) => item.id === props.deityId))
+// 详情页肖像优先使用 500×500 正方形大图（Figma 1138_3810）；雷祖沿用专属长图，三官等缺图神祇回退卡片图。
 const portrait = computed(() => {
-  if (props.deityId === 'doumu') return featuredDeity
   if (props.deityId === 'leizun') return leizunPortrait
-  return deityImages[props.deityId]
+  return deityDetailImages[props.deityId] || deityImages[props.deityId] || featuredDeity
 })
 const detail = computed(() => {
   const base = tm('deityDetail')

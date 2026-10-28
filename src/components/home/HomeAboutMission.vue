@@ -39,7 +39,7 @@
   </div>
 
   <!-- 使命愿景：三张图文卡分别展示使命、愿景和核心价值。 -->
-  <section id="mission" class="mission-section" aria-labelledby="mission-title">
+  <!-- <section id="mission" class="mission-section" aria-labelledby="mission-title">
     <img class="mission-clouds" :src="missionClouds" alt="" />
     <div class="mission-content">
       <HomeSectionHeading
@@ -56,7 +56,7 @@
         </article>
       </div>
     </div>
-  </section>
+  </section> -->
 </template>
 
 <script setup>
@@ -88,7 +88,7 @@ const aboutPatternBackground = `url("${aboutPattern}")`
   position: relative;
   z-index: 1;
   width: 100%;
-  height: 1834px;
+  height: 1765px;
   margin-top: -164px;
   overflow: hidden;
   color: #333;

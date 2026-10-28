@@ -8,7 +8,7 @@
         <header class="service-dialog-heading"><img :src="emblem" alt="" aria-hidden="true" />
           <h2 :id="titleId">{{ t(`blessingDetails.dialog.${cancel ? 'cancelTitle' : kind === 'talisman' ? 'talismanTitle' : 'enableTitle'}`) }}</h2>
         </header>
-        <!-- 三种文案分支：取消确认 / 电子护身符 / 节气提醒。 -->
+        <!-- 三种文案分支：取消确认 / 电子祈福卡 / 节气提醒。 -->
         <div class="service-dialog-copy">
           <template v-if="cancel"><p>{{ t('blessingDetails.dialog.cancelQuestion') }}</p><p>{{ t('blessingDetails.dialog.cancelText') }}</p></template>
           <template v-else-if="kind === 'talisman'">
@@ -22,7 +22,7 @@
           </template>
         </div>
         <p class="service-dialog-blessing">{{ t(`blessingDetails.dialog.${kind === 'talisman' ? 'blessing' : 'seasonalBlessing'}`) }}</p>
-        <!-- 下载电子护身符图片：同源静态资源，直接触发浏览器保存。 -->
+        <!-- 下载电子祈福卡图片：同源静态资源，直接触发浏览器保存。 -->
         <button v-if="kind === 'talisman'" class="service-dialog-download" type="button" @click="downloadTalisman">
           {{ t('blessingDetails.dialog.download') }}
         </button>
@@ -53,11 +53,11 @@ const { t } = useI18n()
 const titleId = useId()
 const previewId = useId()
 const dialog = ref(null)
-// 下载电子护身符图片：同源打包资源，用 <a download> 触发浏览器保存。
+// 下载电子祈福卡图片：同源打包资源，用 <a download> 触发浏览器保存。
 function downloadTalisman() {
   const link = document.createElement('a')
   link.href = talismanDownload
-  link.download = '护身符.png'
+  link.download = '祈福卡.png'
   document.body.appendChild(link)
   link.click()
   link.remove()

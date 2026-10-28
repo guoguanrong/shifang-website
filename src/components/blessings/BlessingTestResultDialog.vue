@@ -42,7 +42,7 @@
         </div>
         <p v-if="['five', 'lots', 'fortune'].includes(kind)" class="service-dialog-blessing">{{ blessingText }}</p>
         <div class="service-dialog-actions">
-          <CeremonialButton :label="t(`${prefix}.${kind === 'notice' ? 'understood' : 'confirm'}`)" @click="dialog.close()" />
+          <CeremonialButton :label="confirmText" @click="dialog.close()" />
         </div>
         <p v-if="showPreview" class="service-dialog-preview">{{ t(`${prefix}.${kind === 'zodiac' ? 'zodiacPreview' : 'preview'}`) }}</p>
       </div>
@@ -65,6 +65,8 @@ const props = defineProps({
   stick: { type: String, default: 'f' },
   returnFocus: { type: String, default: '' },
   result: { type: Object, default: null },
+  // 可选：传入后覆盖确认按钮文案，仅影响调用方页面（如求签页使用“我已知晓”）。
+  confirmLabel: { type: String, default: '' },
 })
 const emit = defineEmits(['close'])
 const { t, tm } = useI18n()
@@ -105,6 +107,11 @@ const title = computed(() => {
     return props.result?.titleText || t(`${prefix}.fortune.title`, { animal: tm('blessings.details.animals')[props.selection] })
   }
   return t(`${prefix}.${props.kind}.title`)
+})
+// 底部按钮文案：提示类固定“知道了”；其余默认语言包 confirm，调用方可传入专属文案覆盖。
+const confirmText = computed(() => {
+  if (props.kind === 'notice') return t(`${prefix}.understood`)
+  return props.confirmLabel || t(`${prefix}.confirm`)
 })
 // 底部祝福语：求签/运势接口成功时取接口的祝福文案。
 const blessingText = computed(() => {

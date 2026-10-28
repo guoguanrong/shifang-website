@@ -1,0 +1,18 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="295" height="315" viewBox="0 0 295 315" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="Group 116">
+<g id="Union">
+<use xlink:href="#stroke0_0_11" fill="url(#paint0_linear_0_11)"/>
+<mask id="stroke1_0_11" fill="white">
+<use xlink:href="#stroke0_0_11"/>
+</mask>
+<path d="M255 0C266.046 0 275 8.95431 275 20V23.332C286.046 23.332 295 32.2863 295 43.332V278.332C295 289.378 286.046 298.332 275 298.332H274.722C273.135 307.792 264.91 315 255 315H40C30.0897 315 21.8648 307.792 20.2783 298.332H20C8.95431 298.332 0 289.378 0 278.332V43.332C0 32.2863 8.95431 23.332 20 23.332V20C20 8.95431 28.9543 3.82528e-07 40 0H255Z" stroke-width="12" stroke="white" mask="url(#stroke1_0_11)"/>
+</g>
+</g>
+<defs>
+<linearGradient id="paint0_linear_0_11" x1="147.5" y1="0" x2="147.5" y2="551.25" gradientUnits="userSpaceOnUse">
+<stop stop-color="white"/>
+<stop offset="1" stop-color="#F8F5F1"/>
+</linearGradient>
+<path id="stroke0_0_11" d="M255 0C266.046 0 275 8.95431 275 20V23.332C286.046 23.332 295 32.2863 295 43.332V278.332C295 289.378 286.046 298.332 275 298.332H274.722C273.135 307.792 264.91 315 255 315H40C30.0897 315 21.8648 307.792 20.2783 298.332H20C8.95431 298.332 0 289.378 0 278.332V43.332C0 32.2863 8.95431 23.332 20 23.332V20C20 8.95431 28.9543 3.82528e-07 40 0H255Z"/>
+</defs>
+</svg>

@@ -9,11 +9,16 @@
       <span>{{ t('coBuild.hero.subtitle') }}</span>
     </header>
 
-    <blockquote class="hero-quote">
-      <img :src="quoteScroll" alt="" aria-hidden="true" />
-      <p>{{ t('coBuild.hero.quote') }}</p>
-      <cite>{{ t('coBuild.hero.quoteSource') }}</cite>
-    </blockquote>
+    <div class="hero-quote">
+      <img class="hero-quote-frame hero-quote-frame-outer" :src="quoteFrameOuter" alt="" aria-hidden="true" />
+      <div class="hero-quote-landscape" aria-hidden="true">
+        <img :src="quoteLandscape" alt="" />
+      </div>
+      <img class="hero-quote-frame hero-quote-frame-inner" :src="quoteFrameInner" alt="" aria-hidden="true" />
+      <div class="hero-quote-copy">
+        <p v-for="paragraph in tm('coBuild.hero.introduction')" :key="paragraph">{{ paragraph }}</p>
+      </div>
+    </div>
 
     <CoBuildSectionHeading class="fundraising-heading" :title="t('coBuild.project.heading')"
       :subtitle="t('coBuild.project.eyebrow')" />
@@ -60,14 +65,7 @@
     </div>
     <p v-else-if="!loading" class="project-empty">{{ t('coBuild.project.empty') }}</p>
 
-    <div class="assurance-grid" :style="{ '--assurance-top': `${assuranceTop}px` }">
-      <article v-for="(item, index) in assurances" :key="item.title" class="assurance-card">
-        <img class="assurance-frame" :src="assuranceFrames[index]" alt="" aria-hidden="true" />
-        <img class="assurance-icon" :src="assuranceIcons[index]" alt="" aria-hidden="true" />
-        <h3>{{ item.title }}</h3>
-        <p>{{ item.desc }}</p>
-      </article>
-    </div>
+    
   </section>
 </template>
 
@@ -78,7 +76,9 @@ import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import CoBuildSectionHeading from './CoBuildSectionHeading.vue'
 import { getDonateTargetList } from '@/api/donateTarget'
-import quoteScroll from '@/assets/co-build/quote-scroll.webp'
+import quoteLandscape from '@/assets/co-build/hero-quote-v2/hero-quote-landscape.png'
+import quoteFrameOuter from '@/assets/co-build/hero-quote-v2/hero-quote-outer.svg'
+import quoteFrameInner from '@/assets/co-build/hero-quote-v2/hero-quote-inner.svg'
 import projectFrameOuter from '@/assets/co-build/project-frame-outer.svg'
 import projectFrameInner from '@/assets/co-build/project-frame-inner.svg'
 import projectImageFrame from '@/assets/co-build/project-image-frame.svg'
@@ -94,10 +94,10 @@ const router = useRouter()
 const assurances = computed(() => tm('coBuild.assurances'))
 const goals = ref([])
 const loading = ref(true)
-const heroHeight = computed(() => Math.max(1454, 604 + Math.max(goals.value.length, 1) * 520
-  + Math.max(0, goals.value.length - 1) * 24 + 40 + 210 + 80))
-const assuranceTop = computed(() => 604 + Math.max(goals.value.length, 1) * 520
-  + Math.max(0, goals.value.length - 1) * 24 + 40)
+const heroHeight = computed(() => Math.max(1240, 689 + Math.max(goals.value.length, 1) * 434
+  + Math.max(0, goals.value.length - 1) * 16 + 22 + 174 + 6))
+const assuranceTop = computed(() => 689 + Math.max(goals.value.length, 1) * 434
+  + Math.max(0, goals.value.length - 1) * 16 + 22)
 const assuranceFrames = [assuranceFrame1, assuranceFrame2, assuranceFrame3]
 const assuranceIcons = [assuranceIcon1, assuranceIcon2, assuranceIcon3]
 
@@ -174,7 +174,7 @@ onMounted(loadGoals)
 .co-build-hero {
   isolation: isolate;
   position: relative;
-  height: max(1454px, var(--hero-height, 1454px));
+  height: max(1240px, var(--hero-height, 1240px));
   overflow: hidden;
   background: #f8f5ed;
 }
@@ -225,48 +225,86 @@ onMounted(loadGoals)
   z-index: 1;
   top: 243px;
   left: 50%;
-  width: 707px;
-  height: 162px;
+  width: min(1240px, calc(100vw - 48px));
+  aspect-ratio: 1240 / 247;
   margin: 0;
-  color: #8e6e49;
+  color: #171717;
   transform: translateX(-50%);
 }
 
-.hero-quote>img {
+.hero-quote-frame {
   position: absolute;
+  z-index: 0;
   inset: 0;
-  width: 707px;
-  height: 162px;
-}
-
-.hero-quote p {
-  position: absolute;
-  top: 44px;
-  left: 0;
+  display: block;
   width: 100%;
-  margin: 0;
-  font-family: var(--font-calligraphy);
-  font-size: 32px;
-  line-height: 38px;
-  letter-spacing: 1px;
-  text-align: center;
-  white-space: nowrap;
+  height: 100%;
+  pointer-events: none;
 }
 
-.hero-quote cite {
+.hero-quote-frame-outer {
+  top: .162%;
+  bottom: auto;
+  height: 99.595%;
+}
+
+.hero-quote-frame-inner {
+  z-index: 2;
+  inset: 4.21% .806% 4.29%;
+  width: auto;
+  height: auto;
+}
+
+.hero-quote-landscape {
   position: absolute;
-  right: 100px;
-  bottom: 31px;
-  font-family: var(--font-dyming-a);
+  z-index: 1;
+  top: 4.29%;
+  right: .806%;
+  width: 58.871%;
+  height: 95.547%;
+  overflow: hidden;
+  -webkit-mask-image: url('@/assets/co-build/hero-quote-v2/hero-quote-mask.svg');
+  mask-image: url('@/assets/co-build/hero-quote-v2/hero-quote-mask.svg');
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: 100% 2%;
+  mask-position: 100% 2%;
+  -webkit-mask-size: 167.123% 95.763%;
+  mask-size: 167.123% 95.763%;
+}
+
+.hero-quote-landscape img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.hero-quote-copy {
+  position: absolute;
+  z-index: 3;
+  top: 20.08%;
+  left: 4.03%;
+  width: 76.61%;
+  font-family: var(--font-calligraphy);
+}
+
+.hero-quote-copy p {
+  margin: 0;
   font-size: 16px;
-  font-style: normal;
-  line-height: 20px;
+  line-height: 1.25;
+  letter-spacing: 0;
+}
+
+.hero-quote-copy p + p {
+  margin-top: 8px;
 }
 
 .fundraising-heading {
   position: absolute;
   z-index: 1;
-  top: 465px;
+  top: 550px;
   left: 50%;
   transform: translateX(-50%);
 }
@@ -286,7 +324,7 @@ onMounted(loadGoals)
 .project-empty {
   position: absolute;
   z-index: 1;
-  top: 604px;
+  top: 689px;
   left: 0;
   width: 100%;
 }
@@ -595,12 +633,8 @@ onMounted(loadGoals)
 
 :global(html[data-locale-layout='international'] .co-build-hero .hero-quote p) {
   font-family: Georgia, serif;
-  font-size: 24px;
-  white-space: normal;
-}
-
-:global(html[data-locale-layout='international'] .co-build-hero .hero-quote cite) {
-  font-family: Georgia, serif;
+  font-size: 14px;
+  line-height: 1.4;
 }
 
 :global(html[data-locale-layout='international'] .co-build-hero .assurance-card h3) {
@@ -727,6 +761,22 @@ onMounted(loadGoals)
   }
 }
 
+@media (max-width: 1080px) {
+  .hero-quote {
+    height: auto;
+    aspect-ratio: auto;
+    padding: 30px clamp(24px, 4vw, 50px);
+  }
+
+  .hero-quote-copy {
+    position: relative;
+    top: auto;
+    left: auto;
+    width: min(100%, 950px);
+    margin: 0 auto;
+  }
+}
+
 @media (max-width: 900px) {
   .project-card {
     width: min(100%, 680px);
@@ -765,29 +815,23 @@ onMounted(loadGoals)
   }
 
   .hero-quote {
-    width: calc(100vw - 24px);
-    height: 126px;
+    width: 100%;
+    padding: 26px 24px;
     margin-top: 22px;
   }
 
-  .hero-quote>img {
-    width: 100%;
-    height: 126px;
-    object-fit: fill;
+  .hero-quote-copy p {
+    font-size: 14px;
+    line-height: 1.55;
   }
 
-  .hero-quote p {
-    top: 31px;
-    padding-inline: 29px;
-    font-size: 20px;
-    line-height: 26px;
-    white-space: normal;
+  .hero-quote-copy p + p {
+    margin-top: 10px;
   }
 
-  .hero-quote cite {
-    right: 34px;
-    bottom: 21px;
-    font-size: 12px;
+  .hero-quote-landscape {
+    width: 50%;
+    opacity: .45;
   }
 
   .fundraising-heading {

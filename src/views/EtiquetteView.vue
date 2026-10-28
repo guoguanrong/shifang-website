@@ -7,6 +7,8 @@
       <EtiquetteIncense />
       <EtiquetteWorship />
       <EtiquetteTaboos />
+      <WellnessMethods />
+      <WellnessRhythm />
     </main>
     <HomeFooter />
   </div>
@@ -18,9 +20,11 @@ import { setAppLocale } from '@/i18n'
 import EtiquetteHero from '@/components/etiquette/EtiquetteHero.vue'
 import EtiquetteIncense from '@/components/etiquette/EtiquetteIncense.vue'
 import EtiquetteWorship from '@/components/etiquette/EtiquetteWorship.vue'
+import WellnessMethods from '@/components/wellness/WellnessMethods.vue'
 import EtiquetteTaboos from '@/components/etiquette/EtiquetteTaboos.vue'
 import HomeFooter from '@/components/home/HomeFooter.vue'
 import HomeHeader from '@/components/home/HomeHeader.vue'
+import WellnessRhythm from '@/components/wellness/WellnessRhythm.vue'
 
 const { t } = useI18n()
 
@@ -36,5 +40,4 @@ async function setLocale(nextLocale) {
   color: #222;
   background: #f8f5ed;
 }
-
 </style>

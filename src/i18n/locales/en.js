@@ -46,7 +46,7 @@ export default {
   // 顶部导航与账户操作。
   nav: {
     logo: 'ShiFang Hall',
-    items: ['About', 'Origins', 'Deities', 'Etiquette', 'Wellness', 'Co-Build', 'Cloud', 'Blessings', 'Events'],
+    items: ['About', 'Origins', 'Sacred Statues', 'Etiquette', 'Co-Build', 'Cloud', 'Blessings', 'Events'],
     lang: 'English',
     login: 'Log In',
   },
@@ -77,13 +77,36 @@ export default {
   // 神殿规划卡片。
   templePlan: {
     en: 'Temple Planning',
-    title: 'Temple Planning',
+    title: 'Temple Plan',
     subtitle: 'A millennia-old sanctuary, restored to solemnity',
     cards: [
       { title: 'Hall of Doumu Yuanjun', desc: 'The main hall restoration will enshrine the sacred image of Doumu Yuanjun and attendant deities. The six major works include roof renewal, beam and column reinforcement, painted decoration restoration and gilding of the statues, restoring Doumu’s golden image to majesty and serenity to the sanctuary.' },
       { title: 'Statue Restoration', desc: 'The sacred image of Doumu Yuanjun is hand-carved by a master traditional woodcarver from Fujian, using premium nanmu wood. Standing about 3.6 meters tall, it has four faces and eight arms holding the sun, moon, a seal, bow, arrows and ritual implements. Twelve accompanying statues will also be restored.' },
       { title: 'Mural Gallery', desc: 'The treasured Ming-dynasty Taoist murals stretch about 36 meters, depicting the Taoist pantheon and the ten directions. Restoration includes surface cleaning, color consolidation, repainting of missing areas and moisture-proofing.' },
       { title: 'Garden Landscape', desc: 'Designed in traditional Taoist garden style, the plan includes a clear-water pond, a zigzag bridge, a taiji plaza, seasonal planting and a stele corridor. The taiji plaza accommodates 300 people for outdoor Taoist gatherings.' },
+    ],
+  },
+  // Homepage introduction to ShiFang Hall.
+  sxbBox: {
+    title: 'A Tile of Goodwill, Hearts Gather from Every Direction',
+    paragraphs: [
+      'ShiFang Hall is a Taoist religious venue and religious nonprofit organization legally registered in the United States, recognized by the IRS as tax-exempt under Section 501 (c)(3). Guided by our founding belief—“People come from every direction, gather in every direction, and build a Taoist sanctuary together”—we are rooted in a place for spiritual practice, carrying forward Taoist faith and safeguarding Chinese Taoist heritage.',
+      'Taoism carries millennia of Chinese philosophy, wellness wisdom, and spiritual heritage. At the sanctuary, priests follow ritual practice, recite scripture, and teach the Tao. We are also building a digital platform so this wisdom can cross oceans, bringing people around the world a place to settle the heart and find direction. We work to translate the classics, restore temples, digitize ancient books, and preserve intangible heritage—bridging East and West and sharing a culture of harmony.',
+      'While construction of the ShiFang Hall sanctuary continues, we invite devotees and friends to offer support. You can help build the temple, sponsor a peace lamp, or make an offering to the community, planting good causes and nurturing blessings. With a sincere thought, may wisdom and good fortune grow together, and may every supporter enjoy peace of body and mind, harmony at home, and steady progress. When the halls are complete, lamps will shine here for generations, spreading auspicious light and benefiting all.',
+      'When culture flourishes, its heritage lives on. May our shared devotion bring the sanctuary to completion, so we can safeguard the Taoist tradition together and share in its peace.',
+    ],
+    cta: 'Offer Support, Build ShiFang Together',
+  },
+  // The homepage section presenting the four Taoist admonitions.
+  admonitions: {
+    en: 'Taoist Principles',
+    title: 'Four Taoist Admonitions',
+    subtitle: 'Gather from all directions to safeguard a thousand-year Taoist lineage',
+    items: [
+      { title: 'Guiding Principles', desc: 'Follow the balance of yin and yang within the Taiji, and uphold the Taoist tradition of serving the world. Revere the Tao and the deities; through lamps, candles, incense and offerings, carry the sincere devotion of believers and spread a pure, compassionate path that benefits all.' },
+      { title: 'A Temple for All', desc: 'Embrace the creative power of yin and yang, spread auspicious light and benefit the ten directions. Through ritual offerings, receive the prayers of all people, share traditional Chinese Taoist culture, and pray for peace and blessings everywhere.' },
+      { title: 'Harmony and Care', desc: 'Draw on the Taiji ideal of preserving harmony, where yin and yang complement one another and all things flourish. With compassion and shared care, respect cultural differences, encourage coexistence, and connect the ten directions through a peaceful spirit.' },
+      { title: 'The Way Connects All', desc: 'The Great Tao knows no borders, and yin and yang are inherently connected. Rooted in Chinese Taoist heritage, we establish a temple and share the Tao in North America, building a bridge for cultural exchange between China and the United States and blessings for all.' },
     ],
   },
   // 使命、愿景与核心价值。
@@ -127,7 +150,7 @@ export default {
     title: 'Seasonal Guide',
     subtitle: 'Honor heaven and follow the seasons · Prevention is better than cure',
     items: [
-      { char: 'Chen', title: '2026 · Bingwu Year', desc: 'The Year of the Horse is a year of Tai Sui. Those born under the Horse meet Tai Sui directly; those born under the Rat clash with it. We suggest offering a Tai Sui Peace Lamp early in the year to resolve conflicts and pass the year in peace.', action: 'Learn How to Resolve' },
+      { char: 'Wu', title: '2026 · Bingwu Year', desc: 'The Year of the Horse is a year of Tai Sui. Those born under the Horse meet Tai Sui directly; those born under the Rat clash with it. We suggest offering a Tai Sui Peace Lamp early in the year to resolve conflicts and pass the year in peace.', action: 'Learn How to Resolve' },
       { char: 'Summer', title: 'Midsummer · Cooling the Heart', desc: 'In high summer, heart fire is strong. Keep the mind calm and desires few, avoid heat and seek coolness, eat light fruits and vegetables, and avoid greasy and spicy food. Sit in meditation at noon, walk in the cool of evening. Follow the seasons and pass the summer safely.', action: 'Summer Wellness' },
       { char: 'Exams', title: 'Exam Season · Wenchang', desc: 'The turn from spring to summer is the critical period for entrance and civil service examinations. Offering a Wenchang Wisdom Lamp brings wishes for success in the exams and a smooth career.', action: 'Light the Wenchang Lamp' },
       { char: 'Fortune', title: 'Yearly Fortune', desc: 'Learn your zodiac fortune for this year and plan ahead. Those who offend, clash with or are punished by Tai Sui should resolve it as early as possible.', action: 'View Your Fortune' },
@@ -178,9 +201,28 @@ export default {
     ],
   },
   // 机构发展时间轴。
+  homeActivity: {
+    en: 'Latest News',
+    title: 'Latest News',
+    subtitle: 'Voices and blessings from all walks of life',
+    tabs: {
+      news: 'Hall Updates',
+      testimonials: 'Devotee Stories',
+      messages: 'Community Voices',
+    },
+    badges: {
+      news: 'Updates',
+      testimonials: 'Stories',
+      messages: 'Voices',
+    },
+    more: 'View more',
+    loading: 'Loading latest content…',
+    empty: 'No content yet',
+    openDetail: 'Open: {title}',
+  },
   milestones: {
     en: 'Milestones',
-    title: 'Milestones',
+    title: 'Temple Thrives, Culture Endures',
     subtitle: 'The journey of ShiFang Hall',
     items: [
       { year: '2025', title: 'ShiFang Hall Platform Founded', desc: 'Initiated by people dedicated to the transmission of Taoist culture, with a mission to digitally preserve temple heritage and launch the Cloud Co-Build system.' },
@@ -194,11 +236,11 @@ export default {
     logo: 'ShiFang Hall',
     slogan: 'Gathering from all directions to build a spiritual homeland for Chinese worldwide',
     exploreTitle: 'Explore',
-    explore: ['Cultural Origins', 'Deity Encyclopedia', 'Worship Etiquette', 'Blessings', 'Taoist Gatherings'],
+    explore: ['Cultural Origins', 'Sacred Statue Guide', 'Worship Etiquette', 'Blessings', 'Taoist Gatherings'],
     joinTitle: 'Participate',
     join: ['Become a Guardian', 'Cloud Co-Creation'],
     aboutTitle: 'About',
-    about: ['About Us', 'Temple Planning', 'Mission & Vision', 'Organization', 'Latest News', 'Milestones'],
+    about: ['About Us', 'Temple Planning', 'Mission & Vision', 'Four Taoist Admonitions', 'Latest News', 'Milestones'],
     android: 'Android',
     ios: 'iOS',
     wechat: 'WeChat Support',

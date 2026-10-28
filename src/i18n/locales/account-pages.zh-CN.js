@@ -120,7 +120,7 @@ export default {
     previous: '上一页',
     next: '下一页',
     pageInfo: '第 {current} / {total} 页',
-    money: '捐钱 · 随心功德',
+    money: '共建十方',
     goods: '捐物 · 以钱购供',
     total: '共 {count} 条',
     showExamples: '显示示例记录',

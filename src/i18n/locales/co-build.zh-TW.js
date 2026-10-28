@@ -2,7 +2,15 @@
 export default {
   backToTop: '返回頂部',
   cta: '隨心善捐 · 廣積功德',
-  hero: { eyebrow: 'Global Guardians', title: '十方善捐 · 功德福澤', subtitle: '您的每一分善舉，皆有福澤相隨', quote: '「諸惡莫作，眾善奉行；積功累行，自然成真」', quoteSource: '——《太上感應篇》· 道藏太清部' },
+  hero: {
+    eyebrow: 'Global Guardians', title: '十方善捐 · 功德福澤', subtitle: '您的每一分善舉，皆有福澤相隨',
+    introduction: [
+      '十方殿，取大道普惠十方之意，是一處傳承中華道教文化，廣結十方善緣的道教綜合性宮觀。如今十方殿尚在籌建之中，誠邀十方道友，善友同心護持，共襄建觀善舉。',
+      '建殿的一磚一瓦，都是一份善緣；心中一念善願，都能共築這座宮觀。您可選擇助力殿堂建設，也可選擇供燈、聖像專門供奉等祈福方式隨心發心，金額不限，隨喜自願。',
+      '凡是誠心護持的善友，種下善因、厚積善緣，十方殿皆願您內心安寧，家人和睦，事業、財運、智慧增長。',
+      '期待十方善緣相聚，助力殿堂早日落成，同守善念，共得安寧。',
+    ],
+  },
   project: {
     eyebrow: 'FUNDRAISING GOAL', heading: '籌款目標', title: '斗姆元君大殿', total: '$ 12,680,000', description: '建築修繕 · 重現千年莊嚴', progressLabel: '籌款進度', raisedLabel: '已籌集', raised: '$8,624,300', targetStatLabel: '籌款目標', completedStatLabel: '已籌金額', typeStatLabel: '善捐方式', statRaised: '已收善款', statTarget: '目標金額', statDonors: '善捐人次', empty: '暫無籌款項目',
     stats: [{ label: '已籌集善款', value: '$8,624,300' }, { label: '已使用善款', value: '$2,624,300' }, { label: '善捐人次', value: '14,300' }],

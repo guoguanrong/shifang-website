@@ -64,6 +64,7 @@ const featured = computed(() => {
   const deity = tm('deities.featured')
   return { ...deity, worship: getWorshipForDeity(deity.id) }
 })
+// 卡片顺序与设计稿一致，由语言包 cards 数组顺序决定（切换语言保持同序）。
 const deities = computed(() => tm('deities.cards').map((deity) => ({
   ...deity,
   worship: getWorshipForDeity(deity.id),

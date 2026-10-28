@@ -50,6 +50,7 @@ const deityNames = {
   leizun: '九天应元雷声普化天尊',
   fanli: '文财神范蠡',
   tudigong: '福德正神',
+  foxian: '狐仙',
 }
 
 function getLampRouteId(light) {

@@ -25,7 +25,7 @@
             <p>{{ t('donation.dialog.recorded') }}</p>
           </template>
           <p class="completed-blessing">{{ t('offerings.completedBlessing') }}！</p>
-          <CeremonialButton :label="t(pending.flow === 'offering' ? 'offerings.completedBlessing' : 'donation.dialog.acknowledge')" @click="dialog.close()" />
+          <CeremonialButton :label="t(pending.flow !== 'offering' ? 'donation.dialog.acknowledge' : pending.kind === 'deity' ? 'offerings.completedBlessingDeity' : 'offerings.completedBlessingLamp')" @click="dialog.close()" />
         </div>
         <div v-else class="offering-completed" role="alert">
           <p>{{ message || t('offerings.paymentFailed') }}</p>

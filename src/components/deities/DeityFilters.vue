@@ -24,7 +24,7 @@ defineEmits(['update:modelValue'])
 const { t, tm } = useI18n()
 
 // value 使用稳定业务键，切换语言不会破坏当前筛选状态。
-const filterValues = ['all', 'career', 'study', 'peace', 'wealth', 'health']
+const filterValues = ['all', 'wealth', 'career', 'health', 'study', 'peace']
 const filters = computed(() => {
   const labels = tm('deities.filters')
   return filterValues.map((value, index) => ({ value, label: labels[index] }))

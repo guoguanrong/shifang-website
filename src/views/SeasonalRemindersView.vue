@@ -8,9 +8,8 @@
       <p>{{ t('blessingDetails.seasonal.intro') }}</p>
     </section>
     <section class="seasonal-principles">
-      <OrnateSectionHeading :art="heading" :title="t('blessingDetails.seasonal.seasonsTitle')" />
+      <!-- <OrnateSectionHeading :art="heading" :title="t('blessingDetails.seasonal.seasonsTitle')" /> -->
       <div class="seasonal-card-grid">
-        <!-- 卡片由底图、渐隐层与描边三层叠加出纸质效果。 -->
         <article v-for="(season, index) in tm('blessingDetails.seasonal.seasons')" :key="season.title"
           class="seasonal-card">
           <img class="seasonal-card-image" :src="images[index]" alt="" aria-hidden="true" />

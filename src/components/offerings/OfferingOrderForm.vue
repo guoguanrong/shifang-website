@@ -13,9 +13,13 @@
         class="birth-input" :max="today" /></label>
     <label>{{ t('offerings.wish') }}<textarea v-model="wish" name="wish" rows="3" maxlength="300"
         :placeholder="t('offerings.wishPlaceholder')" /></label>
+    <!-- 邮箱选填：用于向善信发送供奉回执，非空时由浏览器校验格式。 -->
+    <label>{{ t('offerings.email') }}<input v-model.trim="email" name="email" type="email" maxlength="254"
+        autocomplete="email" :placeholder="t('offerings.emailPlaceholder')" /></label>
     <div class="order-submit">
       <CeremonialButton type="submit"
-        :label="submitLabel || t(kind === 'lamp' ? 'offerings.submitLamp' : 'offerings.submitDeity')" />
+        :label="submitLabel || t(kind === 'lamp' ? 'offerings.submitLamp' : 'offerings.submitDeity')"
+        :disabled="submitDisabled" />
     </div>
     <p v-if="kind === 'deity'" class="order-explanation centered">{{ t('offerings.deityPromise') }}</p>
   </form>
@@ -24,7 +28,7 @@
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import CeremonialButton from '@/components/common/CeremonialButton.vue'
-const props = defineProps({ kind: { type: String, default: 'lamp' }, amount: Number, period: String, compact: Boolean, hideTotal: Boolean, submitLabel: String, initialDetails: { type: Object, default: () => ({}) } })
+const props = defineProps({ kind: { type: String, default: 'lamp' }, amount: Number, period: String, compact: Boolean, hideTotal: Boolean, submitLabel: String, submitDisabled: Boolean, initialDetails: { type: Object, default: () => ({}) } })
 // kind 为 lamp 或 deity；compact / hideTotal 用于详情页里的精简展示。
 const emit = defineEmits(['submit'])
 const { t } = useI18n()
@@ -32,6 +36,7 @@ const { t } = useI18n()
 const name = ref(props.initialDetails.name || '')
 const birth = ref(props.initialDetails.birth || '')
 const wish = ref(props.initialDetails.wish || '')
+const email = ref(props.initialDetails.email || '')
 // 今天，作为生辰输入框的 max。
 const now = new Date()
 const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
@@ -43,6 +48,6 @@ function submit(event) {
     input.addEventListener('input', () => input.setCustomValidity(''), { once: true })
     return
   }
-  emit('submit', { name: name.value.trim(), birth: birth.value, wish: wish.value.trim() })
+  emit('submit', { name: name.value.trim(), birth: birth.value, wish: wish.value.trim(), email: email.value.trim() })
 }
 </script>

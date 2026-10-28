@@ -109,8 +109,9 @@ const setLocale = (locale) => setAppLocale(locale)
 
 }
 
-@media (max-width:1100px) {
+@media (max-width:1239px) {
   .blessings-stage {
+    display: flow-root;
     height: auto;
     padding-bottom: 70px;
     background-size: auto 1120px;

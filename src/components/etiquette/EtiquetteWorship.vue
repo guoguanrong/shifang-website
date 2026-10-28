@@ -53,7 +53,6 @@
         </article>
       </div>
 
-      <EtiquetteTip class="ceremony-tip" :text="ceremony.tip" />
     </section>
 
     <!-- 礼成后退步离殿，对应设计稿第三个横向主卡片。 -->
@@ -218,7 +217,7 @@ const stageImages = [bowHands, bowGuide, null, finishHands]
   position: relative;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 500px));
-  gap: 278px 120px;
+  gap: 50px 120px;
   margin: 60px 57px 221px 63px;
   align-items: start;
 }
@@ -400,7 +399,7 @@ const stageImages = [bowHands, bowGuide, null, finishHands]
 
 @media (max-width: 1279px) {
   .ceremony-grid {
-    gap: 140px 5%;
+    gap: 50px 5%;
     margin-inline: 4%;
   }
 

@@ -96,7 +96,7 @@ export default {
       },
     ],
   },
-  storyTitle: 'Origins & Legends',
+  storyTitle: 'Divine Origins',
   story: [
     'Tradition relates that, before heaven and earth separated, primordial qi took form as Marici, identified with the original manifestation of Doumu. Her four faces symbolize the four seasons, while her eight arms hold the sun, moon, seal, bow, arrows and other ritual implements.',
     'The Scripture of the Origin of the Northern Dipper tells of Doumu bathing in a sacred pool, where nine golden lotuses appeared. As they blossomed, nine sons were born: Emperor Ziwei, the Heavenly Emperor and the Seven Stars of the Northern Dipper. Together they are known as the Nine Emperors, and Doumu is honored as the Mother of the Stars.',

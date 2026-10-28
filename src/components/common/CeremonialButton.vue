@@ -1,6 +1,7 @@
 <template>
   <!-- 仪式感按钮：金边与两端纹样由 CSS 生成，文案放在 span 内以保证层级正确。传入 to 时改为路由链接。 -->
-  <component :is="to ? RouterLink : 'button'" class="ceremonial-button" :to="to || undefined" :type="to ? undefined : 'button'"><span>{{ label }}</span></component>
+  <component :is="to ? RouterLink : 'button'" class="ceremonial-button" :to="to || undefined"
+    :type="to ? undefined : type" :disabled="to ? undefined : disabled"><span>{{ label }}</span></component>
 </template>
 
 <script setup>
@@ -9,6 +10,8 @@ import { RouterLink } from 'vue-router'
 defineProps({
   label: { type: String, required: true },
   to: { type: [String, Object], default: undefined },
+  type: { type: String, default: 'button' },
+  disabled: { type: Boolean, default: false },
 })
 </script>
 
@@ -20,4 +23,6 @@ defineProps({
 .ceremonial-button span { position:relative; z-index:1; }
 .ceremonial-button:hover { filter:brightness(1.08); transform:translateY(-2px); }
 .ceremonial-button:focus-visible { outline:2px solid #1d4e6e; outline-offset:3px; }
+.ceremonial-button:disabled { cursor:not-allowed; filter:grayscale(.25); opacity:.58; transform:none; }
+.ceremonial-button:disabled:hover { filter:grayscale(.25); transform:none; }
 </style>

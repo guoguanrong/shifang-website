@@ -6,7 +6,7 @@
 
     <!-- 首页主体内容按设计稿顺序组合，各组件内部维护自己的展示数据。 -->
     <HomeAboutMission />
-    <!-- 资金监管与时令指引在设计稿中共用一张连续的 1440×1792 舞台背景。 -->
+    <!-- 首页玄门理念区与社区内容共用一张连续的舞台背景。 -->
     <div class="governance-community-stage">
       <img
         class="governance-community-stage__background"
@@ -56,8 +56,8 @@ defineExpose({ scrollToModule: scrollToSection })
 }
 
 /*
- * 背景从组织架构之后开始，完整覆盖资金监管（949px）与时令指引（843px）。
- * 使用独立图片层可以在不改变两个子组件布局的前提下保持纹理连续。
+ * 背景从新版玄门理念区之后开始，连续铺到首页社区内容。
+ * 使用独立图片层可以在不改变子组件布局的前提下保持纹理连续。
  */
 .governance-community-stage {
   position: relative;
@@ -67,7 +67,7 @@ defineExpose({ scrollToModule: scrollToSection })
 .governance-community-stage__background {
   position: absolute;
   z-index: 0;
-  top: 852px;
+  top: 1090px;
   left: 50%;
   width: 100%;
   min-width: 1440px;
