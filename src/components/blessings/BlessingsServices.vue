@@ -37,12 +37,13 @@ import cardUnion from '@/assets/blessings/services-v2/card-union.png'
 import cardOrnament from '@/assets/blessings/services-v2/card-ornament.svg'
 import lamp from '@/assets/blessings/services-v2/lamp.png'
 import talisman from '@/assets/blessings/services-v2/talisman.png'
+import talisman2 from '@/assets/blessings/services-v2/talisman2.png'
 import calendar from '@/assets/blessings/services-v2/calendar.png'
 import buttonShadow from '@/assets/blessings/services-v2/button-shadow.svg'
 import buttonDot from '@/assets/blessings/services-v2/button-dots.svg'
 
-const icons = [lamp, talisman, talisman, calendar]
-const iconTypes = ['lamp', 'talisman', 'talisman', 'calendar']
+const icons = [lamp, talisman2, talisman, calendar]
+const iconTypes = ['lamp', 'talisman2', 'talisman', 'calendar']
 const serviceRoutes = ['lamp-offerings', 'deities', 'digital-talisman', 'seasonal-reminders']
 const { t, tm } = useI18n()
 
@@ -130,6 +131,21 @@ const items = computed(() => tm('blessings.services').map((item, index) => ({
   height: auto;
   aspect-ratio: 216 / 131;
   transform: translate(-50%, -50%);
+}
+
+/* 神像供奉图标：原图 200×132，和其他图标尺寸不同，单独按原比例居中。 */
+.service-card__icon--talisman2 .service-card__icon-window {
+  top: 50%;
+  width: 200px;
+  height: 132px;
+  transform: translate(-50%, -50%);
+}
+
+.service-card__icon--talisman2 img {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .service-card__icon-window img {
