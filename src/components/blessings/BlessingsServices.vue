@@ -133,7 +133,7 @@ const items = computed(() => tm('blessings.services').map((item, index) => ({
   transform: translate(-50%, -50%);
 }
 
-/* 神像供奉图标：原图 200×132，和其他图标尺寸不同，单独按原比例居中。 */
+/* 神像供奉图标：新图 456×396（比例与原 200×132 不同），按原比例完整居中显示。 */
 .service-card__icon--talisman2 .service-card__icon-window {
   top: 50%;
   width: 200px;
@@ -146,6 +146,7 @@ const items = computed(() => tm('blessings.services').map((item, index) => ({
   left: 0;
   width: 100%;
   height: 100%;
+  object-fit: contain;
 }
 
 .service-card__icon-window img {

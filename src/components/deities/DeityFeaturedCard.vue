@@ -47,7 +47,7 @@
 <script setup>
 import { RouterLink } from 'vue-router'
 // 装饰资源与内容数据分离：资源固定还原视觉，deity 数据可随语言响应式切换。
-import featuredDeity from '@/assets/deities/featured-deity.png'
+import featuredDeity from '@/assets/deities/featured-deity.webp'
 import featuredFrame from '@/assets/deities/featured-frame.svg'
 import featuredImageBorder from '@/assets/deities/featured-deity.svg'
 import featuredOutline from '@/assets/deities/featured-outline.svg'
