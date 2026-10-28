@@ -1,7 +1,6 @@
 <template>
   <article class="featured-card">
     <!-- 三层 SVG 分别还原 Figma 的投影、纸张底板与描边，避免缩放后边缘失真。 -->
-    <img class="featured-shadow" :src="featuredShadow" alt="" aria-hidden="true" />
     <img class="featured-background" :src="featuredFrame" alt="" aria-hidden="true" />
     <img class="featured-outline" :src="featuredOutline" alt="" aria-hidden="true" />
 
@@ -158,7 +157,6 @@ defineProps({
   .featured-card:hover .featured-outline { opacity: .72; }
   .featured-card:hover .deity-photo { transform: scale(1.045); }
   .featured-card:hover .image-border { transform: scale(1.015); }
-  .featured-card:hover .featured-content h2 { color: #a51c1c; }
 }
 
 @media (max-width: 1439px) {

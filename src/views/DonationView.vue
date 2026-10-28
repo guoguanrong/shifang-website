@@ -5,13 +5,6 @@
     <article class="donation-paper offering-paper">
       <section class="donation-types">
         <OrnateSectionHeading :art="headingArt" :title="t('donation.chooseType')" />
-        <div v-if="targetOptions.length" class="donation-target-select">
-          <label for="donation-target">{{ t('donation.targetLabel') }}</label>
-          <select id="donation-target" :value="selectedTarget?.id || ''" @change="setTarget($event.target.value)">
-            <option v-for="target in targetOptions" :key="target.id" :value="target.id">{{ target.title }}</option>
-          </select>
-        </div>
-        <p v-else class="donation-target-empty" role="status">{{ t('donation.noTargets') }}</p>
         <!-- 类型切换实现为 tablist：支持左右方向键与 Home/End 切换，并同步移动焦点。 -->
         <div class="donation-tabs" role="tablist" :aria-label="t('donation.chooseType')">
           <button v-for="(type, index) in types" :id="`donation-tab-${type}`" :key="type" type="button" role="tab"
@@ -220,11 +213,6 @@ async function setMode(type) {
   await router.replace({ query })
   // 切换类型后显式重拉物品：捐物 tab 必须发起 type=2 的物品请求，不依赖 watch 时序。
   loadShopItems()
-}
-
-function setTarget(id) {
-  itemIndex.value = 0
-  return router.replace({ query: { ...route.query, targetId: String(id) } })
 }
 
 // 提交前依次校验：自填金额是否合法、非匿名时是否填写姓名、表单其余字段是否通过。

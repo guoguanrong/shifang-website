@@ -38,15 +38,15 @@ const cards = computed(() => tm('blessings.tests')
   z-index: 2;
   top: 852px;
   left: 50%;
-  width: 1238px;
+  width: 1240px;
   transform: translateX(-50%);
 }
 
 .test-grid {
   display: grid;
-  grid-template-columns: repeat(3, 290px);
+  grid-template-columns: repeat(3, 400px);
   justify-content: center;
-  gap: 26px;
+  gap: 20px;
   margin-top: -16px;
 }
 
@@ -54,41 +54,42 @@ const cards = computed(() => tm('blessings.tests')
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 360px;
-  padding: 38px 16px 0;
+  width: 400px;
+  height: 518px;
+  padding: 50px 24px 0;
   text-align: center;
-  background: url('@/assets/blessings/test-card.webp') center/290px 360px no-repeat;
+  background: url('@/assets/blessings/test-card-v2.webp') center/400px 518px no-repeat;
   transition: transform .25s ease, filter .25s ease;
 }
 
 .test-card img {
   width: auto;
-  height: 97px;
+  height: 132px;
   object-fit: contain;
   transition: transform .25s ease;
 }
 
 .test-card h3 {
-  margin: 22px 0 11px;
+  margin: 28px 0 14px;
   color: #050505;
-  font: 28px/1.15 var(--font-calligraphy);
+  font: 32px/1.15 var(--font-calligraphy);
   white-space: nowrap;
 }
 
 .test-card p {
   display: flex;
   flex-direction: column;
-  min-height: 69px;
+  min-height: 88px;
   margin: 0;
   color: #333;
-  font: 16px/20px var(--font-calligraphy);
+  font: 16px/22px var(--font-calligraphy);
   letter-spacing: .5px;
 }
 
 .test-card :deep(.ceremonial-button) {
   min-width: 158px;
   margin-top: auto;
-  margin-bottom: 37px;
+  margin-bottom: 52px;
 }
 
 /* 悬停整卡上浮并投影、图标轻抬放大，与 BlessingsServices 卡片保持同一套手感。 */
@@ -118,26 +119,26 @@ const cards = computed(() => tm('blessings.tests')
    注意 :global() 必须把整条选择器包进去：写成 :global(前缀) 后代 时，Vite 会把后代部分丢掉。 */
 :global(html[data-locale-layout='international'] .test-card h3) {
   display: grid;
-  min-height: 40px;
-  margin: 14px 0 8px;
+  min-height: 48px;
+  margin: 22px 0 12px;
   place-items: center;
-  font-size: 20px;
+  font-size: 22px;
   overflow-wrap: break-word;
   white-space: normal;
 }
 
 :global(html[data-locale-layout='international'] .test-card p) {
   font-size: 15px;
-  line-height: 17px;
+  line-height: 19px;
 }
 
 /* 正文换成英文后会多出一到两行，收紧纵向间距，保证按钮仍落在卡片边框内。 */
 :global(html[data-locale-layout='international'] .test-card) {
-  padding-top: 24px;
+  padding-top: 40px;
 }
 
 :global(html[data-locale-layout='international'] .test-card .ceremonial-button) {
-  margin-bottom: 28px;
+  margin-bottom: 44px;
 }
 
 @media (max-width:1239px) {
@@ -151,8 +152,14 @@ const cards = computed(() => tm('blessings.tests')
   }
 
   .test-grid {
-    grid-template-columns: repeat(2, 290px);
+    grid-template-columns: repeat(2, 400px);
     justify-content: center;
+  }
+}
+
+@media (max-width:880px) {
+  .test-grid {
+    grid-template-columns: 400px;
   }
 }
 
@@ -162,8 +169,43 @@ const cards = computed(() => tm('blessings.tests')
   }
 
   .test-grid {
-    grid-template-columns: 290px;
+    grid-template-columns: 400px;
     justify-content: center;
+  }
+}
+
+/* 小屏等比缩小整张卡片，避免 400px 固定宽度在手机上横向溢出。 */
+@media (max-width:460px) {
+  .test-grid {
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+  }
+
+  .test-card {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 400 / 518;
+    padding: 34px 16px 0;
+    background-size: 100% 100%;
+  }
+
+  .test-card img {
+    height: 104px;
+  }
+
+  .test-card h3 {
+    margin: 18px 0 10px;
+    font-size: 24px;
+  }
+
+  .test-card p {
+    min-height: 60px;
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  .test-card :deep(.ceremonial-button) {
+    margin-bottom: 28px;
   }
 }
 </style>

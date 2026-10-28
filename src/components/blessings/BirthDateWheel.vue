@@ -1,8 +1,8 @@
 <template>
-  <!-- 生辰滚轮：三行窗口的自绘列表，选中项恒居中间行并高亮，点击行即切换取值。 -->
-  <div class="birth-wheel test-art-card">
+  <!-- 生辰滚轮：三行窗口的自绘列表，选中项恒居中间行并高亮，点击行或滚动鼠标滚轮切换取值。 -->
+  <div ref="wheelRef" class="birth-wheel test-art-card">
     <span class="birth-wheel-label">{{ label }}</span>
-    <ul :id="id" class="birth-wheel-list" role="listbox" :aria-label="label" @wheel="handleWheel">
+    <ul :id="id" class="birth-wheel-list" role="listbox" :aria-label="label">
       <li v-for="(row, index) in windowRows" :key="index" class="birth-wheel-row">
         <button v-if="row.option" type="button" role="option" :aria-selected="row.active ? 'true' : 'false'"
           :class="{ 'is-active': row.active }" @click="$emit('update:modelValue', row.option.value)">
@@ -14,7 +14,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 
 // options 形如 [{ value, label }]；配合 update:modelValue 即可支持 v-model。
 const props = defineProps({
@@ -37,22 +37,37 @@ const windowRows = computed(() => {
   }))
 })
 
-// 鼠标滚轮切换选项：向上滚 = 上一项，向下滚 = 下一项；
-// 短间隔节流，避免一次滚动触发多次 wheel 跳过多项。
+// 鼠标滚轮切换选项：在整个生辰卡片上监听（含标题与内边距区域），
+// 向上滚 = 上一项，向下滚 = 下一项；到边界时放行页面滚动。
 let wheelCooldown = 0
+const wheelRef = ref(null)
 
 function handleWheel(event) {
-  event.preventDefault()
-  const now = Date.now()
-  if (now - wheelCooldown < 120) return
+  if (!event.deltaY) return
 
   const list = props.options
   const selected = list.findIndex(item => String(item.value) === String(props.modelValue))
   const center = selected < 0 ? 0 : selected
   const next = center + (event.deltaY > 0 ? 1 : -1)
+  // 已在首/尾时不再拦截滚轮，保留页面正常滚动。
   if (next < 0 || next >= list.length) return
 
+  // 阻止页面跟随滚动，避免选择的同时整页上下移动。
+  event.preventDefault()
+
+  // 短间隔节流，避免一次滚动触发多次 wheel 跳过多项。
+  const now = Date.now()
+  if (now - wheelCooldown < 120) return
   wheelCooldown = now
   emit('update:modelValue', list[next].value)
 }
+
+onMounted(() => {
+  // 显式声明 passive: false，保证 preventDefault 生效（部分浏览器对 wheel 默认被动）。
+  wheelRef.value?.addEventListener('wheel', handleWheel, { passive: false })
+})
+
+onBeforeUnmount(() => {
+  wheelRef.value?.removeEventListener('wheel', handleWheel)
+})
 </script>

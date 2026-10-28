@@ -35,7 +35,7 @@ const setLocale = (locale) => setAppLocale(locale)
   position: relative;
   width: 100%;
   max-width: 1440px;
-  height: 1585px;
+  height: 1743px;
   margin-inline: auto;
   background: #f8f5ed;
 }
@@ -43,7 +43,7 @@ const setLocale = (locale) => setAppLocale(locale)
 .blessing-quote {
   position: absolute;
   z-index: 2;
-  top: 1394px;
+  top: 1552px;
   left: 50%;
   width: 663px;
   height: 140px;

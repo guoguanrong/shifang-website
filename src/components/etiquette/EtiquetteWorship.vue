@@ -247,9 +247,10 @@ const stageImages = [bowHands, bowGuide, null, finishHands]
   flex: 0 0 48px;
   height: 48px;
   place-items: center;
-  color: #cc3513;
+  color: #000;
   font-family: var(--font-calligraphy);
-  font-size: 38px;
+  font-size: 28px;
+  line-height: 1;
   background: url('@/assets/etiquette/worship/number.svg') center / contain no-repeat;
 }
 
@@ -505,7 +506,7 @@ const stageImages = [bowHands, bowGuide, null, finishHands]
   .ceremony-stage header span {
     flex-basis: 40px;
     height: 40px;
-    font-size: 30px;
+    font-size: 24px;
   }
 
   .stage-description {

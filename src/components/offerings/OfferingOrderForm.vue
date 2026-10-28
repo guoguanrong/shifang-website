@@ -1,7 +1,7 @@
 <template>
   <!-- 供奉/点灯下单表单：kind 决定说明文案，点灯还需额外收集生辰。 -->
   <form class="offering-order-form" @submit.prevent="submit">
-    <p v-if="!compact" class="order-explanation">{{ t(kind === 'lamp' ? 'offerings.materialExplanation' :
+    <p v-if="!compact" class="order-explanation centered">{{ t(kind === 'lamp' ? 'offerings.materialExplanation' :
       'offerings.deityExplanation') }}</p>
     <div v-if="!hideTotal" class="offering-total"><span>{{ t('offerings.total') }}</span><strong>${{ amount }}<small
           v-if="period"> / {{
@@ -21,7 +21,6 @@
         :label="submitLabel || t(kind === 'lamp' ? 'offerings.submitLamp' : 'offerings.submitDeity')"
         :disabled="submitDisabled" />
     </div>
-    <p v-if="kind === 'deity'" class="order-explanation centered">{{ t('offerings.deityPromise') }}</p>
   </form>
 </template>
 <script setup>
