@@ -46,7 +46,7 @@
             </div>
             <div class="progress-copy">
               <span>{{ t('coBuild.project.raisedLabel') }} <b>{{ formatMoney(goal.completedAmount) }}</b></span>
-              <span>{{ progressLabel(goal) }}%</span>
+              <!-- <span>{{ progressLabel(goal) }}%</span> -->
             </div>
 
             <dl class="project-stats">
