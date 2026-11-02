@@ -68,6 +68,8 @@ export default {
     setPasswordPlaceholder: '请设置不少于8位字母+数字组合',
     confirmPassword: '确认登录密码',
     confirmPasswordPlaceholder: '请确认登录密码',
+    showPassword: '显示密码',
+    hidePassword: '隐藏密码',
     passwordRuleError: '密码需不少于8位，且同时包含字母与数字。',
     passwordMismatch: '两次输入的密码不一致。',
     agreementPrefix: '登录即表示同意',

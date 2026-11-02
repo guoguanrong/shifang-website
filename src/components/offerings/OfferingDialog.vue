@@ -99,7 +99,7 @@ import emblem from '@/assets/events/section-emblem.svg'
 import confirmEmblem from '@/assets/offerings/confirm-emblem.svg'
 import '@/styles/deity-offering-dialog.css'
 // paymentConfirmed 仅供后续经过服务端核验的支付结果驱动，不能在支付按钮点击时置为 true。
-const props = defineProps({ title: String, amount: Number, period: String, planLabel: String, paymentConfirmed: Boolean, businessId: [Number, String], kind: { type: String, default: 'lamp' }, details: { type: Object, default: null } })
+const props = defineProps({ title: String, amount: Number, period: String, planLabel: String, cycleType: [Number, String], paymentConfirmed: Boolean, businessId: [Number, String], kind: { type: String, default: 'lamp' }, details: { type: Object, default: null } })
 const emit = defineEmits(['close'])
 const { t } = useI18n()
 const titleId = useId()
@@ -173,6 +173,8 @@ async function pay() {
       prayWish: order.value.wish || undefined,
       amount: props.amount,
       number: 1,
+      // 周期类型由父组件换算（点灯：1 一年，2 一月，3 一天），未传入时不提交该字段。
+      cycleType: props.cycleType == null || props.cycleType === '' ? undefined : Number(props.cycleType),
     }, { silent: true })
     const orderNo = orderNumber(created)
     if (!orderNo) throw new Error(t('offerings.paymentFailed'))

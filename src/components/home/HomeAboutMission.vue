@@ -184,7 +184,7 @@ const aboutPatternBackground = `url("${aboutPattern}")`
   left: 100px;
   width: 587px;
   font-family: var(--font-calligraphy);
-  letter-spacing: .8px;
+  letter-spacing: 1px;
 }
 
 .about-copy h3 {
@@ -204,7 +204,7 @@ const aboutPatternBackground = `url("${aboutPattern}")`
   margin: 0;
   color: #333;
   font-size: 16px;
-  line-height: 24px;
+  line-height: 27px;
   text-align: justify;
 }
 

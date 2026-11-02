@@ -95,14 +95,19 @@ onMounted(loadWorshipRecords)
 .deities-page { min-width: 320px; overflow-x: clip; background: #f8f5ed; }
 .deities-catalog { min-height: 3852px; padding-bottom: 61px; background: #f8f5ed; }
 
+/* 卡片流式换行并整体居中；列间距 86.67px = 设计稿 466.67px 栅格位 - 400px 卡片宽， */
+/* 保证与 Figma 相同的列节奏，同时让筛选后不足一行的卡片也居中排列。 */
 .deities-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 466.67px);
-  gap: 50px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
   justify-content: center;
-  width: 1440px;
+  gap: 50px 86.67px;
+  width: min(100%, 1440px);
   margin: 50px auto 0;
 }
+
+.deities-grid > * { flex: 0 0 auto; }
 
 .empty-state { margin: 80px auto 0; color: #8e6e49; font-size: 18px; text-align: center; }
 .deity-list-enter-active, .deity-list-leave-active, .deity-list-move { transition: opacity .25s ease, transform .25s ease; }
@@ -110,19 +115,15 @@ onMounted(loadWorshipRecords)
 
 @media (max-width: 1439px) {
   .deities-catalog { min-height: 0; }
-  .deities-grid { grid-template-columns: repeat(2, 400px); width: min(100%, 840px); }
-}
-
-@media (max-width: 860px) {
-  .deities-grid { grid-template-columns: 400px; width: 400px; }
 }
 
 @media (max-width: 430px) {
   .deities-grid {
-    grid-template-columns: minmax(0, 1fr);
     width: calc(100% - 28px);
     row-gap: 34px;
   }
+
+  .deities-grid > * { flex-basis: 100%; }
 }
 
 :global(html[data-locale-layout='international'] .deities-grid) { row-gap: 50px; }

@@ -27,6 +27,7 @@ export default {
     loginWithCode: 'Sign in with a code', loginWithPassword: 'Sign in with a password',
     forgotPassword: 'Forgot password?', setPassword: 'Set Login Password', setPasswordPlaceholder: 'At least 8 characters with letters and numbers',
     confirmPassword: 'Confirm Password', confirmPasswordPlaceholder: 'Confirm your login password',
+    showPassword: 'Show password', hidePassword: 'Hide password',
     passwordRuleError: 'Password must be at least 8 characters and include both letters and numbers.', passwordMismatch: 'Passwords do not match.', login: 'Sign in', register: 'Create account & sign in',
     agreementPrefix: 'By signing in you agree to our', agreement: 'Privacy Policy',
     policy: {

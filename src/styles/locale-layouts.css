@@ -206,6 +206,7 @@ html[data-locale-layout='international'] .about-copy {
   grid-area: copy;
   width: auto;
   letter-spacing: 0;
+  top: 100px;
 }
 
 html[data-locale-layout='international'] .about-copy h3 {

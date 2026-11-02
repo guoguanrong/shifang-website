@@ -83,10 +83,10 @@ export default {
       meta: ['圣诞：三月廿八', '执掌幽冥'], meritTitle: '寿数绵长 · 阴德庇佑', meritDescription: '适合为长辈祈福延寿、超度先人、求冥福者',
     },
     {
-      id: 'foxian', categories: ['peace'], title: '狐仙', subtitle: '护法正神 · 守护道场',
-      tags: ['护 法', '镇 守', '护 道'],
-      description: '狐仙，为道教神系中的护法正神。它经道门敕封、受戒奉道，以护持正道、守护道场为职，护佑一方清静安宁，而非满足世俗愿望。道教宫观中多设专殿供奉，与道门护法同受香火。',
-      meta: ['由来：受戒奉道', '护法护道'], meritTitle: '护持正法 · 道场安宁', meritDescription: '适合敬奉护法、护持道脉、祈愿道场与家宅安宁者',
+      id: 'foxian', categories: ['peace'], title: '狐仙', subtitle: '护法佑安 · 姻缘和合',
+      tags: ['护 法', '姻 缘', '平 安'],
+      description: '狐仙，在十方殿奉祀传统中尊为护法之神，以护持正道、守护道场、庇佑安宁为职。信众虔诚敬奉，祈愿消灾解厄、家宅平安、良缘美满、家庭和睦，福泽绵长。',
+      meta: ['圣诞：农历三月初一', '护法佑安'], meritTitle: '护佑平安 · 姻缘和合', meritDescription: '适合祈求消灾解厄、家宅安宁、良缘美满、夫妻和睦及诸事顺遂者',
     },
     {
       id: 'sanguan', categories: ['peace', 'health'], title: '三官大帝', subtitle: '天官地官水官 · 赐福赦罪解厄',

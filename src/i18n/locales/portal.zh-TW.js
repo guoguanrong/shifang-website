@@ -27,6 +27,7 @@ export default {
     loginWithCode: '使用驗證碼登入', loginWithPassword: '使用密碼登入',
     forgotPassword: '忘記密碼', setPassword: '設定登入密碼', setPasswordPlaceholder: '請設定不少於8位字母+數字組合',
     confirmPassword: '確認登入密碼', confirmPasswordPlaceholder: '請確認登入密碼',
+    showPassword: '顯示密碼', hidePassword: '隱藏密碼',
     passwordRuleError: '密碼需不少於8位，且同時包含字母與數字。', passwordMismatch: '兩次輸入的密碼不一致。',
     login: '登 入', register: '註冊並登入', agreementPrefix: '登入即表示同意', agreement: '隱私政策',
     policy: {

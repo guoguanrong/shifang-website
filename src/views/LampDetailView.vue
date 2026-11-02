@@ -113,7 +113,7 @@
     </section>
     <OfferingNotices :title="t('lampDetail.noticesTitle')" />
     <OfferingDialog v-if="details" :title="lamp.title" :amount="totalAmount" :period="durationLabel"
-      :business-id="businessId" :details="details" @close="details = null" />
+      :cycle-type="cycleType" :business-id="businessId" :details="details" @close="details = null" />
   </OfferingPageShell>
 </template>
 
@@ -239,6 +239,8 @@ const durationLabel = computed(() => {
   return ['zh-CN', 'zh-TW'].includes(locale.value) ? `${durationCount.value}${unit}` : `${durationCount.value} ${unit}`
 })
 const canSubmitOffering = computed(() => selectedPlan.value !== 'custom' || customAmountValid.value)
+// 下单接口 cycleType：1 一年，2 一月，3 一天；周期口径与 durationLabel 保持一致。
+const cycleType = computed(() => selectedPlan.value === 'monthly' ? 2 : selectedPlan.value === 'yearly' ? 1 : 3)
 
 function formatMoney(amount) {
   return new Intl.NumberFormat(locale.value, { minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(amount)

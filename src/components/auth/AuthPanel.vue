@@ -62,11 +62,29 @@
         <template v-if="resetMode || isRegister">
           <label class="auth-field">
             <span>{{ t('portal.auth.setPassword') }}</span>
-            <input v-model="form.password" type="password" :maxlength="resetMode ? 18 : 64" autocomplete="new-password" :placeholder="t(resetMode ? 'portal.auth.resetPasswordPlaceholder' : 'portal.auth.setPasswordPlaceholder')" />
+            <span class="auth-field__password">
+              <input v-model="form.password" :type="revealed.password ? 'text' : 'password'" :maxlength="resetMode ? 18 : 64" autocomplete="new-password" spellcheck="false" :placeholder="t(resetMode ? 'portal.auth.resetPasswordPlaceholder' : 'portal.auth.setPasswordPlaceholder')" />
+              <button class="auth-field__reveal" type="button" :aria-label="t(revealed.password ? 'portal.auth.hidePassword' : 'portal.auth.showPassword')" :aria-pressed="revealed.password" @click="revealed.password = !revealed.password">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                  <path d="M1.9 12S6.1 5.6 12 5.6 22.1 12 22.1 12 17.9 18.4 12 18.4 1.9 12 1.9 12Z" />
+                  <circle cx="12" cy="12" r="3.1" />
+                  <path v-if="revealed.password" d="M3.6 3.6 20.4 20.4" />
+                </svg>
+              </button>
+            </span>
           </label>
           <label class="auth-field">
             <span>{{ t('portal.auth.confirmPassword') }}</span>
-            <input v-model="form.confirmPassword" type="password" :maxlength="resetMode ? 18 : 64" autocomplete="new-password" :placeholder="t('portal.auth.confirmPasswordPlaceholder')" />
+            <span class="auth-field__password">
+              <input v-model="form.confirmPassword" :type="revealed.confirmPassword ? 'text' : 'password'" :maxlength="resetMode ? 18 : 64" autocomplete="new-password" spellcheck="false" :placeholder="t('portal.auth.confirmPasswordPlaceholder')" />
+              <button class="auth-field__reveal" type="button" :aria-label="t(revealed.confirmPassword ? 'portal.auth.hidePassword' : 'portal.auth.showPassword')" :aria-pressed="revealed.confirmPassword" @click="revealed.confirmPassword = !revealed.confirmPassword">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                  <path d="M1.9 12S6.1 5.6 12 5.6 22.1 12 22.1 12 17.9 18.4 12 18.4 1.9 12 1.9 12Z" />
+                  <circle cx="12" cy="12" r="3.1" />
+                  <path v-if="revealed.confirmPassword" d="M3.6 3.6 20.4 20.4" />
+                </svg>
+              </button>
+            </span>
           </label>
         </template>
         <div v-else class="auth-login-method-group">
@@ -180,6 +198,7 @@ function startReset() {
   loginMethod.value = 'password'
   feedback.value = null
   inlineNotice.value = ''
+  hidePasswords()
 }
 
 function switchLoginMethod() {
@@ -218,6 +237,13 @@ const codeButtonText = computed(() => {
 // 收集所有倒计时计时器，卸载时统一清理，避免内存泄漏。
 const timers = new Set()
 const form = reactive({ email: '', emailCode: '', country: '+86', phone: '', phoneCode: '', password: '', confirmPassword: '' })
+// 密码可见性：小眼睛按钮切换，设置密码与确认密码各自独立。
+const revealed = reactive({ password: false, confirmPassword: false })
+// 表单重新挂载时回到隐藏态，避免切模式后旧密码仍以明文展示。
+function hidePasswords() {
+  revealed.password = false
+  revealed.confirmPassword = false
+}
 // 按设计稿默认中国大陆区号，同时保留原有美国区号选项。
 const countryOptions = [
   { value: '+86', labelKey: 'portal.auth.countryChina' },
@@ -492,6 +518,7 @@ watch(() => props.mode, () => {
   loginMethod.value = 'password'
   feedback.value = null
   inlineNotice.value = ''
+  hidePasswords()
 })
 
 watch(() => `${form.country}${form.phone}`, () => {
@@ -846,6 +873,7 @@ html[data-locale-layout='international'] .auth-panel--reset .auth-tabs { gap: 20
   .auth-panel__submit:hover,
   .auth-field__compound > button:hover:not(:disabled),
   .auth-feedback > button:hover { filter: brightness(1.08); }
+  .auth-field__password > .auth-field__reveal:hover { color: #c93617; }
   .auth-panel__close:hover { color: #b34a28; background: #fff; }
 }
 
@@ -1038,6 +1066,46 @@ html[data-locale-layout='international'] .auth-panel--reset .auth-tabs { gap: 20
   min-width: 0;
   padding-inline: 14px 24px;
 }
+
+/* 密码可见性切换：胶囊输入框不变，小眼睛浮在右端，文字预留出图标宽度。 */
+.auth-field__password {
+  position: relative;
+  display: block;
+}
+
+.auth-field__password > input {
+  display: block;
+  padding-inline-end: 58px;
+}
+
+.auth-field__password > .auth-field__reveal {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  right: 14px;
+  display: grid;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  place-items: center;
+  color: #8a837b;
+  cursor: pointer;
+  background: none;
+  border: 0;
+  border-radius: 50%;
+  transform: translateY(-50%);
+  transition: color .15s ease;
+}
+
+.auth-field__password > .auth-field__reveal svg {
+  display: block;
+  width: 22px;
+  height: 22px;
+}
+
+/* 只给键盘导航留焦点环，避开 Safari 点击后的蓝色光圈。 */
+.auth-field__password > .auth-field__reveal:focus { outline: none; }
+.auth-field__password > .auth-field__reveal:focus-visible { outline: 2px solid #c93617; outline-offset: 3px; }
 
 .auth-login-method-group {
   display: flex;
@@ -1260,6 +1328,9 @@ html[data-locale-layout='international'] .auth-panel__footer { font-size: 18px; 
   .auth-field__phone { grid-template-columns: 118px minmax(0, 1fr); }
   .auth-field__phone select { padding-inline: 12px; font-size: 13px; }
   .auth-field__phone input { padding-inline: 10px; }
+  .auth-field__password > .auth-field__reveal { right: 8px; width: 30px; height: 30px; }
+  .auth-field__password > .auth-field__reveal svg { width: 20px; height: 20px; }
+  .auth-field__password > input { padding-inline-end: 44px; }
   .auth-field__password-control { height: 50px; gap: 8px; padding-inline: 14px; }
   .auth-field__forgot,
   .auth-login-method,

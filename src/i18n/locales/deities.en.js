@@ -68,9 +68,9 @@ export default {
       meta: ['Festival: lunar Mar 28', 'Governor of the underworld'], meritTitle: 'Longevity · Ancestral Blessing', meritDescription: 'For elders’ longevity, remembrance of ancestors, and spiritual peace.',
     },
     {
-      id: 'foxian', categories: ['peace'], title: 'Fox Immortal', subtitle: 'Guardian Deity · Keeper of the Sacred Grounds', tags: ['Guarding', 'Warding', 'Dharma'],
-      description: 'The Fox Immortal is a guardian deity in the Taoist pantheon. Enfeoffed and ordained by the Taoist tradition, she keeps the true path and guards sacred grounds, preserving the peace and purity of a place rather than granting worldly wishes. Many Taoist temples set aside a dedicated hall in her honour, sharing incense with the guardians of the tradition.',
-      meta: ['Origin: Ordained in the Way', 'Guardian of the Dharma'], meritTitle: 'Upholding the Dharma · Peace of the Grounds', meritDescription: 'For those honouring guardians, upholding the lineage, and praying for peace in sacred grounds and at home.',
+      id: 'foxian', categories: ['peace'], title: 'Fox Immortal', subtitle: 'Guardian of Peace · Harmony in Love', tags: ['Guarding', 'Romance', 'Peace'],
+      description: 'In the ShiFang Hall tradition, the Fox Immortal is honoured as a guardian deity who upholds the true path, protects sacred grounds and safeguards peace. Devotees pray for the removal of misfortune, household safety, happy unions and family harmony, receiving lasting blessings.',
+      meta: ['Festival: lunar Mar 1', 'Guardian of Peace'], meritTitle: 'Peace and Protection · Harmony in Love', meritDescription: 'For those praying for the removal of misfortune, household peace, happy unions, marital harmony and the smooth fulfilment of all affairs.',
     },
     {
       id: 'sanguan', categories: ['peace', 'health'], title: 'Three Officials', subtitle: 'Heaven, Earth, and Water · Blessing, Pardon, and Relief', tags: ['Blessing', 'Pardon', 'Relief'],
