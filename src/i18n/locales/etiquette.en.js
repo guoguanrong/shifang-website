@@ -30,7 +30,23 @@ export default {
       title: 'Prostration', slogan: 'Three bows and nine kowtows · Salute with clasped hands', lead: 'The highest Taoist rite combines a standing salute with kneeling prostrations.', tip: 'The left hand encloses the right as the “Ziwu seal,” symbolizing harmony of yin and yang and union with the Tao.',
       stages: [
         { number: 'I', title: 'Standing Salute', desc: 'Stand before the kneeling cushion with feet together. Enclose the right hand with the left and form the Ziwu seal with the thumbs, symbolizing the harmony of yin and yang and union with the Tao.' },
-        { number: 'II', title: 'Three Bows, Nine Kowtows', desc: 'Kneel on both knees. Support yourself with the right hand, place the left hand over it, bow forward and touch your forehead to the back of the left hand three times. Repeat the sequence three times for three bows and nine kowtows.' },
+        {
+          number: 'II', title: 'Three Bows, Nine Kowtows', desc: 'Kneel on both knees. Support yourself with the right hand, place the left hand over it, bow forward and touch your forehead to the back of the left hand three times. Repeat the sequence three times for three bows and nine kowtows.', guide: {
+            title: 'Illustrated Rites',
+            intro: 'China has long been known as a land of propriety. Daoism, rooted in traditional Chinese culture, inherited its rites while giving them a distinct Daoist character. Daoist kneeling worship generally takes two forms: one bow with three kowtows, and three bows with nine kowtows. The former is the everyday form; the latter is reserved for the first and fifteenth days of the lunar month, patriarchs’ birthdays and major Daoist ceremonies. Three bows with nine kowtows simply repeat the one-bow-three-kowtow sequence three times.',
+            lead: 'How to perform one bow with three kowtows:',
+            steps: [
+              { title: 'Step 1', text: 'Stand before the kneeling cushion with your feet in a “V” shape, heels two to three inches apart.' },
+              { title: 'Step 2', text: 'Clasp your hands at eyebrow height, bow forward, lower them to your abdomen, then raise them back to eyebrow height.' },
+              { title: 'Step 3', text: 'Place your left hand over your heart and your right hand on the cushion, then bend forward calmly and kneel (men keep the knees apart, women keep them together).' },
+              { title: 'Step 4', text: 'Move your left hand from your heart and place it over the back of your right hand, forming a cross.' },
+              { title: 'Step 5', text: 'Bow three times, touching your forehead to the backs of your hands, visualizing the deity and praying sincerely.' },
+              { title: 'Step 6', text: 'Raise your head, bring your left hand back to your heart, then rise slowly with the support of your right hand and withdraw it.' },
+              { title: 'Step 7', text: 'Repeat steps two through six twice to complete one bow with three kowtows.' },
+              { title: 'Step 8', text: 'Step back half a pace, make one bow, then turn and salute the temple attendant with clasped hands before leaving.' },
+            ],
+          },
+        },
         { number: 'III', title: 'State Your Prayer', desc: 'While bowing, recite the following silently and in order:', prayer: [
           { title: '1. Invoke the sacred title', text: '“This disciple sincerely bows before [name of deity],” such as Zhao Gongming or Wenchang Dijun.' },
           { title: '2. Identify yourself', text: 'State your name, birth date and full place of residence, and say that you pray sincerely before the deity.' },
