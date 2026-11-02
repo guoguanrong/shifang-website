@@ -1197,6 +1197,41 @@ onBeforeUnmount(() => {
   line-height: 1.35;
 }
 
+/* 英文节日文案比中文长，卡片改由内容撑高、图标缩小、正文收紧，避免文字压到卡片下沿。 */
+.is-international .festival-card {
+  height: auto;
+  min-height: 250px;
+  padding: 46px 24px 20px;
+}
+
+.is-international .festival-card img {
+  width: 52px;
+  height: 52px;
+}
+
+.is-international .festival-card h3 {
+  margin: 8px 0 12px;
+}
+
+.is-international .festival-card p {
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: 0;
+}
+
+/* 英文日期是拉丁短语，竖排侧签既放不下也会被容器裁切，改放卡片左上角的横排小标签。 */
+.is-international .festival-date {
+  top: 14px;
+  left: 14px;
+  width: auto;
+  height: auto;
+  padding: 4px 10px;
+  font-size: 12px;
+  line-height: 1.2;
+  writing-mode: horizontal-tb;
+  border-radius: 6px;
+}
+
 @media (max-width: 1439px) {
 
   .culture-intro,

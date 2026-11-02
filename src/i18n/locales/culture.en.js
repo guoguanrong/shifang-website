@@ -74,7 +74,7 @@ export default {
       { title: 'Laozi’s Birthday', date: '15th day, 2nd month', desc: 'Taoist temples commemorate Laozi with scripture recitation and solemn ceremonies.' },
       { title: 'Zhongyuan Festival', date: '15th day, 7th month', desc: 'A day of remembrance and gratitude, with rites dedicated to ancestors and the departed.' },
       { title: 'Xiayuan Festival', date: '15th day, 10th month', desc: 'Birthday of the Water Official, with ceremonies for relief from hardship and misfortune.' },
-      { title: 'New & Full Moon Practice', date: '1st & 15th monthly', desc: 'On every new and full moon, the community gathers in person and online for prayer and shared practice.' },
+      { title: 'Chongyang Festival', date: '9th day, 9th month', desc: 'The birthday of Doumu Yuangun, mother of the Big Dipper stars. Scripture recitation, lamp, water and fruit offerings seek longevity, blessing and peace for the whole family.' },
     ],
     quote: '“The Tao that can be spoken is not the eternal Tao; the name that can be named is not the eternal name.”', quoteSource: '— Laozi, opening of the Tao Te Ching',
     closing: ['Taoist culture is vast; this is only a glimpse.', 'Follow ShiFang Hall as we continue exploring the wisdom of the Tao.'],
