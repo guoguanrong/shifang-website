@@ -26,7 +26,7 @@ import '@/styles/account-details.css'
 const { t } = useI18n()
 const contacts = [
   { id: 'email', value: 'shifangtemple.info@gmail.com', href: 'mailto:shifangtemple.info@gmail.com', icon: emailIcon },
-  { id: 'phone', value: '+1 (888) 555-0188', href: 'tel:+18885550188', icon: phoneIcon },
+  // { id: 'phone', value: '+1 (888) 555-0188', href: 'tel:+18885550188', icon: phoneIcon },
   { id: 'location', icon: locationIcon },
 ]
 </script>
