@@ -13,6 +13,7 @@ export default {
   completedTitle: "Offering Complete",
   completedThanks: "Thank you for your support!",
   completedDedication: "{name}, your offering to {deity} has been recorded.",
+  completedOrderNo: "Order number: {orderNo}",
   completedService: "The priests will offer incense and prayers as arranged.",
   completedBlessing: "May Boundless Blessings Be Yours",
   completedBlessingLamp: "May Blessings Walk With You",

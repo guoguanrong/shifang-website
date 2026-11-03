@@ -7,11 +7,11 @@
         <div v-for="field in fields" :key="field.id" class="settings-field">
           <label :for="`settings-${field.id}`">{{ t(`accountDetails.settings.${field.id}`) }}</label>
           <input :id="`settings-${field.id}`" v-model="form[field.id]" :name="field.id" :type="field.type"
-            :readonly="field.id !== 'name'"
+            :readonly="field.id !== 'name' && isFieldTaken(field.id)"
             :autocomplete="field.autocomplete" :required="field.id === 'name'" :maxlength="field.maxlength"
             :placeholder="t(`accountDetails.settings.${field.id}Placeholder`)" :aria-invalid="Boolean(errors[field.id])"
             :aria-describedby="errors[field.id] ? `settings-${field.id}-error` : undefined"
-            @click="field.id !== 'name' && $event.target.select()" @input="notice = ''; submitError = ''" />
+            @click="field.id !== 'name' && isFieldTaken(field.id) && $event.target.select()" @input="notice = ''; submitError = ''" />
           <p v-if="errors[field.id]" :id="`settings-${field.id}-error`" class="account-field-error">{{
             t(errors[field.id]) }}</p>
         </div>
@@ -92,6 +92,11 @@ watch(user, value => {
   notice.value = ''
   attempted.value = false
 }, { immediate: true, flush: 'sync' })
+
+// 电话/邮箱以账号原有资料为准：已有内容则锁定只读，没有内容则允许补填。
+function isFieldTaken(id) {
+  return Boolean(user.value?.[id])
+}
 
 async function save() {
   if (saving.value) return

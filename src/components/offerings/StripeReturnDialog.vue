@@ -10,7 +10,7 @@
         <div v-else-if="paid" class="offering-completed" role="status">
           <p>{{ t('offerings.completedThanks') }}</p>
           <p v-if="pending.name && pending.title">{{ t('offerings.completedDedication', { name: pending.name, deity: pending.title }) }}</p>
-          <p v-if="statusText">{{ statusText }}</p>
+          <p v-if="orderNoText">{{ t('offerings.completedOrderNo', { orderNo: orderNoText }) }}</p>
           <p>{{ t('offerings.completedService') }}</p>
           <p class="completed-blessing">{{ t('offerings.completedBlessing') }}！</p>
           <CeremonialButton :label="t(pending.kind === 'deity' ? 'offerings.completedBlessingDeity' : 'offerings.completedBlessingLamp')" @click="dialog.close()" />
@@ -45,7 +45,7 @@ const open = ref(false)
 const checking = ref(false)
 const paid = ref(false)
 const message = ref('')
-const statusText = ref('')
+const orderNoText = ref('')
 const pending = ref({})
 const seen = new Set()
 let previousOverflow = ''
@@ -53,6 +53,11 @@ let previousOverflow = ''
 function sessionIdOf(query) {
   const value = query.session_id || query.sessionId
   return Array.isArray(value) ? value[0] : (value || '')
+}
+
+// 从后端核验文案（如 "Payment successful. Order number: DD..."）中提取订单号，取不到则返回空串。
+function extractOrderNo(text) {
+  return /order\s*(?:no(?:\.?\s*number)?)?\s*[:：]?\s*([A-Za-z0-9_-]+)/i.exec(text)?.[1] || ''
 }
 
 function readPending() {
@@ -71,7 +76,7 @@ watch(() => sessionIdOf(route.query), async (sessionId) => {
   checking.value = true
   paid.value = false
   message.value = ''
-  statusText.value = ''
+  orderNoText.value = ''
   await nextTick()
   if (dialog.value && !dialog.value.open) dialog.value.showModal()
   previousOverflow = document.body.style.overflow
@@ -83,7 +88,7 @@ watch(() => sessionIdOf(route.query), async (sessionId) => {
       message.value = text && !FAILED.test(text) ? text : t('offerings.paymentUnpaid')
     } else {
       paid.value = true
-      statusText.value = text && !STATUS_CODE.test(text) ? text : ''
+      orderNoText.value = text && !STATUS_CODE.test(text) ? extractOrderNo(text) : ''
     }
   } catch (error) {
     message.value = error?.message || t('offerings.paymentFailed')

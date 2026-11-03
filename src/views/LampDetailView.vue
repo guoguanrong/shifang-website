@@ -113,7 +113,8 @@
     </section>
     <OfferingNotices :title="t('lampDetail.noticesTitle')" />
     <OfferingDialog v-if="details" :title="lamp.title" :amount="totalAmount" :period="durationLabel"
-      :cycle-type="cycleType" :business-id="businessId" :details="details" @close="details = null" />
+      :plan-label="selectedPlanLabel" :cycle-type="cycleType" :business-id="businessId" :details="details"
+      @close="details = null" />
   </OfferingPageShell>
 </template>
 
@@ -238,6 +239,8 @@ const durationLabel = computed(() => {
   const unit = t(`lampDetail.packageInfo.${period}${plural}`)
   return ['zh-CN', 'zh-TW'].includes(locale.value) ? `${durationCount.value}${unit}` : `${durationCount.value} ${unit}`
 })
+// 下单弹窗摘要展示的奉灯类型（按天/按月/按年），与详情页选中项一致。
+const selectedPlanLabel = computed(() => ({ daily: t('lampDetail.packageInfo.daily'), monthly: t('lampDetail.packageInfo.monthly'), yearly: t('lampDetail.packageInfo.yearly') }[selectedPlan.value] || ''))
 const canSubmitOffering = computed(() => selectedPlan.value !== 'custom' || customAmountValid.value)
 // 下单接口 cycleType：1 一年，2 一月，3 一天；周期口径与 durationLabel 保持一致。
 const cycleType = computed(() => selectedPlan.value === 'monthly' ? 2 : selectedPlan.value === 'yearly' ? 1 : 3)

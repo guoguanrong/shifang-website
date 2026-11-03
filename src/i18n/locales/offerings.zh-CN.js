@@ -13,6 +13,7 @@ export default {
   completedTitle: "供奉功德已成",
   completedThanks: "感恩善信护持！",
   completedDedication: "{name}善信供奉{deity}已呈报",
+  completedOrderNo: "订单号：{orderNo}",
   completedService: "道长将依约上香诵经、香火相续",
   completedBlessing: "福生无量天尊",
   completedBlessingLamp: "愿福相伴",

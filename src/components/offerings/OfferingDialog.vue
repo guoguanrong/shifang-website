@@ -22,14 +22,11 @@
               <dt>{{ t(kind === 'lamp' ? 'offerings.lampType' : 'offerings.deityLabel') }}</dt>
               <dd>{{ title }}</dd>
             </div>
+            <!-- 点灯订单摘要与详情页套餐信息（lamp-package-details）保持一致：清香、净水、疏文、奉灯类型与时长。 -->
             <template v-if="kind === 'lamp'">
-              <div>
-                <dt>{{ t('offerings.lighting') }}</dt>
-                <dd>{{ t('offerings.free') }}</dd>
-              </div>
-              <div>
-                <dt>{{ t('offerings.materials') }}</dt>
-                <dd>{{ t('offerings.materialPackage') }}</dd>
+              <div v-for="row in lampSummary" :key="row.label">
+                <dt>{{ row.label }}</dt>
+                <dd>{{ row.value }}</dd>
               </div>
             </template>
             <div v-if="kind === 'lamp'">
@@ -85,7 +82,7 @@
   </Teleport>
 </template>
 <script setup>
-import { onMounted, onBeforeUnmount, ref, useId } from 'vue'
+import { computed, onMounted, onBeforeUnmount, ref, useId } from 'vue'
 import { useI18n } from 'vue-i18n'
 import CeremonialButton from '@/components/common/CeremonialButton.vue'
 import OfferingOrderForm from './OfferingOrderForm.vue'
@@ -114,6 +111,18 @@ const { user, ensureVisitorId } = useUserSession()
 const methods = [{ id: 'stripe', label: 'Stripe' }]
 // 默认选中项直接取展示列表的第一项，避免默认值与实际展示不一致时误调其他支付接口。
 const payment = ref(methods[0].id)
+// 点灯订单摘要行：与详情页 lamp-package-details 同源文案（清香/净水/疏文 + 所选奉灯类型与时长）。
+const lampSummary = computed(() => {
+  if (props.kind !== 'lamp') return []
+  const info = key => t(`lampDetail.packageInfo.${key}`)
+  return [
+    { label: info('incenseLabel'), value: info('incenseValue') },
+    { label: info('waterLabel'), value: info('waterValue') },
+    { label: info('prayerLabel'), value: info('prayerValue') },
+    { label: info('selectType'), value: props.planLabel || '' },
+    { label: info('selectDays'), value: props.period || '' },
+  ].filter(row => row.value)
+})
 const unavailable = ref(false)
 const paying = ref(false)
 const payError = ref('')
