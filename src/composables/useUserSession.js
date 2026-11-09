@@ -1,20 +1,28 @@
 import { computed, readonly, ref } from 'vue'
 import { clearToken, ResultCode, TOKEN_STORAGE_KEY } from '@/api/http'
 import { getMemberInfo, updateMember } from '@/api/member'
+import { ensureUvid } from '@/api/visitor'
 
 const storageKey = 'shifang-demo-session'
 // 游客访客标识的持久化键；同一浏览器回访复用同一 uvid。
 const VISITOR_STORAGE_KEY = 'shifang-visitor-id'
 let memoryVisitorId = ''
 
-// 生成 uvid（优先 crypto.randomUUID，退化为时间戳+随机串）。
+// 生成 uvid（优先 crypto.randomUUID，退化为时间戳+随机串）。仅作后端 /uvid 不可用时的本地兜底。
 function randomVisitorId() {
   if (window.crypto?.randomUUID) return window.crypto.randomUUID()
   return `uvid-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}-${Math.random().toString(36).slice(2, 10)}`
 }
 
-// 游客访客标识：首次访问生成并写入 localStorage，之后所有页面与回访复用；未登录下单（uvid 入参）等场景使用。
-function ensureVisitorId() {
+// 游客访客标识：统一走后端 /uvid 生成并缓存（api/visitor.js），注册与未登录下单共用同一 ID；
+// 后端不可用或存储异常时退化为本地随机 ID，保证下单链路不被阻断。
+async function ensureVisitorId() {
+  try {
+    const uvid = await ensureUvid()
+    if (uvid) return uvid
+  } catch {
+    // 后端 /uvid 失败时走本地兜底。
+  }
   try {
     const saved = window.localStorage.getItem(VISITOR_STORAGE_KEY)
     if (saved) return saved

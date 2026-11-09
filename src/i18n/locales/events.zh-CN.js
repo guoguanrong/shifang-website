@@ -19,7 +19,7 @@ export default {
   detail: {
     time: '道会时间', location: '道会地点', tags: '活动标签', join: '参加方式', deadline: '报名截止', audience: '适合人群', limit: '人数上限', limitPeople: '{count} 人',
     intro: '道会简介', ritual: '仪轨流程', benefit: '参加道会的功德利益', crowd: '适合人群',
-    registerOnline: '线上登记祈福', registerOffline: '线下亲临', deadlineLine: '登记截止：{time}', ahead: '道会日前 {days} 天',
+    registerOnline: '登记参加', registerClosed: '报名已截止', registerOffline: '线下亲临', deadlineLine: '登记截止：{time}', ahead: '道会日前 {days} 天',
     collective: '集体活动', reserved: '专场预约', joinOnline: '线上登记', joinOffline: '线下亲临',
     monthly: '每月{day}日', daily: '每日', prev: '上一张', next: '下一张', back: '返回道会活动',
   },

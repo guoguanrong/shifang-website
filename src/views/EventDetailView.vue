@@ -91,10 +91,10 @@
           </section>
 
           <div class="register">
-            <CeremonialButton class="register-button" :label="registerLabel" @click="registerOpen = true" />
+            <CeremonialButton class="register-button" :label="registerLabel" :disabled="!isRegisterOpen" @click="openRegister" />
             <p v-if="deadlineLine">{{ deadlineLine }}</p>
           </div>
-          <EventRegisterDialog v-if="registerOpen && activity.id != null" :activity-id="activity.id" :activity-title="activity.title" @close="registerOpen = false" />
+          <EventRegisterDialog v-if="registerOpen && isRegisterOpen && activity.id != null" :activity-id="activity.id" :activity-title="activity.title" @close="registerOpen = false" />
         </div>
       </template>
       <div v-else class="empty">
@@ -107,7 +107,7 @@
 </template>
 
 <script setup>
-import { computed, onBeforeUnmount, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { setAppLocale } from '@/i18n'
@@ -117,7 +117,7 @@ import HomeFooter from '@/components/home/HomeFooter.vue'
 import CeremonialButton from '@/components/common/CeremonialButton.vue'
 import EmptyData from '@/components/common/EmptyData.vue'
 import EventRegisterDialog from '@/components/events/EventRegisterDialog.vue'
-import { formatSchedule, formatStamp, paragraphs, parseBlocks, splitList, text } from '@/utils/activityDisplay'
+import { formatSchedule, formatStamp, hasDeadlinePassed, paragraphs, parseBlocks, splitList, text } from '@/utils/activityDisplay'
 
 const route = useRoute()
 const { t, locale } = useI18n()
@@ -127,6 +127,13 @@ const activity = ref(null)
 const index = ref(0)
 const paused = ref(false)
 let timer = 0
+// 报名截止判断需要随时间刷新，页面停留期间每 30 秒更新一次当前时间。
+const now = ref(Date.now())
+let clockTimer = 0
+
+onMounted(() => {
+  clockTimer = window.setInterval(() => { now.value = Date.now() }, 30000)
+})
 
 const pictures = computed(() => splitList(activity.value?.pictureUrls))
 const subtitle = computed(() => text(activity.value?.subTitle))
@@ -164,7 +171,20 @@ const facts = computed(() => {
     people.length ? { label: t('events.detail.audience'), value: people.join(' · ') } : null,
   ].filter(Boolean)
 })
-const registerLabel = computed(() => Number(activity.value?.joinType) === 2 ? t('events.detail.registerOffline') : t('events.detail.registerOnline'))
+// status 未下发（当前接口为 null）时沿用原有行为；项目内 1 为启用，其余值视为下架。
+// type === 2 与列表页的过滤规则保持一致，不对公众开放登记。
+const isRegisterOpen = computed(() => {
+  const item = activity.value
+  if (!item) return false
+  if (Number(item.type) === 2) return false
+  const status = item.status
+  if (status != null && status !== '' && Number(status) !== 1) return false
+  return !hasDeadlinePassed(item.registerEndTime, now.value)
+})
+const registerLabel = computed(() => {
+  if (!isRegisterOpen.value) return t('events.detail.registerClosed')
+  return Number(activity.value?.joinType) === 2 ? t('events.detail.registerOffline') : t('events.detail.registerOnline')
+})
 const deadlineLine = computed(() => {
   const time = formatStamp(activity.value?.registerEndTime, locale.value)
   return time ? t('events.detail.deadlineLine', { time }) : ''
@@ -218,13 +238,24 @@ async function load(id) {
   }
 }
 
+function openRegister() {
+  if (isRegisterOpen.value) registerOpen.value = true
+}
+
 watch(() => route.params.id, load, { immediate: true })
 watch(pictures, () => {
   index.value = 0
   if (!loading.value) startAutoplay()
 })
+// 停留期间到达截止时间，或切换活动时，立刻收起已打开的登记弹窗。
+watch(isRegisterOpen, (open) => {
+  if (!open) registerOpen.value = false
+})
 
-onBeforeUnmount(stopAutoplay)
+onBeforeUnmount(() => {
+  stopAutoplay()
+  window.clearInterval(clockTimer)
+})
 const setLocale = (next) => setAppLocale(next)
 </script>
 

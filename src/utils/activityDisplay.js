@@ -96,3 +96,16 @@ export function formatStamp(value, locale = 'zh-CN') {
   }
   return `${match[1]}年${Number(match[2])}月${Number(match[3])}日${time ? ` ${time}` : ''}`
 }
+
+// 判断报名截止时间是否已过。接口返回无时区的 "YYYY-M-D HH:mm:ss"，按本地时间解析，
+// 不用 new Date(str)（Safari / iOS 对该格式会返回 Invalid Date）。格式无法识别或为空时
+// 返回 false，即保持可报名，避免把有效活动误关。
+export function hasDeadlinePassed(value, now = Date.now()) {
+  const raw = text(value)
+  if (!raw) return false
+  const match = raw.match(/^(\d{4})-(\d{1,2})-(\d{1,2})(?:[ T](\d{1,2}):(\d{2})(?::(\d{2}))?)?/)
+  if (!match) return false
+  const [, year, month, day, hour = 0, minute = 0, second = 0] = match
+  const stamp = new Date(Number(year), Number(month) - 1, Number(day), Number(hour), Number(minute), Number(second)).getTime()
+  return Number.isFinite(stamp) && stamp <= now
+}

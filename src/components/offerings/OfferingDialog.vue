@@ -173,7 +173,7 @@ async function pay() {
       type: deity ? 2 : 1,
       businessId: Number(props.businessId),
       memberId: member?.id || undefined,
-      uvid: ensureVisitorId(),
+      uvid: await ensureVisitorId(),
       username: order.value.name,
       mobile: member?.phone || undefined,
       // 已登录优先用账号邮箱，否则用表单填写的选填邮箱。

@@ -191,6 +191,8 @@ async function submit() {
       applyPost: roleValues[form.role],
       serviceTime: timeValues[form.time],
       remark: form.message.trim(),
+      // 加入类型：1=自主申请（官网报名）。后端 save 实体已支持该字段（管理端后台添加传 2，实测均可落库）。
+      type: 1,
     })
     feedback.value = { role: form.role, time: form.time }
     form.name = ''

@@ -124,7 +124,7 @@ async function pay() {
       type: 3,
       businessId: props.order.targetId,
       memberId: member?.id || undefined,
-      uvid: ensureVisitorId(),
+      uvid: await ensureVisitorId(),
       username: props.order.anonymous ? undefined : (props.order.name || undefined),
       mobile: props.order.phone ? `${props.order.country} ${props.order.phone}`.trim() : (member?.phone || undefined),
       email: props.order.email || member?.email || undefined,
