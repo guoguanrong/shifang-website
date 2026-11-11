@@ -60,3 +60,11 @@ export function cancelSolarTerms(options) {
 export function getSolarTermsStatus(options) {
   return request({ url: '/pray/solarTerms', method: 'get', ...options })
 }
+
+/**
+ * 恭请电子祈福卡统计上报（需登录，无入参）
+ * @param {object} [options] 额外请求配置，如 { silent: true }
+ */
+export function recordAmulet(options) {
+  return request({ url: '/pray/amulet', method: 'get', ...options })
+}

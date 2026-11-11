@@ -12,7 +12,7 @@ import { onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import CeremonialButton from '@/components/common/CeremonialButton.vue'
 import BlessingServiceDialog from './BlessingServiceDialog.vue'
-import { cancelSolarTerms, getSolarTermsStatus, openSolarTerms } from '@/api/pray'
+import { cancelSolarTerms, getSolarTermsStatus, openSolarTerms, recordAmulet } from '@/api/pray'
 import { useUserSession } from '@/composables/useUserSession'
 import { useAuthModal } from '@/composables/useAuthModal'
 
@@ -43,11 +43,23 @@ watch(isLoggedIn, value => {
   if (props.kind === 'seasonal' && value) refreshEnabled()
 })
 
+// 恭请统计：纯上报，静默执行，失败不影响弹窗与登录流程。
+function trackAmulet() {
+  recordAmulet({ silent: true }).catch(() => {})
+}
+
 // 点按钮即触发弹窗；节气提醒的接口请求（需登录）在弹窗确认后进行。
 function openDialog() {
+  // 恭请祈福卡：点击即上报一次；节气提醒不上报。
+  if (props.kind === 'talisman') trackAmulet()
+
   // 节气提醒与恭请护身符需登录；登录完成后继续打开对应确认弹窗。
   if (['seasonal', 'talisman'].includes(props.kind) && !isLoggedIn.value) {
-    openAuthModal('login', () => { showDialog.value = true })
+    // /pray/amulet 需登录，未登录时的上报会被拒绝，登录成功后补报一次。
+    openAuthModal('login', () => {
+      if (props.kind === 'talisman') trackAmulet()
+      showDialog.value = true
+    })
     return
   }
   showDialog.value = true

@@ -368,12 +368,13 @@ async function submit() {
   }
 
   // 注册：按渠道只传对应字段——手机号注册不传邮箱字段，邮箱注册不传手机号字段。
+  // source 为注册来源渠道，暂不区分具体渠道，官网统一写死「官网」。
   submitting.value = true
 
   try {
     const signupPayload = channel.value === 'email'
-      ? { email: form.email, emailCode: form.emailCode, password: form.password, uvid: await ensureUvid() }
-      : { phone: form.country + form.phone, smsCode: form.phoneCode, password: form.password, uvid: await ensureUvid() }
+      ? { email: form.email, emailCode: form.emailCode, password: form.password, uvid: await ensureUvid(), source: '官网' }
+      : { phone: form.country + form.phone, smsCode: form.phoneCode, password: form.password, uvid: await ensureUvid(), source: '官网' }
 
     // silent：面板内有专属错误反馈层，关闭全局弹窗避免重复提示。
     await signupMember(signupPayload, { silent: true })
