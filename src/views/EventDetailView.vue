@@ -171,17 +171,20 @@ const facts = computed(() => {
     people.length ? { label: t('events.detail.audience'), value: people.join(' · ') } : null,
   ].filter(Boolean)
 })
-// status 未下发（当前接口为 null）时沿用原有行为；项目内 1 为启用，其余值视为下架。
-// type === 2 与列表页的过滤规则保持一致，不对公众开放登记。
+// 接口 status 枚举：1.待报名 2.报名中 3.报名停止 4.已结束。
+// 1/2 开放登记，3/4 关闭；status 未下发时沿用原有行为（仅按截止时间判断）。
+// type === 2（暂不上架）与列表页的过滤规则保持一致，不对公众开放登记。
+const activityStatus = computed(() => Number(activity.value?.status) || 0)
 const isRegisterOpen = computed(() => {
   const item = activity.value
   if (!item) return false
   if (Number(item.type) === 2) return false
-  const status = item.status
-  if (status != null && status !== '' && Number(status) !== 1) return false
+  if (activityStatus.value === 3 || activityStatus.value === 4) return false
   return !hasDeadlinePassed(item.registerEndTime, now.value)
 })
 const registerLabel = computed(() => {
+  if (activityStatus.value === 4) return t('events.detail.registerEnded')
+  if (activityStatus.value === 3) return t('events.detail.registerStopped')
   if (!isRegisterOpen.value) return t('events.detail.registerClosed')
   return Number(activity.value?.joinType) === 2 ? t('events.detail.registerOffline') : t('events.detail.registerOnline')
 })

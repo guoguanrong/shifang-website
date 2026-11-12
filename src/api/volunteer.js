@@ -26,11 +26,16 @@ export function saveVolunteer(data) {
 
 /**
  * 查询当前登录用户的义工申请信息（需登录态，无入参）
- * @returns {Promise<object|null>} VolunteerVo{id, username, phone, applyPost, serviceTime, remark,
- *   status(1待审核 2审核通过 3拒绝), refuseReason, createTime}
+ * 接口现返回 VolunteerVo[]（一个用户可多次申请）；兼容旧版单个对象及 {list}/{records} 包裹形态。
+ * @returns {Promise<object[]>} VolunteerVo{id, username, phone, applyPost, serviceTime, remark,
+ *   status(1待审核 2审核通过 3拒绝 4禁止参加), refuseReason, createTime} 数组
  */
-export function getVolunteerSelfInfo(options) {
-  return request({ url: '/volunteer/selfInfo', method: 'get', ...options })
+export async function getVolunteerSelfInfo(options) {
+  const data = await request({ url: '/volunteer/selfInfo', method: 'get', ...options })
+  if (Array.isArray(data)) return data
+  if (Array.isArray(data?.list)) return data.list
+  if (Array.isArray(data?.records)) return data.records
+  return data && typeof data === 'object' ? [data] : []
 }
 
 /**

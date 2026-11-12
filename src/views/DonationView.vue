@@ -77,11 +77,9 @@ const quantity = ref(10)
 const donorForm = ref(null)
 const dialogState = ref(null)
 const order = ref(null)
-// 捐赠目标下拉：优先展示与当前类型匹配的目标；后端未配置对应类型目标时回退为全部目标，保证物品接口有 donateTargetId 可传。
-const targetOptions = computed(() => {
-  const matched = goals.value.filter((goal) => Number(goal.type) === (mode.value === 'goods' ? 2 : 1))
-  return matched.length ? matched : goals.value
-})
+// 目标本身不区分钱/物（类型在关联的 ShopItems 上），所以不再按目标 type 过滤目标；
+// 切换页签只改变 /shopItems/getDonateShopItems 查询用的 type，当前目标保持不变。
+const targetOptions = computed(() => goals.value)
 const selectedTarget = computed(() => targetOptions.value.find((goal) => String(goal.id) === String(route.query.targetId)) || targetOptions.value[0] || null)
 const goods = computed(() => shopItems.value.filter((item) => Number(item.type) !== 1 && item.name))
 const moneyOptions = computed(() => shopItems.value.filter((item) => Number(item.type) !== 2 && item.price > 0))
@@ -203,12 +201,12 @@ watch(moneyOptions, (options) => {
 
 async function setMode(type) {
   const numericType = type === 'goods' ? '2' : '1'
-  // 目标优先级：与类型匹配的目标 > 当前地址栏目标 > 第一个目标，确保物品接口始终有 donateTargetId。
-  const matchingTarget = goals.value.find((goal) => Number(goal.type) === Number(numericType))
-    || goals.value.find((goal) => String(goal.id) === String(route.query.targetId))
-    || goals.value[0]
   const query = { ...route.query, type: numericType }
-  if (matchingTarget) query.targetId = String(matchingTarget.id)
+  // 目标可同时挂钱档位与实物商品，切页签只换要查询的商品类型，保留当前目标；
+  // 未指定目标时回落到第一个目标，保证物品接口始终有 donateTargetId 可传。
+  const currentTarget = goals.value.find((goal) => String(goal.id) === String(route.query.targetId))
+  if (currentTarget) query.targetId = String(currentTarget.id)
+  else if (goals.value[0]) query.targetId = String(goals.value[0].id)
   else delete query.targetId
   await router.replace({ query })
   // 切换类型后显式重拉物品：捐物 tab 必须发起 type=2 的物品请求，不依赖 watch 时序。

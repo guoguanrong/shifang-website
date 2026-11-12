@@ -59,8 +59,13 @@ const { t, tm } = useI18n()
 const router = useRouter()
 // 当前选中的分类标签索引。
 const activeTab = ref(0)
-// 分类标签顺序与语言包 messages.tabs 一一对应，取值为后端 category 字段的中文类别。
-const TAB_CATEGORIES = ['知名人士', '道内人士', '其他重要人士']
+// 分类标签顺序与语言包 messages.tabs 一一对应；第一项是接口文档的标准分类值，
+// 后续为历史数据里出现过的旧值，查询时一并兼容。
+const TAB_CATEGORIES = [
+  ['知名人士'],
+  ['业内人士', '道内人士'],
+  ['其他善信人士', '其他重要人士'],
+]
 // 每页数量：三列布局展示 9 条。
 const PAGE_SIZE = 9
 // 封面占位素材：接口未返回图片时循环复用。
@@ -89,21 +94,26 @@ const apiMessages = ref([])
 const apiLoaded = ref(false)
 
 async function loadMessages() {
+  const categories = TAB_CATEGORIES[activeTab.value] ?? []
   try {
-    const result = await getWishesList(
-      { page: 1, pageSize: PAGE_SIZE, show: true, category: TAB_CATEGORIES[activeTab.value] },
+    // 同一页签下的标准分类值与历史旧值都查询一遍并合并，避免旧数据查不到。
+    const results = await Promise.allSettled(categories.map((category) => getWishesList(
+      { page: 1, pageSize: PAGE_SIZE, show: true, category },
       { silent: true },
-    )
-    const list = Array.isArray(result) ? result : result?.list
-    apiMessages.value = Array.isArray(list)
-      ? list.map((item, index) => ({
-        id: item.id ?? `wish-${index}`,
-        cover: parseWishImages(item.imgArrUrls)[0] || messageImages[index % messageImages.length],
-        name: item.title || '',
-        quote: item.content || item.detail || '',
-        isVideo: Number(item.type) === 1 || Boolean(item.videoUrl),
-      }))
-      : []
+    )))
+    const list = results.flatMap((result) => {
+      if (result.status !== 'fulfilled') return []
+      const value = result.value
+      if (Array.isArray(value)) return value
+      return Array.isArray(value?.list) ? value.list : []
+    })
+    apiMessages.value = list.map((item, index) => ({
+      id: item.id ?? `wish-${index}`,
+      cover: parseWishImages(item.imgArrUrls)[0] || messageImages[index % messageImages.length],
+      name: item.title || '',
+      quote: item.content || item.detail || '',
+      isVideo: Number(item.type) === 1 || Boolean(item.videoUrl),
+    }))
   } catch {
     apiMessages.value = []
   } finally {

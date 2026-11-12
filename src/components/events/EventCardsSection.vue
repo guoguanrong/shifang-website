@@ -35,8 +35,9 @@ defineProps({
   kind: { type: String, required: true },
   loading: { type: Boolean, default: false },
   moreTo: { type: [String, Object], required: true },
+  // 首页每页 6 条、道会页每页 9 条，由父级传入，保证加载骨架与实际条数一致。
+  skeletonCount: { type: Number, default: 9 },
 })
-const skeletonCount = 6
 const { t } = useI18n()
 </script>
 <style scoped>

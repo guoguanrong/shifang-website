@@ -26,7 +26,7 @@ import { formatSchedule, splitList, text } from '@/utils/activityDisplay'
 import recent1 from '@/assets/events/recent-1.webp'; import recent2 from '@/assets/events/recent-2.webp'; import recent3 from '@/assets/events/recent-3.webp'; import recent4 from '@/assets/events/recent-4.webp'; import recent5 from '@/assets/events/recent-5.webp'; import recent6 from '@/assets/events/recent-6.webp'
 import future1 from '@/assets/events/future-1.webp'; import future2 from '@/assets/events/future-2.webp'; import future3 from '@/assets/events/future-3.webp'; import future4 from '@/assets/events/future-4.webp'; import future5 from '@/assets/events/future-5.webp'; import future6 from '@/assets/events/future-6.webp'
 
-const PAGE_SIZE = 6
+const PAGE_SIZE = 9
 const recentImages = [recent1, recent2, recent3, recent4, recent5, recent6]
 const futureImages = [future1, future2, future3, future4, future5, future6]
 const { t } = useI18n()
@@ -48,7 +48,8 @@ function mapActivity(item, index, images) {
 }
 
 async function loadActivities(isFuture, images) {
-  const result = await getActivityList({ isFuture, page: 1, pageSize: PAGE_SIZE }, { silent: true })
+  // type=1 只取已上架活动（ActivityDTO.type：1.上架 2.暂不上架）。
+  const result = await getActivityList({ isFuture, type: 1, page: 1, pageSize: PAGE_SIZE }, { silent: true })
   const list = Array.isArray(result) ? result : result?.list
   if (!Array.isArray(list)) return []
   return list

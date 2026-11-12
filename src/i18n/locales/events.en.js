@@ -20,6 +20,7 @@ export default {
     time: 'Gathering time', location: 'Place', tags: 'Themes', join: 'How to join', deadline: 'Registration closes', audience: 'Who it is for', limit: 'Attendance limit', limitPeople: '{count} people',
     intro: 'About this gathering', ritual: 'Ritual order', benefit: 'Blessings of joining', crowd: 'Who it is for',
     registerOnline: 'Register to attend', registerClosed: 'Registration closed', registerOffline: 'Attend in person', deadlineLine: 'Registration closes: {time}', ahead: '{days} days before the gathering',
+    registerEnded: 'Gathering ended', registerStopped: 'Registration stopped',
     collective: 'Community gathering', reserved: 'Reserved gathering', joinOnline: 'Register online', joinOffline: 'Attend in person',
     monthly: 'Day {day} of each month', daily: 'Daily', prev: 'Previous image', next: 'Next image', back: 'Back to gatherings',
   },

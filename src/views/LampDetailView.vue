@@ -33,7 +33,7 @@
       <div class="lamp-material-package">
         <div class="lamp-materials">
           <article v-for="(material, index) in materials" :key="material.id || material.name || material.title || index"
-            class="lamp-material" :class="{ 'is-incense': index === 1 }">
+            class="lamp-material" :class="{ 'is-incense': material.isIncenseImage }">
             <div class="lamp-material-visual">
               <img :src="material.displayImage" alt="" />
               <span class="lamp-material-fade" aria-hidden="true" />
@@ -180,23 +180,34 @@ const meritSymbolImages = computed(() => tm('lampDetail.merits').map((item, inde
   return set[locale.value] || set['zh-CN'] || ''
 }))
 const materialImages = [lampMaterialImage, incenseMaterialImage, waterMaterialImage, prayerMaterialImage]
-// 暂时隐藏点灯详情接口（/light/get/{id}）返回的物料数据，仅展示语言包默认物料。
-// 恢复接口数据时将 HIDE_API_MATERIALS 改回 false 即可。
-const HIDE_API_MATERIALS = true
+
+// 物料卡片展示点灯详情接口 /light/get/{id} 返回的 shopItemsList（ShopItemsVo：name/useType/unit/picture）。
+// 接口未配置物料、加载中或请求失败时才回退语言包默认物料，避免把示例物料混进当前灯型的套餐。
+// 接口图片普遍为空，按 useType/name 选本地图，保证「香/灯/疏文/净水」不会错位；
+// 香图是长图，需要 is-incense 的特殊裁切。
+function materialImageFor(material, index) {
+  const label = `${material.useType || ''} ${material.name || ''} ${material.title || ''}`
+  if (/香/.test(label)) return { src: incenseMaterialImage, isIncense: true }
+  if (/灯|油/.test(label)) return { src: lampMaterialImage, isIncense: false }
+  if (/疏|文|牒/.test(label)) return { src: prayerMaterialImage, isIncense: false }
+  if (/水|净/.test(label)) return { src: waterMaterialImage, isIncense: false }
+  return { src: materialImages[index % materialImages.length], isIncense: index === 1 }
+}
+
 const materials = computed(() => {
   const defaults = tm('lampDetail.materials')
-  const configuredMaterials = HIDE_API_MATERIALS ? [] : currentLight.value?.shopItemsList
-  const source = Array.isArray(configuredMaterials) ? configuredMaterials : []
-  const count = Math.max(defaults.length, source.length)
-
-  return Array.from({ length: count }, (_, index) => {
-    const material = source[index] || defaults[index] || {}
-    const fallback = defaults[index] || {}
+  const configured = currentLight.value?.shopItemsList
+  const source = Array.isArray(configured) ? configured.filter(Boolean) : []
+  const list = source.length ? source : defaults
+  return list.map((material, index) => {
+    const customImage = material.picture || material.image
+    const preset = customImage ? { src: customImage, isIncense: false } : materialImageFor(material, index)
     return {
       ...material,
-      displayName: material.name || material.title || fallback.title || '',
-      displayText: material.useType || material.text || material.unit || fallback.text || '',
-      displayImage: material.picture || material.image || materialImages[index % materialImages.length],
+      displayName: material.name || material.title || '',
+      displayText: material.useType || material.text || material.unit || '',
+      displayImage: preset.src,
+      isIncenseImage: preset.isIncense,
     }
   })
 })

@@ -22,14 +22,20 @@
     </section>
     <section class="account-paper volunteer-application">
       <OrnateSectionHeading :title="t('accountPages.volunteer.applicationTitle')" />
-      <!-- 已提交过申请：显示审核状态，表单同步回填申请内容。 -->
-      <div v-if="selfInfo" class="volunteer-status" :class="`is-status-${Number(selfInfo.status) || 1}`" role="status">
-        <p class="volunteer-status-title">{{ statusText }}</p>
-        <p v-if="Number(selfInfo.status) === 3 && selfInfo.refuseReason" class="volunteer-status-detail">
-          {{ t('accountPages.volunteer.refuseReasonLabel') }}：{{ selfInfo.refuseReason }}
+      <!-- 已提交过申请：接口返回数组，逐条显示审核状态；表单按最新一次申请回填。 -->
+      <div
+        v-for="(application, index) in selfApplications"
+        :key="application.id ?? index"
+        class="volunteer-status"
+        :class="`is-status-${Number(application.status) || 1}`"
+        role="status"
+      >
+        <p class="volunteer-status-title">{{ statusTextFor(application) }}</p>
+        <p v-if="Number(application.status) === 3 && application.refuseReason" class="volunteer-status-detail">
+          {{ t('accountPages.volunteer.refuseReasonLabel') }}：{{ application.refuseReason }}
         </p>
-        <p v-if="selfInfo.createTime" class="volunteer-status-detail">
-          {{ t('accountPages.volunteer.appliedAt') }}：{{ selfInfo.createTime }}
+        <p v-if="application.createTime" class="volunteer-status-detail">
+          {{ t('accountPages.volunteer.appliedAt') }}：{{ application.createTime }}
         </p>
       </div>
       <form ref="applicationForm" class="volunteer-form" novalidate @submit.prevent="submit">
@@ -121,14 +127,31 @@ const errors = computed(() => {
   return result
 })
 
-// 义工申请自助信息：仅此接口要求登录态——登录用户进入页面时查询自己的申请，未登录不请求。
-const selfInfo = ref(null)
+// 义工申请自助信息：接口现返回对象数组（一个用户可多次申请），按申请时间倒序展示全部记录。
+// 仅此接口要求登录态——登录用户进入页面时查询自己的申请，未登录不请求。
+const selfApplications = ref([])
+
+// createTime 可能是 "2026-11-11 12:00:00"，统一转成可比较的时间戳；缺失时按自增 id 兜底。
+function applicationTime(item) {
+  const raw = String(item?.createTime || '').trim()
+  const time = Date.parse(raw.replace(' ', 'T')) || Date.parse(raw) || 0
+  return Number.isFinite(time) ? time : 0
+}
+
+function sortApplications(list) {
+  return [...list].sort((a, b) => (
+    applicationTime(b) - applicationTime(a) || (Number(b.id) || 0) - (Number(a.id) || 0)
+  ))
+}
 
 async function loadSelfInfo() {
   try {
-    const info = await getVolunteerSelfInfo({ silent: true })
+    const applications = await getVolunteerSelfInfo({ silent: true })
+    const sorted = sortApplications(applications.filter((item) => item && typeof item === 'object'))
+    selfApplications.value = sorted
+    // 最新一次申请用于回填表单；状态区则展示全部申请。
+    const info = sorted[0]
     if (!info || info.id === undefined || info.id === null) return
-    selfInfo.value = info
 
     // 回填表单：手机号按国家码前缀拆分；岗位/时段存的是中文值，需反查表单 id。
     if (info.username) form.name = info.username
@@ -155,12 +178,12 @@ onMounted(() => {
 })
 
 // 审核状态文案：1 待审核 / 2 审核通过 / 3 未通过。
-const statusText = computed(() => {
-  const status = Number(selfInfo.value?.status)
+function statusTextFor(application) {
+  const status = Number(application?.status)
   if (status === 2) return t('accountPages.volunteer.statusApproved')
   if (status === 3) return t('accountPages.volunteer.statusRefused')
   return t('accountPages.volunteer.statusPending')
-})
+}
 
 async function chooseRole(role) {
   form.role = role

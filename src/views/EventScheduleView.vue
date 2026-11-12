@@ -98,7 +98,8 @@ async function load() {
   loading.value = true
   items.value = []
   try {
-    const result = await getActivityList({ isFuture: props.isFuture, page: page.value, pageSize }, { silent: true })
+    // type=1 只取已上架活动，分页总数由后端按该条件返回。
+    const result = await getActivityList({ isFuture: props.isFuture, type: 1, page: page.value, pageSize }, { silent: true })
     const list = Array.isArray(result) ? result : result?.list || result?.records || result?.rows
     if (!Array.isArray(list)) throw new Error('empty')
     const visible = list.filter((item) => Number(item?.type) !== 2)

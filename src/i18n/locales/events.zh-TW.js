@@ -19,6 +19,7 @@ export default {
     time: '道會時間', location: '道會地點', tags: '活動標籤', join: '參加方式', deadline: '報名截止', audience: '適合人群', limit: '人數上限', limitPeople: '{count} 人',
     intro: '道會簡介', ritual: '儀軌流程', benefit: '參加道會的功德利益', crowd: '適合人群',
     registerOnline: '登記參加', registerClosed: '報名已截止', registerOffline: '線下親臨', deadlineLine: '登記截止：{time}', ahead: '道會日前 {days} 天',
+    registerEnded: '道會已結束', registerStopped: '報名已停止',
     collective: '集體活動', reserved: '專場預約', joinOnline: '線上登記', joinOffline: '線下親臨',
     monthly: '每月{day}日', daily: '每日', prev: '上一張', next: '下一張', back: '返回道會活動',
   },

@@ -70,7 +70,7 @@
 
     <div class="home-events">
       <EventCardsSection class="recent" kind="recent" :title="t('events.recentTitle')" :items="recentActivities"
-        :images="recentImages" :loading="recentLoading" :more-to="{ name: 'event-schedule' }" />
+        :images="recentImages" :loading="recentLoading" :skeleton-count="PAGE_SIZE" :more-to="{ name: 'event-schedule' }" />
     </div>
   </div>
 
@@ -303,7 +303,8 @@ function mapActivity(item, index, images) {
 }
 
 async function loadActivities(isFuture, images) {
-  const result = await getActivityList({ isFuture, page: 1, pageSize: PAGE_SIZE }, { silent: true })
+  // type=1 只取已上架活动，与道会页/日程页保持一致。
+  const result = await getActivityList({ isFuture, type: 1, page: 1, pageSize: PAGE_SIZE }, { silent: true })
   const list = Array.isArray(result) ? result : result?.list
   if (!Array.isArray(list)) return []
   return list
